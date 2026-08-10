@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="./support.js"></script>
-<script src="./procedural-fields.js?v=helix-bandlimited-field" defer></script>
+<script src="./procedural-fields.js?v=helix-hero-resolution-fix" defer></script>
 <script src="./stock-footage.js" defer></script>
 </head>
 <body>
@@ -505,7 +505,7 @@
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;heroPhoto&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: false, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;Sections&quot;}, &quot;partnersBand&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: false, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;Sections&quot;}, &quot;sdgInverted&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: false, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;Sections&quot;}}">
 class Component extends DCLogic {
-  state = { isMobile: false, menuOpen: false, peopleOpen: false, headerScrolled: false, headerHidden: false, pageReady: false, darkMode: true, sdgHover: -1, sdgLast: -1, sdgFlipped: {}, sdgSelected: 0 };
+  state = { isMobile: false, menuOpen: false, peopleOpen: false, headerScrolled: false, headerHidden: false, pageReady: false, darkMode: false, sdgHover: -1, sdgLast: -1, sdgFlipped: {}, sdgSelected: 0 };
   preloadGifs() {
     let i = 0;
     const next = () => {
@@ -523,7 +523,7 @@ class Component extends DCLogic {
     }
   }
   componentDidMount() {
-    let darkMode = true;
+    let darkMode = false;
     try {
       const storedTheme = localStorage.getItem('helix-theme');
       if (storedTheme === 'light' || storedTheme === 'dark') darkMode = storedTheme === 'dark';

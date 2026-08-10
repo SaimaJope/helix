@@ -41,12 +41,15 @@
       return mix(mix(a, b, curve.x), mix(c, d, curve.x), curve.y);
     }
 
-    float fbm(vec2 p) {
+    // detail = how many octaves survive. The contour phase multiplies this field by
+    // ~30, so octaves finer than the eye can follow only steepen the phase gradient
+    // and turn into moire. Cheaper and cleaner to not generate them.
+    float fbm(vec2 p, float detail) {
       float value = 0.0;
       float amplitude = 0.5;
       mat2 rotation = mat2(0.80, 0.60, -0.60, 0.80);
       for (int octave = 0; octave < 5; octave++) {
-        value += amplitude * noise2(p);
+        value += amplitude * noise2(p) * clamp(detail - float(octave), 0.0, 1.0);
         p = rotation * p * 2.03 + vec2(17.1, 9.2);
         amplitude *= 0.5;
       }
@@ -62,12 +65,12 @@
       float time = u_time * 0.014;
       vec2 domain = p * mix(7.00, 3.05, u_variant);
       vec2 firstWarp = vec2(
-        fbm(domain + vec2(time, -time * 0.48)),
-        fbm(domain + vec2(5.2, 1.3) + vec2(-time * 0.62, time * 0.35))
+        fbm(domain + vec2(time, -time * 0.48), 5.0),
+        fbm(domain + vec2(5.2, 1.3) + vec2(-time * 0.62, time * 0.35), 5.0)
       );
       vec2 secondWarp = vec2(
-        fbm(domain + 3.2 * firstWarp + vec2(1.7, 9.2) + time * 0.35),
-        fbm(domain + 3.2 * firstWarp + vec2(8.3, 2.8) - time * 0.28)
+        fbm(domain + 3.2 * firstWarp + vec2(1.7, 9.2) + time * 0.35, 5.0),
+        fbm(domain + 3.2 * firstWarp + vec2(8.3, 2.8) - time * 0.28, 5.0)
       );
 
       float field = p.x * 0.34 + secondWarp.x * 1.12 + firstWarp.y * 0.24;
@@ -82,16 +85,19 @@
       #else
         float cyclesPerPixel = contourScale * 1.6 / min(u_resolution.x, u_resolution.y);
       #endif
-      cyclesPerPixel = max(cyclesPerPixel, 1.0 / min(u_resolution.x, u_resolution.y));
+      cyclesPerPixel = max(cyclesPerPixel, 0.0001);
 
-      // Fade the pattern out as it approaches the Nyquist limit instead of letting it
-      // fold back into moire. Wide viewports push the phase gradient much higher.
-      float bandLimit = 1.0 - smoothstep(0.20, 0.55, cyclesPerPixel);
+      // One pixel expressed in wave units. The filter needs to be exactly this wide:
+      // any wider and the lines smear, any narrower and their edges stair-step.
+      float aa = min(3.14159 * cyclesPerPixel, 0.35);
+
+      // Backstop for anything still finer than the pixel grid: fade it to flat rather
+      // than let it fold back as moire. With the field smoothed it rarely engages.
+      float bandLimit = 1.0 - smoothstep(0.35, 0.55, cyclesPerPixel);
 
       float wave = 0.5 + 0.5 * cos(contourPhase * 6.28318);
-      float pixelFootprint = min(3.14159 * cyclesPerPixel, 0.5);
-      float rampWidth = 0.10 + pixelFootprint * 0.90;
-      float contourWidth = 0.075 + pixelFootprint * 1.35;
+      float rampWidth = 0.10 + aa;
+      float contourWidth = 0.075 + aa;
       float ramp = mix(0.5, smoothstep(0.5 - rampWidth, 0.5 + rampWidth, wave), bandLimit);
       float contour = (1.0 - smoothstep(0.0, contourWidth, abs(wave - 0.5))) * bandLimit;
 
@@ -211,7 +217,7 @@
       // browser while canvas.width keeps the requested value, which desyncs the
       // viewport. Scale the density down instead of letting that happen.
       const limit = this.maxBufferSize;
-      const maxPixels = 5.5e6;
+      const maxPixels = 1.2e7;
       const fit = Math.min(
         1,
         limit / Math.max(rect.width * density, 1),
@@ -245,6 +251,12 @@
         requestAnimationFrame(this.render);
         return;
       }
+
+      // Size from the render loop, not only from the ResizeObserver. React remounts
+      // these canvases shortly after load, and the replacement node could otherwise
+      // stay at the 300x150 default while CSS stretched it across the whole hero.
+      // This is a no-op once the dimensions match.
+      this.resize();
 
       this.lastFrame = now;
       pointer.x += (pointer.tx - pointer.x) * 0.035;
