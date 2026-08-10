@@ -168,6 +168,12 @@
       .sdg-back > span:first-child { font-size: 9.5px !important; letter-spacing: 0.11em !important; }
       .sdg-back > span:nth-child(2) { font-size: 11.5px !important; line-height: 1.26 !important; }
       .sdg-back > a { font-size: 10px !important; letter-spacing: 0.04em !important; }
+      /* Featured projects: 4/3 media made each card 438px, so three ran to 1590px
+         of scrolling. Shorter wells and tighter bodies, and inset the category tag
+         so it stops sitting flush against the card border. */
+      .hx-project-media { aspect-ratio: 16 / 10 !important; }
+      .hx-project-body { padding: 18px 18px 20px !important; gap: 8px !important; }
+      .hx-project-tag { left: 14px !important; bottom: 14px !important; }
       .hx-footer-field { width: 100%; height: 100%; opacity: 0.18; }
     }
     @media (prefers-reduced-motion: reduce) {
@@ -326,42 +332,42 @@
       </div>
       <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: clamp(22px, 2.6vw, 36px);">
         <article style="border: 1px solid #26241E; display: flex; flex-direction: column;">
-          <div style="position: relative; aspect-ratio: 4 / 3; background: #7D5BA6; overflow: hidden;">
+          <div class="hx-project-media" style="position: relative; aspect-ratio: 4 / 3; background: #7D5BA6; overflow: hidden;">
             <video class="hx-stock-video" data-stock-footage muted loop playsinline preload="metadata" aria-hidden="true" tabindex="-1" data-source="https://www.pexels.com/video/volunteers-packing-clothes-for-donations-6893821/">
               <source src="assets/video/project-cooperation.mp4" type="video/mp4">
             </video>
             <span class="hx-stock-shade" aria-hidden="true"></span>
-            <span style="position: absolute; z-index: 1; left: 0; bottom: 20px; background: #F6F3E8; color: #26241E; font-size: 10.5px; font-weight: 800; letter-spacing: 0.15em; text-transform: uppercase; padding: 8px 13px;">Cooperation</span>
+            <span class="hx-project-tag" style="position: absolute; z-index: 1; left: 0; bottom: 20px; background: #F6F3E8; color: #26241E; font-size: 10.5px; font-weight: 800; letter-spacing: 0.15em; text-transform: uppercase; padding: 8px 13px;">Cooperation</span>
           </div>
-          <div style="padding: clamp(20px, 2.2vw, 30px); display: flex; flex-direction: column; gap: 10px; border-top: 1px solid #26241E; flex: 1;">
+          <div class="hx-project-body" style="padding: clamp(20px, 2.2vw, 30px); display: flex; flex-direction: column; gap: 10px; border-top: 1px solid #26241E; flex: 1;">
             <h3 style="margin: 0; font-family: 'Source Serif 4', Georgia, serif; font-weight: 560; font-size: clamp(22px, 2vw, 28px); letter-spacing: -0.01em;">Project title</h3>
             <p style="margin: 0; color: #3E3A31; font-size: 14.5px; line-height: 1.6;">One-line summary of the project appears here.</p>
             <a href="#" style="margin-top: auto; padding-top: 8px; font-size: 14px; font-weight: 700; color: #26241E; align-self: flex-start; border-bottom: 1.5px solid rgba(38,36,30,0.5); padding-bottom: 3px;" style-hover="color: #1F5B46; border-color: #1F5B46;">Read more</a>
           </div>
         </article>
         <article style="border: 1px solid #26241E; display: flex; flex-direction: column;">
-          <div style="position: relative; aspect-ratio: 4 / 3; background: #C6502F; overflow: hidden;">
+          <div class="hx-project-media" style="position: relative; aspect-ratio: 4 / 3; background: #C6502F; overflow: hidden;">
             <video class="hx-stock-video" data-stock-footage muted loop playsinline preload="metadata" aria-hidden="true" tabindex="-1" data-source="https://www.pexels.com/video/scientists-working-together-8534745/">
               <source src="assets/video/project-innovation.mp4" type="video/mp4">
             </video>
             <span class="hx-stock-shade" aria-hidden="true"></span>
-            <span style="position: absolute; z-index: 1; left: 0; bottom: 20px; background: #F6F3E8; color: #26241E; font-size: 10.5px; font-weight: 800; letter-spacing: 0.15em; text-transform: uppercase; padding: 8px 13px;">Innovation</span>
+            <span class="hx-project-tag" style="position: absolute; z-index: 1; left: 0; bottom: 20px; background: #F6F3E8; color: #26241E; font-size: 10.5px; font-weight: 800; letter-spacing: 0.15em; text-transform: uppercase; padding: 8px 13px;">Innovation</span>
           </div>
-          <div style="padding: clamp(20px, 2.2vw, 30px); display: flex; flex-direction: column; gap: 10px; border-top: 1px solid #26241E; flex: 1;">
+          <div class="hx-project-body" style="padding: clamp(20px, 2.2vw, 30px); display: flex; flex-direction: column; gap: 10px; border-top: 1px solid #26241E; flex: 1;">
             <h3 style="margin: 0; font-family: 'Source Serif 4', Georgia, serif; font-weight: 560; font-size: clamp(22px, 2vw, 28px); letter-spacing: -0.01em;">Research initiative</h3>
             <p style="margin: 0; color: #3E3A31; font-size: 14.5px; line-height: 1.6;">One-line summary of the initiative appears here.</p>
             <a href="#" style="margin-top: auto; padding-top: 8px; font-size: 14px; font-weight: 700; color: #26241E; align-self: flex-start; border-bottom: 1.5px solid rgba(38,36,30,0.5); padding-bottom: 3px;" style-hover="color: #1F5B46; border-color: #1F5B46;">Read more</a>
           </div>
         </article>
         <article style="border: 1px solid #26241E; display: flex; flex-direction: column;">
-          <div style="position: relative; aspect-ratio: 4 / 3; background: #D9A23B; overflow: hidden;">
+          <div class="hx-project-media" style="position: relative; aspect-ratio: 4 / 3; background: #D9A23B; overflow: hidden;">
             <video class="hx-stock-video" data-stock-footage muted loop playsinline preload="metadata" aria-hidden="true" tabindex="-1" data-source="https://www.pexels.com/video/students-in-a-classroom-5734828/">
               <source src="assets/video/project-human-development.mp4" type="video/mp4">
             </video>
             <span class="hx-stock-shade" aria-hidden="true"></span>
-            <span style="position: absolute; z-index: 1; left: 0; bottom: 20px; background: #26241E; color: #F6F3E8; font-size: 10.5px; font-weight: 800; letter-spacing: 0.15em; text-transform: uppercase; padding: 8px 13px;">Human development</span>
+            <span class="hx-project-tag" style="position: absolute; z-index: 1; left: 0; bottom: 20px; background: #F6F3E8; color: #26241E; font-size: 10.5px; font-weight: 800; letter-spacing: 0.15em; text-transform: uppercase; padding: 8px 13px;">Human development</span>
           </div>
-          <div style="padding: clamp(20px, 2.2vw, 30px); display: flex; flex-direction: column; gap: 10px; border-top: 1px solid #26241E; flex: 1;">
+          <div class="hx-project-body" style="padding: clamp(20px, 2.2vw, 30px); display: flex; flex-direction: column; gap: 10px; border-top: 1px solid #26241E; flex: 1;">
             <h3 style="margin: 0; font-family: 'Source Serif 4', Georgia, serif; font-weight: 560; font-size: clamp(22px, 2vw, 28px); letter-spacing: -0.01em;">Field programme</h3>
             <p style="margin: 0; color: #3E3A31; font-size: 14.5px; line-height: 1.6;">One-line summary of the programme appears here.</p>
             <a href="#" style="margin-top: auto; padding-top: 8px; font-size: 14px; font-weight: 700; color: #26241E; align-self: flex-start; border-bottom: 1.5px solid rgba(38,36,30,0.5); padding-bottom: 3px;" style-hover="color: #1F5B46; border-color: #1F5B46;">Read more</a>
