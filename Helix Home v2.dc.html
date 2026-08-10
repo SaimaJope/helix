@@ -13,7 +13,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,100..900;1,100..900&amp;family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&amp;display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,100..900;1,100..900&amp;family=Schibsted+Grotesk:wght@400..900&amp;family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&amp;display=swap" rel="stylesheet">
   <style>
     html { scroll-behavior: smooth; }
     *, *::before, *::after { box-sizing: border-box; }
@@ -185,7 +185,6 @@
         <image-slot id="hero-bg" shape="rect" fit="cover" placeholder="Drop a hero image"></image-slot>
       </div>
     </sc-if>
-    <div aria-hidden="true" style="position: absolute; inset: 0; background: rgba(8,35,27,0.14); pointer-events: none;"></div>
     <header class="{{ headerClass }}" data-screen-label="Header">
       <div class="hx-header-inner" style="display: flex; align-items: center; justify-content: space-between; gap: 24px;">
         <a href="#" style="display: flex; align-items: center; gap: 12px; min-width: 220px;" style-hover="color: #D9A23B;">
@@ -215,7 +214,7 @@
     </header>
     <div style="position: relative; z-index: 1; flex: 1; display: flex; align-items: flex-end;">
       <div style="max-width: 1080px; width: 100%; margin: 0 auto; padding: clamp(64px, 10vh, 120px) clamp(20px, 4.5vw, 56px) clamp(48px, 7vh, 88px);">
-        <h1 class="hx-hero-title" style="margin: 0 0 clamp(28px, 4vh, 44px); font-weight: 800; font-size: clamp(29px, 4.2vw, 62px); line-height: 0.99; letter-spacing: -0.016em; text-transform: uppercase; max-width: 23ch; text-wrap: balance;">An international institute for sustainable human development through cooperation, knowledge and innovation</h1>
+        <h1 class="hx-hero-title" style="margin: 0 0 clamp(28px, 4vh, 44px); font-family: 'Schibsted Grotesk', 'Public Sans', system-ui, sans-serif; font-weight: 800; font-size: clamp(31px, 5.9vw, 84px); line-height: 0.9; letter-spacing: -0.032em; text-transform: uppercase; max-width: 20ch;">An international institute for sustainable human development</h1>
         <div class="hx-hero-links" style="display: flex; flex-wrap: wrap; gap: 16px 38px;">
           <a href="#about" style="font-size: 14px; font-weight: 600; color: #F6F3E8; border-bottom: 1.5px solid rgba(246,243,232,0.85); padding-bottom: 4px;" style-hover="color: #D9A23B; border-color: #D9A23B;">Learn about the institute</a>
           <a href="#publications" style="font-size: 14px; font-weight: 600; color: #F6F3E8; border-bottom: 1.5px solid rgba(246,243,232,0.85); padding-bottom: 4px;" style-hover="color: #D9A23B; border-color: #D9A23B;">Read the latest</a>
