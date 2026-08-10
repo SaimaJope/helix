@@ -162,9 +162,12 @@
     @media (max-width: 640px) {
       .sdg-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 8px !important; margin-top: 26px !important; }
       .sdg-card { aspect-ratio: 1 / 1 !important; }
-      .sdg-card .sdg-flip { transform: none !important; }
-      .sdg-card .sdg-gif, .sdg-card .sdg-back { display: none !important; }
-      .sdg-mobile-detail { display: flex; }
+      /* Two-up cards are ~170px, and the longer goal statements overflow the back
+         face at the desktop type sizes. Scale the back down to fit. */
+      .sdg-back { padding: 10px 11px 11px !important; gap: 5px !important; }
+      .sdg-back > span:first-child { font-size: 9.5px !important; letter-spacing: 0.11em !important; }
+      .sdg-back > span:nth-child(2) { font-size: 11.5px !important; line-height: 1.26 !important; }
+      .sdg-back > a { font-size: 10px !important; letter-spacing: 0.04em !important; }
       .hx-footer-field { width: 100%; height: 100%; opacity: 0.18; }
     }
     @media (prefers-reduced-motion: reduce) {
@@ -312,13 +315,6 @@
           </div>
         </sc-for>
       </div>
-      <sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
-        <div class="sdg-mobile-detail" aria-live="polite" style="margin-top: 14px; min-height: 192px; border-radius: 6px; background: {{ sdgSelected.bg }}; color: {{ sdgSelected.fg }}; padding: 22px 20px; flex-direction: column; gap: 10px;">
-          <span style="font-size: 10.5px; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; opacity: 0.82;">{{ sdgSelected.eyebrow }} · {{ sdgSelected.title }}</span>
-          <span style="font-family: 'Source Serif 4', Georgia, serif; font-weight: 500; font-size: clamp(21px, 6vw, 26px); line-height: 1.2; text-wrap: balance;">{{ sdgSelected.aim }}</span>
-          <a href="{{ sdgSelected.href }}" target="_blank" rel="noopener" style="margin-top: auto; align-self: flex-start; font-size: 12px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: {{ sdgSelected.fg }}; border-bottom: 1.5px solid; padding-bottom: 3px;">Explore this goal →</a>
-        </div>
-      </sc-if>
       <p style="margin: 24px 0 0; font-size: 13.5px; color: #5A554A;">Source: United Nations — <a href="https://sdgs.un.org/goals" target="_blank" rel="noopener" style="font-weight: 600; text-decoration: underline; text-underline-offset: 3px;">sdgs.un.org/goals</a></p>
     </div>
   </section>
@@ -545,10 +541,12 @@ class Component extends DCLogic {
         headerHidden = false;
         this.lastScrollY = scrollY;
       } else if (delta <= -4) {
-        headerHidden = true;
+        // scrolling up: bring the header back
+        headerHidden = false;
         this.lastScrollY = scrollY;
       } else if (delta >= 4) {
-        headerHidden = false;
+        // scrolling down: get out of the way
+        headerHidden = true;
         this.lastScrollY = scrollY;
       }
       if (headerScrolled !== this.state.headerScrolled || headerHidden !== this.state.headerHidden) {
@@ -623,7 +621,7 @@ class Component extends DCLogic {
         bg,
         fg: 1.05 / (lum(bg) + 0.05) >= 4.5 ? '#FFFFFF' : '#26241E',
         flipMod: flip[i] ? 'is-flipped' : '',
-        pressed: this.state.isMobile ? this.state.sdgSelected === i : !!flip[i],
+        pressed: !!flip[i],
         onEnter: () => {
           clearTimeout(this.tLeave);
           this.setState({ sdgLast: i });
@@ -642,10 +640,6 @@ class Component extends DCLogic {
         onKey: (e) => {
           if (e.key === 'Enter' || e.key === ' ') {
             e.preventDefault();
-            if (this.state.isMobile) {
-              this.setState({ sdgSelected: i });
-              return;
-            }
             this.setState((s) => {
               const next = Object.assign({}, s.sdgFlipped);
               next[i] = !next[i];
@@ -655,10 +649,6 @@ class Component extends DCLogic {
         },
         onLeave2: null,
         onFlip: () => {
-          if (this.state.isMobile) {
-            this.setState({ sdgSelected: i });
-            return;
-          }
           this.setState((s) => {
             const next = Object.assign({}, s.sdgFlipped);
             next[i] = !next[i];
