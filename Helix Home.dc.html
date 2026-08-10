@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,100..900;1,100..900&amp;family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&amp;display=swap" rel="stylesheet">
+  <style>
+    html { scroll-behavior: smooth; }
+    body { margin: 0; background: #F6F3E8; color: #26241E; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+    a { color: inherit; text-decoration: none; }
+    a:hover { color: #20614B; }
+    ::selection { background: #D9A23B; color: #26241E; }
+    :focus-visible { outline: 2px solid #20614B; outline-offset: 2px; }
+    input::placeholder { color: rgba(237,232,216,0.45); }
+    @keyframes hxDrift { from { transform: translateX(-26px); } to { transform: translateX(26px); } }
+    .hx-anim { animation: hxDrift 30s ease-in-out infinite alternate; }
+    @media (prefers-reduced-motion: reduce) { .hx-anim { animation: none; } html { scroll-behavior: auto; } }
+  </style>
+</helmet>
+<div style="min-height: 100vh; background: #F6F3E8; color: #26241E; font-family: 'Public Sans', system-ui, sans-serif; font-size: 16px; line-height: 1.55;">
+
+  <header data-screen-label="Header" style="border-bottom: 1px solid rgba(38,36,30,0.3);">
+    <div style="max-width: 1560px; margin: 0 auto; padding: 0 clamp(20px, 4.5vw, 64px); height: 80px; display: flex; align-items: center; justify-content: space-between; gap: 24px;">
+      <a href="#" style="display: flex; align-items: center; gap: 14px;">
+        <img src="assets/helix-mark.png" alt="Helix Anthropis Institute mark" style="width: 46px; height: 43px; object-fit: contain;">
+        <span style="display: flex; flex-direction: column; gap: 2px;">
+          <span style="font-size: 14px; font-weight: 800; letter-spacing: 0.16em;">HELIX ANTHROPIS</span>
+          <span style="font-size: 10px; font-weight: 600; letter-spacing: 0.42em; color: #5A554A;">INSTITUTE</span>
+        </span>
+      </a>
+      <sc-if value="{{ notMobile }}" hint-placeholder-val="{{ true }}">
+        <nav aria-label="Main" style="display: flex; align-items: center; gap: clamp(20px, 2.6vw, 38px);">
+          <a href="#about" style="font-size: 15px; font-weight: 500;">About</a>
+          <a href="#focus" style="font-size: 15px; font-weight: 500;">Focus areas</a>
+          <a href="#work" style="font-size: 15px; font-weight: 500;">Work</a>
+          <a href="#publications" style="font-size: 15px; font-weight: 500;">Publications</a>
+          <a href="#people" style="font-size: 15px; font-weight: 500;">People</a>
+          <a href="#support" style="font-size: 15px; font-weight: 700; color: #20614B; border-bottom: 2px solid #20614B; padding-bottom: 2px;" style-hover="color: #163F31; border-color: #163F31;">Support our work</a>
+        </nav>
+      </sc-if>
+      <sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
+        <button aria-label="Open menu" onClick="{{ openMenu }}" style="background: none; border: 1px solid #26241E; padding: 12px 14px; cursor: pointer; display: flex; flex-direction: column; gap: 5px;">
+          <span style="display: block; width: 22px; height: 2px; background: #26241E;"></span>
+          <span style="display: block; width: 22px; height: 2px; background: #26241E;"></span>
+        </button>
+      </sc-if>
+    </div>
+  </header>
+
+  <sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
+    <div data-screen-label="Mobile menu" style="position: fixed; inset: 0; background: #F6F3E8; z-index: 60; display: flex; flex-direction: column; overflow: auto;">
+      <div style="display: flex; align-items: center; justify-content: space-between; padding: 18px clamp(20px, 4.5vw, 64px); border-bottom: 1px solid rgba(38,36,30,0.3);">
+        <span style="display: flex; align-items: center; gap: 12px;">
+          <img src="assets/helix-mark.png" alt="" style="width: 40px; height: 37px; object-fit: contain;">
+          <span style="font-size: 13px; font-weight: 800; letter-spacing: 0.16em;">HELIX ANTHROPIS</span>
+        </span>
+        <button aria-label="Close menu" onClick="{{ closeMenu }}" style="background: none; border: 1px solid #26241E; padding: 10px 14px; cursor: pointer; font-size: 16px; line-height: 1; font-family: inherit;">✕</button>
+      </div>
+      <nav aria-label="Mobile" style="display: flex; flex-direction: column; padding: 8px clamp(20px, 4.5vw, 64px) 32px;">
+        <sc-for list="{{ menuLinks }}" as="lnk" hint-placeholder-count="6">
+          <a href="{{ lnk.href }}" onClick="{{ closeMenu }}" style="font-family: 'Source Serif 4', Georgia, serif; font-size: clamp(34px, 9vw, 52px); font-weight: 500; letter-spacing: -0.01em; padding: 18px 0; border-bottom: 1px solid rgba(38,36,30,0.25); display: flex; justify-content: space-between; align-items: baseline;">
+            <span>{{ lnk.label }}</span><span style="font-family: 'Public Sans', sans-serif; font-size: 13px; letter-spacing: 0.12em; color: #5A554A;">{{ lnk.num }}</span>
+          </a>
+        </sc-for>
+        <a href="#support" onClick="{{ closeMenu }}" style="margin-top: 28px; align-self: flex-start; background: #20614B; color: #F6F3E8; font-size: 15px; font-weight: 700; padding: 16px 22px;" style-hover="background: #163F31; color: #F6F3E8;">Support our work →</a>
+      </nav>
+    </div>
+  </sc-if>
+
+  <section data-screen-label="Hero" style="position: relative;">
+    <div style="max-width: 1560px; margin: 0 auto; padding: clamp(48px, 8vh, 104px) clamp(20px, 4.5vw, 64px) 0;">
+      <p style="margin: 0 0 clamp(24px, 4vh, 44px); font-size: 12px; font-weight: 700; letter-spacing: 0.24em; text-transform: uppercase; color: #5A554A;">Helix Anthropis Institute — Luxembourg</p>
+      <h1 style="margin: 0; font-family: 'Source Serif 4', Georgia, serif; font-weight: 560; font-size: clamp(52px, 8.4vw, 132px); line-height: 0.98; letter-spacing: -0.022em; max-width: 14ch; text-wrap: balance;">Advancing humanity through cooperation and <em style="font-style: italic; color: #20614B;">solidarity.</em></h1>
+      <div style="display: flex; flex-wrap: wrap; gap: 32px clamp(40px, 6vw, 96px); align-items: flex-end; justify-content: space-between; margin-top: clamp(32px, 5vh, 56px);">
+        <p style="margin: 0; max-width: 52ch; font-size: clamp(16px, 1.3vw, 19px); line-height: 1.6; color: #3E3A31;">Promoting and facilitating initiatives that contribute to the advancement of humanity and the common good without discrimination.</p>
+        <a href="#about" style="font-size: 15px; font-weight: 700; letter-spacing: 0.02em; border-bottom: 2px solid #26241E; padding-bottom: 4px; white-space: nowrap;" style-hover="color: #20614B; border-color: #20614B;">Discover the institute →</a>
+      </div>
+    </div>
+    <div aria-hidden="true" style="margin-top: clamp(36px, 6vh, 68px); height: clamp(170px, 26vw, 340px); border-top: 1px solid rgba(38,36,30,0.3); border-bottom: 2px solid #26241E; overflow: hidden;">
+      <svg viewBox="0 0 1600 360" preserveAspectRatio="none" style="display: block; width: 100%; height: 100%;">
+        <g class="{{ animClass }}">
+          <sc-for list="{{ heroLines }}" as="ln" hint-placeholder-count="8">
+            <path d="{{ ln.d }}" fill="none" stroke="{{ ln.stroke }}" stroke-width="{{ ln.sw }}" vector-effect="non-scaling-stroke"></path>
+          </sc-for>
+        </g>
+      </svg>
+    </div>
+  </section>
+
+  <section id="about" data-screen-label="About" style="border-bottom: 2px solid #26241E;">
+    <div style="max-width: 1560px; margin: 0 auto; padding: clamp(56px, 8vw, 104px) clamp(20px, 4.5vw, 64px); display: flex; flex-wrap: wrap; gap: 40px clamp(48px, 6vw, 110px);">
+      <div style="flex: 1.2 1 460px; min-width: min(100%, 460px);">
+        <p style="margin: 0 0 22px; font-size: 12px; font-weight: 700; letter-spacing: 0.24em; text-transform: uppercase; color: #5A554A;">About the institute</p>
+        <h2 style="margin: 0; font-family: 'Source Serif 4', Georgia, serif; font-weight: 520; font-size: clamp(30px, 3.6vw, 52px); line-height: 1.14; letter-spacing: -0.015em; text-wrap: balance;">An international organization centered on sustainable human development — through cooperation, knowledge and innovation.</h2>
+      </div>
+      <div style="flex: 1 1 320px; max-width: 480px; display: flex; flex-direction: column; gap: 18px; justify-content: flex-end;">
+        <p style="margin: 0; color: #3E3A31;">Helix Anthropis Institute promotes and facilitates initiatives that contribute to the advancement of humanity and the common good, without discrimination.</p>
+        <p style="margin: 0; color: #3E3A31;">Working across disciplines and borders, the institute connects people, knowledge and resources in service of sustainable human development.</p>
+        <a href="#" style="font-size: 15px; font-weight: 700; border-bottom: 2px solid #26241E; padding-bottom: 4px; align-self: flex-start;" style-hover="color: #20614B; border-color: #20614B;">Read about Helix →</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="focus" data-screen-label="Focus areas">
+    <div style="max-width: 1560px; margin: 0 auto; padding: clamp(48px, 6vw, 84px) clamp(20px, 4.5vw, 64px) clamp(64px, 8vw, 110px);">
+      <div style="display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 16px 32px; margin-bottom: 14px;">
+        <h2 style="margin: 0; font-family: 'Source Serif 4', Georgia, serif; font-weight: 560; font-size: clamp(34px, 4vw, 56px); letter-spacing: -0.015em;">Focus areas</h2>
+        <a href="#" style="font-size: 15px; font-weight: 700; border-bottom: 2px solid #26241E; padding-bottom: 4px;" style-hover="color: #20614B; border-color: #20614B;">All focus areas →</a>
+      </div>
+      <p style="margin: 0 0 34px; font-size: 14px; color: #5A554A; max-width: 60ch;">The institute's work is organized across five areas. Working titles shown — final programme names will replace these.</p>
+      <div style="border-top: 1px solid rgba(38,36,30,0.4); border-bottom: 1px solid rgba(38,36,30,0.4);">
+        <sc-for list="{{ focus }}" as="area" hint-placeholder-count="5">
+          <div style="display: flex; align-items: center; gap: 10px 26px; padding: clamp(20px, 2.6vw, 30px) 14px; border-top: 1px solid rgba(38,36,30,0.4); margin-top: -1px; cursor: pointer; transition: background 0.16s ease, color 0.16s ease;" style-hover="background: {{ area.color }}; color: {{ area.fg }};">
+            <span style="display: flex; align-items: baseline; gap: 12px; width: 96px; flex: none;">
+              <span aria-hidden="true" style="width: 11px; height: 11px; background: {{ area.color }}; border: 1px solid rgba(38,36,30,0.35); align-self: center;"></span>
+              <span style="font-size: 13px; font-weight: 700; letter-spacing: 0.12em;">{{ area.num }}</span>
+            </span>
+            <span style="flex: 1; min-width: 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 26px;">
+              <span style="flex: 1 1 300px; min-width: min(100%, 260px); font-family: 'Source Serif 4', Georgia, serif; font-weight: 540; font-size: clamp(26px, 3vw, 42px); line-height: 1.05; letter-spacing: -0.015em;">{{ area.title }}</span>
+              <span style="flex: 1 1 280px; min-width: min(100%, 240px); font-size: 15.5px; line-height: 1.5; opacity: 0.78;">{{ area.desc }}</span>
+            </span>
+            <span aria-hidden="true" style="font-size: 24px; flex: none;">→</span>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <section id="work" data-screen-label="Featured work" style="border-top: 2px solid #26241E;">
+    <div style="max-width: 1560px; margin: 0 auto; padding: clamp(48px, 6vw, 84px) clamp(20px, 4.5vw, 64px) clamp(64px, 8vw, 110px);">
+      <div style="display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 16px 32px; margin-bottom: 14px;">
+        <h2 style="margin: 0; font-family: 'Source Serif 4', Georgia, serif; font-weight: 560; font-size: clamp(34px, 4vw, 56px); letter-spacing: -0.015em;">Featured work</h2>
+        <a href="#" style="font-size: 15px; font-weight: 700; border-bottom: 2px solid #26241E; padding-bottom: 4px;" style-hover="color: #20614B; border-color: #20614B;">All projects →</a>
+      </div>
+      <p style="margin: 0 0 34px; font-size: 14px; color: #5A554A; max-width: 60ch;">Placeholder titles establish the system — real projects will replace them.</p>
+      <div style="display: flex; flex-wrap: wrap; gap: clamp(24px, 3vw, 40px); align-items: stretch;">
+        <article style="flex: 1.5 1 480px; min-width: min(100%, 420px); border: 1px solid #26241E; display: flex; flex-direction: column; background: #F6F3E8;">
+          <div style="position: relative; aspect-ratio: 16 / 9.5; background: #20614B; overflow: hidden;">
+            <svg viewBox="0 0 760 480" preserveAspectRatio="none" style="position: absolute; inset: 0; width: 100%; height: 100%;" aria-hidden="true">
+              <g class="{{ animClass }}" style="animation-duration: 46s;">
+                <sc-for list="{{ coverLines }}" as="cl" hint-placeholder-count="6">
+                  <path d="{{ cl.d }}" fill="none" stroke="{{ cl.stroke }}" stroke-width="{{ cl.sw }}" vector-effect="non-scaling-stroke"></path>
+                </sc-for>
+              </g>
+            </svg>
+            <span style="position: absolute; top: 18px; left: 18px; background: #F6F3E8; color: #26241E; font-size: 11px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; padding: 7px 11px;">01 — Human development</span>
+          </div>
+          <div style="padding: clamp(22px, 2.6vw, 34px); display: flex; flex-direction: column; gap: 14px; border-top: 1px solid #26241E;">
+            <h3 style="margin: 0; font-family: 'Source Serif 4', Georgia, serif; font-weight: 560; font-size: clamp(26px, 2.6vw, 36px); line-height: 1.1; letter-spacing: -0.015em;">Featured project title</h3>
+            <p style="margin: 0; color: #3E3A31; font-size: 15.5px; max-width: 60ch;">A short abstract of the featured project appears here: what it does, where it works, and why it matters. Final copy to follow.</p>
+            <a href="#" style="font-size: 14px; font-weight: 700; border-bottom: 2px solid #26241E; padding-bottom: 3px; align-self: flex-start;" style-hover="color: #20614B; border-color: #20614B;">Read more →</a>
+          </div>
+        </article>
+        <div style="flex: 1 1 340px; min-width: min(100%, 320px); display: flex; flex-direction: column;">
+          <sc-for list="{{ workItems }}" as="wi" hint-placeholder-count="3">
+            <article style="border: 1px solid #26241E; margin-top: -1px; padding: clamp(20px, 2.2vw, 28px); display: flex; flex-direction: column; gap: 10px; flex: 1; justify-content: center; transition: background 0.16s ease;" style-hover="background: #EEE9D8;">
+              <p style="margin: 0; font-size: 11.5px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: {{ wi.tc }};">{{ wi.cat }}</p>
+              <h3 style="margin: 0; font-family: 'Source Serif 4', Georgia, serif; font-weight: 540; font-size: clamp(21px, 2vw, 26px); line-height: 1.15; letter-spacing: -0.01em;">{{ wi.title }}</h3>
+              <p style="margin: 0; font-size: 14.5px; color: #5A554A;">{{ wi.desc }}</p>
+            </article>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="publications" data-screen-label="Publications" style="border-top: 2px solid #26241E;">
+    <div style="max-width: 1560px; margin: 0 auto; padding: clamp(48px, 6vw, 84px) clamp(20px, 4.5vw, 64px) clamp(64px, 8vw, 110px);">
+      <div style="display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 16px 32px; margin-bottom: 34px;">
+        <h2 style="margin: 0; font-family: 'Source Serif 4', Georgia, serif; font-weight: 560; font-size: clamp(34px, 4vw, 56px); letter-spacing: -0.015em;">Latest publications</h2>
+        <a href="#" style="font-size: 15px; font-weight: 700; border-bottom: 2px solid #26241E; padding-bottom: 4px;" style-hover="color: #20614B; border-color: #20614B;">View all →</a>
+      </div>
+      <div style="border-top: 1px solid rgba(38,36,30,0.4); border-bottom: 1px solid rgba(38,36,30,0.4);">
+        <sc-for list="{{ pubs }}" as="pub" hint-placeholder-count="4">
+          <div style="display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 28px; padding: 24px 14px; border-top: 1px solid rgba(38,36,30,0.4); margin-top: -1px; cursor: pointer; transition: background 0.16s ease;" style-hover="background: #EEE9D8;">
+            <span style="flex: 0 0 210px; min-width: 170px; font-size: 11.5px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: {{ pub.tc }};">{{ pub.cat }}</span>
+            <span style="flex: 1 1 380px; font-family: 'Source Serif 4', Georgia, serif; font-weight: 540; font-size: clamp(20px, 2.1vw, 27px); line-height: 1.2; letter-spacing: -0.01em;">{{ pub.title }}</span>
+            <span aria-hidden="true" style="font-size: 22px; flex: none;">→</span>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <section id="people" data-screen-label="People" style="border-top: 2px solid #26241E;">
+    <div style="max-width: 1560px; margin: 0 auto; padding: clamp(48px, 6vw, 84px) clamp(20px, 4.5vw, 64px) clamp(64px, 8vw, 110px);">
+      <div style="display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 16px 32px; margin-bottom: 34px;">
+        <h2 style="margin: 0; font-family: 'Source Serif 4', Georgia, serif; font-weight: 560; font-size: clamp(34px, 4vw, 56px); letter-spacing: -0.015em;">People</h2>
+        <a href="#" style="font-size: 15px; font-weight: 700; border-bottom: 2px solid #26241E; padding-bottom: 4px;" style-hover="color: #20614B; border-color: #20614B;">Meet the team →</a>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr)); gap: clamp(20px, 2.6vw, 36px);">
+        <sc-for list="{{ people }}" as="p" hint-placeholder-count="4">
+          <div>
+            <div style="aspect-ratio: 4 / 5; border: 1px solid rgba(38,36,30,0.4); background: #EEE9D8 repeating-linear-gradient(105deg, rgba(38,36,30,0.09) 0 1px, transparent 1px 8px); display: flex; align-items: flex-end; padding: 14px;">
+              <span style="font-family: 'Source Serif 4', Georgia, serif; font-size: 15px; font-style: italic; color: #8B8574;">Portrait {{ p.num }}</span>
+            </div>
+            <p style="margin: 14px 0 2px; font-family: 'Source Serif 4', Georgia, serif; font-weight: 560; font-size: 20px;">{{ p.name }}</p>
+            <p style="margin: 0; font-size: 13px; letter-spacing: 0.04em; color: #5A554A;">{{ p.role }}</p>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <sc-if value="{{ showPartners }}" hint-placeholder-val="{{ true }}">
+    <section data-screen-label="Partners" style="border-top: 2px solid #26241E; background: #EEE9D8;">
+      <div style="max-width: 1560px; margin: 0 auto; padding: clamp(36px, 4vw, 56px) clamp(20px, 4.5vw, 64px); display: flex; flex-wrap: wrap; align-items: center; gap: 24px 48px;">
+        <p style="margin: 0; font-size: 12px; font-weight: 700; letter-spacing: 0.24em; text-transform: uppercase; color: #5A554A; flex: none;">Partners</p>
+        <div style="display: flex; flex-wrap: wrap; gap: 16px; flex: 1;">
+          <sc-for list="{{ partnerSlots }}" as="ps" hint-placeholder-count="5">
+            <span style="width: 150px; height: 54px; border: 1px dashed rgba(38,36,30,0.45); display: flex; align-items: center; justify-content: center; font-size: 10.5px; letter-spacing: 0.16em; color: #8B8574;">PARTNER LOGO</span>
+          </sc-for>
+        </div>
+      </div>
+    </section>
+  </sc-if>
+
+  <section id="support" data-screen-label="Support CTA" style="background: #1C4B3B; color: #F6F3E8; position: relative; overflow: hidden;">
+    <svg viewBox="0 0 900 700" preserveAspectRatio="none" style="position: absolute; top: 0; right: 0; width: 56%; height: 100%;" aria-hidden="true">
+      <g class="{{ animClass }}" style="animation-duration: 44s;">
+        <sc-for list="{{ supportLines }}" as="sl" hint-placeholder-count="6">
+          <path d="{{ sl.d }}" fill="none" stroke="{{ sl.stroke }}" stroke-width="{{ sl.sw }}" vector-effect="non-scaling-stroke"></path>
+        </sc-for>
+      </g>
+    </svg>
+    <div style="position: relative; max-width: 1560px; margin: 0 auto; padding: clamp(72px, 10vw, 130px) clamp(20px, 4.5vw, 64px);">
+      <p style="margin: 0 0 24px; font-size: 12px; font-weight: 700; letter-spacing: 0.24em; text-transform: uppercase; color: #D9A23B;">Support — Get involved</p>
+      <h2 style="margin: 0 0 clamp(32px, 4vw, 48px); font-family: 'Source Serif 4', Georgia, serif; font-weight: 520; font-size: clamp(38px, 5.6vw, 84px); line-height: 1.04; letter-spacing: -0.018em; max-width: 17ch; text-wrap: balance;">Help advance the common good.</h2>
+      <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 20px 36px;">
+        <a href="#" style="background: #F6F3E8; color: #26241E; font-size: 15px; font-weight: 700; padding: 17px 24px; display: inline-flex; align-items: center; gap: 14px;" style-hover="background: #D9A23B; color: #26241E;">Support our work <span aria-hidden="true">→</span></a>
+        <a href="mailto:helixanthropisinstitute@gmail.com" style="font-size: 15px; font-weight: 700; color: #F6F3E8; border-bottom: 2px solid #D9A23B; padding-bottom: 4px;" style-hover="color: #D9A23B; border-color: #D9A23B;">Contact Helix →</a>
+      </div>
+    </div>
+  </section>
+
+  <footer data-screen-label="Footer" style="background: #211F19; color: #EDE8D8;">
+    <div style="max-width: 1560px; margin: 0 auto; padding: clamp(56px, 7vw, 88px) clamp(20px, 4.5vw, 64px) 32px;">
+      <div style="display: flex; flex-wrap: wrap; gap: 48px clamp(48px, 5vw, 88px);">
+        <div style="flex: 1.3 1 300px; min-width: min(100%, 280px); display: flex; flex-direction: column; gap: 20px;">
+          <span style="display: flex; align-items: center; gap: 14px;">
+            <img src="assets/helix-mark.png" alt="" style="width: 52px; height: 48px; object-fit: contain;">
+            <span style="display: flex; flex-direction: column; gap: 2px;">
+              <span style="font-size: 13px; font-weight: 800; letter-spacing: 0.16em;">HELIX ANTHROPIS</span>
+              <span style="font-size: 9.5px; font-weight: 600; letter-spacing: 0.42em; color: rgba(237,232,216,0.6);">INSTITUTE</span>
+            </span>
+          </span>
+          <p style="margin: 0; font-size: 14.5px; line-height: 1.6; color: rgba(237,232,216,0.7); max-width: 38ch;">Advancing humanity through cooperation and solidarity.</p>
+          <div style="margin-top: 6px;">
+            <p style="margin: 0 0 10px; font-size: 11px; font-weight: 700; letter-spacing: 0.22em; color: rgba(237,232,216,0.55);">NEWSLETTER</p>
+            <div style="display: flex; max-width: 360px;">
+              <input type="email" aria-label="Email address" placeholder="Email address" style="flex: 1; min-width: 0; background: transparent; border: 1px solid rgba(237,232,216,0.4); border-right: none; color: #EDE8D8; padding: 13px 14px; font-family: inherit; font-size: 14px;">
+              <button style="background: #D9A23B; color: #26241E; border: none; font-family: inherit; font-size: 14px; font-weight: 700; padding: 13px 18px; cursor: pointer;" style-hover="background: #C89230;">Subscribe</button>
+            </div>
+          </div>
+        </div>
+        <nav aria-label="Footer institute" style="flex: 0 1 160px; min-width: 140px;">
+          <p style="margin: 0 0 14px; font-size: 11px; font-weight: 700; letter-spacing: 0.22em; color: rgba(237,232,216,0.55);">INSTITUTE</p>
+          <div style="display: flex; flex-direction: column; gap: 11px; font-size: 14.5px;">
+            <a href="#about" style-hover="color: #D9A23B;">About</a>
+            <a href="#people" style-hover="color: #D9A23B;">People</a>
+            <a href="#" style-hover="color: #D9A23B;">Partners</a>
+            <a href="#support" style-hover="color: #D9A23B;">Support</a>
+          </div>
+        </nav>
+        <nav aria-label="Footer work" style="flex: 0 1 160px; min-width: 140px;">
+          <p style="margin: 0 0 14px; font-size: 11px; font-weight: 700; letter-spacing: 0.22em; color: rgba(237,232,216,0.55);">WORK</p>
+          <div style="display: flex; flex-direction: column; gap: 11px; font-size: 14.5px;">
+            <a href="#focus" style-hover="color: #D9A23B;">Focus areas</a>
+            <a href="#work" style-hover="color: #D9A23B;">Projects</a>
+            <a href="#publications" style-hover="color: #D9A23B;">Publications</a>
+          </div>
+        </nav>
+        <div style="flex: 0 1 260px; min-width: min(100%, 220px);">
+          <p style="margin: 0 0 14px; font-size: 11px; font-weight: 700; letter-spacing: 0.22em; color: rgba(237,232,216,0.55);">CONTACT</p>
+          <div style="display: flex; flex-direction: column; gap: 11px; font-size: 14.5px; color: rgba(237,232,216,0.85);">
+            <a href="mailto:helixanthropisinstitute@gmail.com" style="text-decoration: underline; text-underline-offset: 3px;" style-hover="color: #D9A23B;">helixanthropisinstitute@gmail.com</a>
+            <p style="margin: 0; line-height: 1.6;">40 Bd Pierre Dupong<br>1430 Hollerich, Luxembourg</p>
+            <div style="display: flex; gap: 18px; margin-top: 4px;">
+              <a href="#" style-hover="color: #D9A23B;">LinkedIn ↗</a>
+              <a href="#" style-hover="color: #D9A23B;">X ↗</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top: clamp(48px, 6vw, 72px); padding-top: 22px; border-top: 1px solid rgba(237,232,216,0.22); display: flex; flex-wrap: wrap; gap: 10px 32px; justify-content: space-between; font-size: 13px; color: rgba(237,232,216,0.55);">
+        <p style="margin: 0;">© Helix Anthropis Institute, 2026</p>
+        <p style="margin: 0;">Design prototype — placeholder content where noted</p>
+        <p style="margin: 0; display: flex; gap: 22px;"><a href="#" style-hover="color: #D9A23B;">Privacy</a><a href="#" style-hover="color: #D9A23B;">Legal notice</a></p>
+      </div>
+    </div>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;motion&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;Behavior&quot;}, &quot;partnersBand&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;Sections&quot;}}">
+class Component extends DCLogic {
+  state = { isMobile: false, menuOpen: false };
+  componentDidMount() {
+    this.mq = window.matchMedia('(max-width: 920px)');
+    this.onMq = () => this.setState({ isMobile: this.mq.matches, menuOpen: this.state.menuOpen && this.mq.matches });
+    this.onMq();
+    this.mq.addEventListener('change', this.onMq);
+  }
+  componentWillUnmount() { if (this.mq) this.mq.removeEventListener('change', this.onMq); }
+  braid(w, h, n) {
+    const out = [], lerp = (a, b, t) => a + (b - a) * t;
+    for (let i = 0; i < n; i++) {
+      const t = i / (n - 1);
+      const y0 = lerp(h * 0.05, h * 0.95, t);
+      const y1 = lerp(h * 0.95, h * 0.05, t);
+      const cy1 = lerp(y0, h * 0.5, 0.92), cy2 = lerp(y1, h * 0.5, 0.92);
+      const d = 'M0 ' + y0.toFixed(1) + ' C ' + (w * 0.36).toFixed(0) + ' ' + cy1.toFixed(1) + ', ' + (w * 0.64).toFixed(0) + ' ' + cy2.toFixed(1) + ', ' + w + ' ' + y1.toFixed(1);
+      let stroke = 'rgba(38,36,30,0.30)', sw = 0.9;
+      if (i % 9 === 4) { stroke = '#20614B'; sw = 1.7; }
+      else if (i % 9 === 0) { stroke = '#C89A3C'; sw = 1.7; }
+      else if (i === Math.floor(n / 2)) { stroke = '#C6502F'; sw = 1.4; }
+      out.push({ d, stroke, sw });
+    }
+    return out;
+  }
+  waves(w, h, n, amp, pad, colBase) {
+    const out = [], lerp = (a, b, t) => a + (b - a) * t;
+    for (let i = 0; i < n; i++) {
+      const t = n === 1 ? 0 : i / (n - 1);
+      const y = lerp(pad, h - pad, t);
+      const a = amp * Math.sin(Math.PI * t) + 4;
+      const d = 'M0 ' + y.toFixed(1) + ' C ' + (w * 0.2).toFixed(0) + ' ' + (y - a).toFixed(1) + ', ' + (w * 0.34).toFixed(0) + ' ' + (y + a).toFixed(1) + ', ' + (w * 0.52).toFixed(0) + ' ' + y.toFixed(1) + ' S ' + (w * 0.82).toFixed(0) + ' ' + (y + a).toFixed(1) + ', ' + w + ' ' + (y - a * 0.5).toFixed(1);
+      const strong = i % 6 === 2;
+      out.push({ d, stroke: colBase + (strong ? '0.9)' : '0.38)'), sw: strong ? 1.6 : 1 });
+    }
+    return out;
+  }
+  renderVals() {
+    const motion = this.props.motion ?? true;
+    const focus = [
+      { num: '01', title: 'Human Development', desc: 'Initiatives that strengthen the conditions for people to live, learn and flourish.', color: '#20614B', fg: '#F6F3E8', tc: '#1C5340' },
+      { num: '02', title: 'Knowledge & Education', desc: 'Building and sharing knowledge as a common good, across borders and disciplines.', color: '#D9A23B', fg: '#26241E', tc: '#8F6A1E' },
+      { num: '03', title: 'Cooperation', desc: 'Connecting people, institutions and resources around shared goals.', color: '#C6502F', fg: '#F6F3E8', tc: '#B04526' },
+      { num: '04', title: 'Innovation', desc: 'Supporting new approaches to enduring problems, from idea to implementation.', color: '#33648F', fg: '#F6F3E8', tc: '#2C5A82' },
+      { num: '05', title: 'Sustainable Futures', desc: 'Long-term thinking for development that does not borrow against the future.', color: '#7D5BA6', fg: '#F6F3E8', tc: '#6B4C93' }
+    ];
+    return {
+      isMobile: this.state.isMobile,
+      notMobile: !this.state.isMobile,
+      menuOpen: this.state.menuOpen,
+      openMenu: () => this.setState({ menuOpen: true }),
+      closeMenu: () => this.setState({ menuOpen: false }),
+      animClass: motion ? 'hx-anim' : '',
+      showPartners: this.props.partnersBand ?? true,
+      heroLines: this.braid(1600, 360, 44),
+      coverLines: this.waves(760, 480, 24, 30, 26, 'rgba(246,243,232,'),
+      supportLines: this.waves(900, 700, 30, 46, 36, 'rgba(217,162,59,'),
+      focus,
+      menuLinks: [
+        { label: 'About', href: '#about', num: '01' },
+        { label: 'Focus areas', href: '#focus', num: '02' },
+        { label: 'Work', href: '#work', num: '03' },
+        { label: 'Publications', href: '#publications', num: '04' },
+        { label: 'People', href: '#people', num: '05' },
+        { label: 'Contact', href: 'mailto:helixanthropisinstitute@gmail.com', num: '06' }
+      ],
+      workItems: [
+        { cat: '02 — Knowledge & education', tc: '#8F6A1E', title: 'Research initiative', desc: 'One-line summary of the initiative appears here.' },
+        { cat: '03 — Cooperation', tc: '#B04526', title: 'Project title', desc: 'One-line summary of the project appears here.' },
+        { cat: '04 — Innovation', tc: '#2C5A82', title: 'Field programme', desc: 'One-line summary of the programme appears here.' }
+      ],
+      pubs: [
+        { cat: '01 — Human development', tc: '#1C5340', title: 'Publication title — a working paper placeholder' },
+        { cat: '02 — Knowledge & education', tc: '#8F6A1E', title: 'Publication title — a research note placeholder' },
+        { cat: '03 — Cooperation', tc: '#B04526', title: 'Publication title — an essay placeholder' },
+        { cat: '05 — Sustainable futures', tc: '#6B4C93', title: 'Publication title — a report placeholder' }
+      ],
+      people: [
+        { num: '01', name: 'Full name', role: 'Role title' },
+        { num: '02', name: 'Full name', role: 'Role title' },
+        { num: '03', name: 'Full name', role: 'Role title' },
+        { num: '04', name: 'Full name', role: 'Role title' }
+      ],
+      partnerSlots: [1, 2, 3, 4, 5]
+    };
+  }
+}
+</script>
+</body>
+</html>

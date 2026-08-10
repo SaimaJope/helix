@@ -1,0 +1,8 @@
+# Source archive: 409MB, over GitHub's 100MB per-file limit
+Helix Anthropis Institute Redesign.zip
+*.zip
+
+# OS / editor cruft
+.thumbnail
+Thumbs.db
+.DS_Store
