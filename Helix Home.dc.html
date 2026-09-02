@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="assets/helix-h-ink.svg" type="image/svg+xml">
 <script src="./support.js"></script>
 </head>
 <body>
@@ -29,12 +30,8 @@
 
   <header data-screen-label="Header" style="border-bottom: 1px solid rgba(38,36,30,0.3);">
     <div style="max-width: 1560px; margin: 0 auto; padding: 0 clamp(20px, 4.5vw, 64px); height: 80px; display: flex; align-items: center; justify-content: space-between; gap: 24px;">
-      <a href="#" style="display: flex; align-items: center; gap: 14px;">
-        <img src="assets/helix-mark.png" alt="Helix Anthropis Institute mark" style="width: 46px; height: 43px; object-fit: contain;">
-        <span style="display: flex; flex-direction: column; gap: 2px;">
-          <span style="font-size: 14px; font-weight: 800; letter-spacing: 0.16em;">HELIX ANTHROPIS</span>
-          <span style="font-size: 10px; font-weight: 600; letter-spacing: 0.42em; color: #5A554A;">INSTITUTE</span>
-        </span>
+      <a href="#" aria-label="Helix Anthropis home" style="display: flex; align-items: center; min-width: 220px;">
+        <img src="assets/helix-anthropis-wordmark.svg?v=brand-2026-2" alt="Helix Anthropis" draggable="false" style="display: block; width: 220px; height: 32px; object-fit: contain; object-position: left center;">
       </a>
       <sc-if value="{{ notMobile }}" hint-placeholder-val="{{ true }}">
         <nav aria-label="Main" style="display: flex; align-items: center; gap: clamp(20px, 2.6vw, 38px);">
@@ -58,10 +55,7 @@
   <sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
     <div data-screen-label="Mobile menu" style="position: fixed; inset: 0; background: #F6F3E8; z-index: 60; display: flex; flex-direction: column; overflow: auto;">
       <div style="display: flex; align-items: center; justify-content: space-between; padding: 18px clamp(20px, 4.5vw, 64px); border-bottom: 1px solid rgba(38,36,30,0.3);">
-        <span style="display: flex; align-items: center; gap: 12px;">
-          <img src="assets/helix-mark.png" alt="" style="width: 40px; height: 37px; object-fit: contain;">
-          <span style="font-size: 13px; font-weight: 800; letter-spacing: 0.16em;">HELIX ANTHROPIS</span>
-        </span>
+        <img src="assets/helix-anthropis-wordmark.svg?v=brand-2026-2" alt="Helix Anthropis" draggable="false" style="display: block; width: 196px; height: 30px; object-fit: contain; object-position: left center;">
         <button aria-label="Close menu" onClick="{{ closeMenu }}" style="background: none; border: 1px solid #26241E; padding: 10px 14px; cursor: pointer; font-size: 16px; line-height: 1; font-family: inherit;">✕</button>
       </div>
       <nav aria-label="Mobile" style="display: flex; flex-direction: column; padding: 8px clamp(20px, 4.5vw, 64px) 32px;">
@@ -245,13 +239,7 @@
     <div style="max-width: 1560px; margin: 0 auto; padding: clamp(56px, 7vw, 88px) clamp(20px, 4.5vw, 64px) 32px;">
       <div style="display: flex; flex-wrap: wrap; gap: 48px clamp(48px, 5vw, 88px);">
         <div style="flex: 1.3 1 300px; min-width: min(100%, 280px); display: flex; flex-direction: column; gap: 20px;">
-          <span style="display: flex; align-items: center; gap: 14px;">
-            <img src="assets/helix-mark.png" alt="" style="width: 52px; height: 48px; object-fit: contain;">
-            <span style="display: flex; flex-direction: column; gap: 2px;">
-              <span style="font-size: 13px; font-weight: 800; letter-spacing: 0.16em;">HELIX ANTHROPIS</span>
-              <span style="font-size: 9.5px; font-weight: 600; letter-spacing: 0.42em; color: rgba(237,232,216,0.6);">INSTITUTE</span>
-            </span>
-          </span>
+          <img src="assets/helix-h.svg?v=brand-2026-3" alt="Helix Anthropis" draggable="false" style="display: block; width: 68px; height: 104px; object-fit: contain; object-position: left center;">
           <p style="margin: 0; font-size: 14.5px; line-height: 1.6; color: rgba(237,232,216,0.7); max-width: 38ch;">Advancing humanity through cooperation and solidarity.</p>
           <div style="margin-top: 6px;">
             <p style="margin: 0 0 10px; font-size: 11px; font-weight: 700; letter-spacing: 0.22em; color: rgba(237,232,216,0.55);">NEWSLETTER</p>

@@ -1,0 +1,219 @@
+[
+  {
+    "id": "tee-green",
+    "name": "Helix organic tee",
+    "category": "Apparel",
+    "price": 28,
+    "art": "tee",
+    "colors": [
+      "#20614B",
+      "#26241E",
+      "#F6F3E8"
+    ],
+    "colorNames": [
+      "Helix green",
+      "Ink",
+      "Paper"
+    ],
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "XXL"
+    ],
+    "description": "Heavy organic cotton, unisex fit, the H mark printed small on the chest. Made in Portugal, printed in Luxembourg.",
+    "details": [
+      "100% organic cotton, 220 gsm",
+      "Water-based print",
+      "Wash cold, inside out"
+    ]
+  },
+  {
+    "id": "hoodie",
+    "name": "Helix hoodie",
+    "category": "Apparel",
+    "price": 54,
+    "art": "hoodie",
+    "colors": [
+      "#26241E",
+      "#20614B",
+      "#C6502F"
+    ],
+    "colorNames": [
+      "Ink",
+      "Helix green",
+      "Red"
+    ],
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "description": "Brushed fleece hoodie with the H mark on the chest and the wordmark across the back.",
+    "details": [
+      "80% organic cotton, 20% recycled polyester",
+      "Kangaroo pocket, flat drawcords",
+      "Wash cold"
+    ]
+  },
+  {
+    "id": "cap",
+    "name": "Field cap",
+    "category": "Apparel",
+    "price": 24,
+    "art": "cap",
+    "colors": [
+      "#D9A23B",
+      "#20614B",
+      "#26241E"
+    ],
+    "colorNames": [
+      "Yellow",
+      "Helix green",
+      "Ink"
+    ],
+    "sizes": [
+      "One size"
+    ],
+    "description": "Unstructured six-panel cap, embroidered H mark, brass buckle.",
+    "details": [
+      "Organic cotton twill",
+      "Adjustable strap",
+      "Embroidered in Luxembourg"
+    ]
+  },
+  {
+    "id": "tote",
+    "name": "Everyday tote",
+    "category": "Accessories",
+    "price": 18,
+    "art": "tote",
+    "colors": [
+      "#F6F3E8",
+      "#20614B",
+      "#C6502F"
+    ],
+    "colorNames": [
+      "Paper",
+      "Helix green",
+      "Red"
+    ],
+    "sizes": [
+      "One size"
+    ],
+    "description": "A wide, flat tote for markets, libraries and garden days. The H mark sits low on the front.",
+    "details": [
+      "Heavy recycled cotton canvas",
+      "Long handles",
+      "Inside pocket"
+    ]
+  },
+  {
+    "id": "poster-ideas-move",
+    "name": "Ideas Move poster",
+    "category": "Print",
+    "price": 15,
+    "art": "poster",
+    "colors": [
+      "#20614B",
+      "#C6502F",
+      "#D9A23B"
+    ],
+    "colorNames": [
+      "Green edition",
+      "Red edition",
+      "Yellow edition"
+    ],
+    "sizes": [
+      "A2",
+      "A1"
+    ],
+    "description": "The campaign statement from the brand book, set in Public Sans ExtraBold. Risograph-style print on uncoated paper.",
+    "details": [
+      "Uncoated 250 gsm paper",
+      "Shipped rolled in a tube",
+      "Numbered edition of 200"
+    ]
+  },
+  {
+    "id": "notebook",
+    "name": "Field notebook",
+    "category": "Print",
+    "price": 12,
+    "art": "notebook",
+    "colors": [
+      "#EEE9D8",
+      "#20614B",
+      "#D9A23B"
+    ],
+    "colorNames": [
+      "Cream",
+      "Helix green",
+      "Yellow"
+    ],
+    "sizes": [
+      "A5"
+    ],
+    "description": "Dotted pages, lay-flat binding, and the H mark on the cover. The notebook we use in every project.",
+    "details": [
+      "A5, 144 dotted pages",
+      "Recycled paper",
+      "Thread-sewn, lay-flat"
+    ]
+  },
+  {
+    "id": "mug",
+    "name": "Assembly mug",
+    "category": "Accessories",
+    "price": 14,
+    "art": "mug",
+    "colors": [
+      "#F6F3E8",
+      "#20614B"
+    ],
+    "colorNames": [
+      "Paper",
+      "Helix green"
+    ],
+    "sizes": [
+      "350 ml"
+    ],
+    "description": "Stoneware mug with the H mark. Named after the Community Assembly, where most of these get used.",
+    "details": [
+      "Stoneware, 350 ml",
+      "Dishwasher safe",
+      "Made in Portugal"
+    ]
+  },
+  {
+    "id": "pin",
+    "name": "Enamel pin",
+    "category": "Accessories",
+    "price": 8,
+    "art": "pin",
+    "colors": [
+      "#20614B",
+      "#C6502F",
+      "#D9A23B",
+      "#26241E"
+    ],
+    "colorNames": [
+      "Green",
+      "Red",
+      "Yellow",
+      "Ink"
+    ],
+    "sizes": [
+      "25 mm"
+    ],
+    "description": "Hard enamel H mark in the four brand families. Wear one, or collect the set.",
+    "details": [
+      "Hard enamel, 25 mm",
+      "Rubber clutch",
+      "Sold individually"
+    ]
+  }
+]

@@ -1,0 +1,23 @@
+[
+  {
+    "id": "martim-galesio",
+    "name": "Martim Galésio",
+    "role": "Executive",
+    "bio": "Co-founder. Leads partnerships and the cooperation programme across the Greater Region.",
+    "photo": ""
+  },
+  {
+    "id": "giovanni-de-brito",
+    "name": "Giovanni De Brito",
+    "role": "Executive",
+    "bio": "Co-founder. Leads research, the Open Knowledge Lab and the fellowship.",
+    "photo": ""
+  },
+  {
+    "id": "mathieu-plaquevent",
+    "name": "Mathieu Plaquevent",
+    "role": "Executive",
+    "bio": "Co-founder. Leads community, membership and the institute's projects on the ground.",
+    "photo": ""
+  }
+]

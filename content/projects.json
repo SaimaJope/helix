@@ -1,0 +1,121 @@
+[
+  {
+    "id": "common-ground-gardens",
+    "title": "Common Ground Gardens",
+    "area": "Cooperation",
+    "status": "current",
+    "year": "2026",
+    "location": "Luxembourg City",
+    "summary": "Neighbourhood growing plots run by residents, schools and newcomers, turning unused municipal land into shared food and shared time.",
+    "body": "Common Ground Gardens pairs residents who have land access with people who have time, seeds and knowledge. Each plot is co-managed by a small group that agrees its own rules.\n\n## How a plot works\n\n1. A host offers land, usually a municipal strip or a school yard\n2. A group of six to ten households signs a one-page agreement\n3. The institute provides tools, facilitation and a light evaluation framework\n\n## What we have learned\n\nThe plots that thrive are the ones where the rules were written by the group, not for it. The institute now spends most of its time on the first two meetings and almost none after.\n\n> The lessons travel to the next neighbourhood.\n\n## Next\n\nThree more plots open in spring, and a shared seed library is being set up with the city's libraries.",
+    "sdgs": [
+      2,
+      11,
+      13
+    ],
+    "media": {
+      "video": "assets/video/spotlight-gardening.mp4",
+      "poster": "#1C4B3B"
+    },
+    "link": "#",
+    "partners": "Ville de Luxembourg, two primary schools, CIGL"
+  },
+  {
+    "id": "open-knowledge-lab",
+    "title": "Open Knowledge Lab",
+    "area": "Innovation",
+    "status": "current",
+    "year": "2026",
+    "location": "Online and Esch-sur-Alzette",
+    "summary": "A working group of researchers and practitioners prototyping open tools for sharing evidence with the communities it comes from.",
+    "body": "The lab meets monthly and publishes everything it makes under open licences. Current prototypes include a plain-language research summariser and a shared dataset of community indicators for the Greater Region.",
+    "sdgs": [
+      4,
+      9,
+      17
+    ],
+    "media": {
+      "video": "assets/video/project-innovation.mp4",
+      "poster": "#C6502F"
+    },
+    "link": "#"
+  },
+  {
+    "id": "youth-futures-programme",
+    "title": "Youth Futures Programme",
+    "area": "Human Development",
+    "status": "current",
+    "year": "2025",
+    "location": "Schools across Luxembourg",
+    "summary": "Workshops that let secondary students design a project for their own town and pitch it to the people who could fund it.",
+    "body": "Over a school term, groups of students identify a local need, research it, and build a proposal. The programme ends with a public pitch evening where municipal representatives and local associations respond. The best proposals receive seed support.",
+    "sdgs": [
+      4,
+      8,
+      16
+    ],
+    "media": {
+      "video": "assets/video/project-human-development.mp4",
+      "poster": "#D9A23B"
+    },
+    "link": "#"
+  },
+  {
+    "id": "solidarity-wardrobe",
+    "title": "Solidarity Wardrobe",
+    "area": "Cooperation",
+    "status": "current",
+    "year": "2025",
+    "location": "Hollerich",
+    "summary": "A volunteer-run clothing exchange with dignity built in: no queues, no forms, and a fitting room.",
+    "body": "Donated clothing is sorted, repaired and displayed like a shop. Anyone can take what they need. Volunteers run the space twice a week and the institute covers rent and repairs through member support.",
+    "sdgs": [
+      1,
+      10,
+      12
+    ],
+    "media": {
+      "video": "assets/video/project-cooperation.mp4",
+      "poster": "#0B2E24"
+    },
+    "link": "#"
+  },
+  {
+    "id": "water-commons-study",
+    "title": "Water Commons Study",
+    "area": "Sustainable Futures",
+    "status": "past",
+    "year": "2024",
+    "location": "Moselle valley",
+    "summary": "A participatory study of how small municipalities share river water during dry summers, and what agreements hold up under stress.",
+    "body": "Working with four municipalities, the study mapped existing water-sharing arrangements and tested them against drought scenarios.\n\n## Method\n\nInterviews with mayors, water syndicates and farmers, followed by a tabletop exercise simulating two dry summers in a row.\n\n## Findings\n\n- Informal agreements held better than expected, as long as one person was trusted by everyone\n- Written agreements without a named contact failed first\n- Upstream towns were more willing to share than downstream towns expected\n\nThe findings were published as an open report and presented to the regional water syndicate.",
+    "sdgs": [
+      6,
+      13,
+      15
+    ],
+    "media": {
+      "poster": "#2C5A82"
+    },
+    "link": "#"
+  },
+  {
+    "id": "cross-border-dialogue",
+    "title": "Cross-Border Dialogue Series",
+    "area": "Knowledge & Education",
+    "status": "past",
+    "year": "2024",
+    "location": "Luxembourg, Trier, Metz, Arlon",
+    "summary": "Four public evenings where people from across the Greater Region compared how their towns handle housing, transport and welcome.",
+    "body": "Each evening paired two towns and two practical problems. The conversations were recorded, transcribed and turned into a short comparative guide that municipalities have since used in planning sessions.",
+    "sdgs": [
+      10,
+      11,
+      17
+    ],
+    "media": {
+      "poster": "#8F6A1E"
+    },
+    "link": "#"
+  }
+]

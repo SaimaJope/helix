@@ -6,3 +6,7 @@ Helix Anthropis Institute Redesign.zip
 .thumbnail
 Thumbs.db
 .DS_Store
+api/.dev.vars
+api/node_modules/
+api/.wrangler/
+tmp/

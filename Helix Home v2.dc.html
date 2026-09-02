@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="assets/helix-h-ink.svg" type="image/svg+xml">
 <script src="./support.js"></script>
 <script src="./procedural-fields.js?v=helix-hero-resolution-fix" defer></script>
 <script src="./stock-footage.js" defer></script>
@@ -35,7 +36,7 @@
       height: 76px;
       color: #F6F3E8;
       background: transparent;
-      border-bottom: 1px solid transparent;
+      border-bottom: 1px solid rgba(246,243,232,0.14);
       opacity: 0;
       transform: translateY(0);
       transition: opacity 0.24s cubic-bezier(0.22, 1, 0.36, 1), transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), color 0.18s ease, background-color 0.18s ease, border-color 0.18s ease;
@@ -75,13 +76,22 @@
       transform: scale(1.002);
       transform-origin: center;
     }
-    .hx-header-mark {
-      filter: contrast(1.08) saturate(1.08) !important;
+    .hx-brand-link { min-width: 228px; }
+    .hx-header-logo { position: relative; display: block; width: clamp(196px, 19vw, 228px); height: 32px; flex: none; }
+    .hx-header-logo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; object-position: left center; transition: opacity 0.18s ease; }
+    .hx-wordmark-green { opacity: 0; }
+    .hx-site-header.is-opaque .hx-wordmark-inverse { opacity: 0; }
+    .hx-site-header.is-opaque .hx-wordmark-green { opacity: 1; }
+    .hx-theme-dark .hx-site-header.is-opaque .hx-wordmark-inverse { opacity: 1; }
+    .hx-theme-dark .hx-site-header.is-opaque .hx-wordmark-green { opacity: 0; }
+    @media (max-width: 720px) {
+      .hx-brand-link { min-width: 184px; }
+      .hx-header-logo { width: 184px; height: 28px; }
     }
     .hx-header-support { transition: color 0.18s ease, border-color 0.18s ease; }
-    .hx-header-support:hover { color: #F6F3E8 !important; border-color: #F6F3E8 !important; }
-    .hx-site-header.is-opaque .hx-header-support:hover { color: #1F5B46 !important; border-color: #1F5B46 !important; }
-    .hx-theme-dark .hx-site-header.is-opaque .hx-header-support:hover { color: #F6F3E8 !important; border-color: #F6F3E8 !important; }
+    .hx-header-support:hover { color: #B198CB !important; opacity: 1 !important; }
+    .hx-site-header.is-opaque .hx-header-support:hover { color: #7D5BA6 !important; }
+    .hx-theme-dark .hx-site-header.is-opaque .hx-header-support:hover { color: #B198CB !important; }
     .hx-header-menu { color: inherit; border-color: currentColor !important; }
     .hx-header-menu span { background: currentColor !important; }
     .hx-theme-toggle {
@@ -147,6 +157,9 @@
     .hx-theme-dark [data-screen-label="Partners"] [style*="border: 1px dashed"] { border-color: rgba(220,226,219,0.28) !important; color: #829086 !important; }
     .hx-theme-dark [data-screen-label="Mobile menu"] { background: #08100D !important; }
     .sdg-mobile-detail { display: none; }
+    .hx-header-menu-word > span { background: transparent !important; }
+    .hx-header-menu-word:hover { opacity: 1 !important; }
+    @media (max-width: 860px) { .hx-menu-body { grid-template-columns: 1fr !important; } .hx-menu-side { border-top: 1px solid rgba(246,243,232,0.28); margin: 8px clamp(20px, 4.5vw, 56px) 0; padding-left: 0 !important; padding-right: 0 !important; } }
     .hx-stock-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: saturate(0.72) contrast(1.06) brightness(0.88); transform: scale(1.015); }
     .hx-stock-shade { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(to top, rgba(18,30,24,0.34), transparent 58%); }
     .hx-procedural-field { display: block; width: 100%; height: 100%; pointer-events: none; }
@@ -193,21 +206,23 @@
     </sc-if>
     <header class="{{ headerClass }}" data-screen-label="Header">
       <div class="hx-header-inner" style="display: flex; align-items: center; justify-content: space-between; gap: 24px;">
-        <a href="#" style="display: flex; align-items: center; gap: 12px; min-width: 220px;" style-hover="color: #D9A23B;">
-          <img class="hx-header-mark" src="assets/helix-mark.png" alt="Helix Anthropis Institute mark" style="width: 40px; height: 38px; object-fit: contain;">
-          <span style="display: flex; flex-direction: column; gap: 2px;">
-            <span style="font-size: 14px; font-weight: 800; line-height: 1.1; letter-spacing: 0.16em; white-space: nowrap;">HELIX ANTHROPIS</span>
-            <span style="font-size: 9px; font-weight: 600; line-height: 1; letter-spacing: 0.42em; opacity: 0.72;">INSTITUTE</span>
+        <a class="hx-brand-link" href="#" aria-label="Helix Anthropis home" style="display: flex; align-items: center;">
+          <span class="hx-header-logo">
+            <img class="hx-wordmark-inverse" src="assets/helix-anthropis-wordmark-inverse.svg?v=brand-2026-2" alt="Helix Anthropis" draggable="false">
+            <img class="hx-wordmark-green" src="assets/helix-anthropis-wordmark.svg?v=brand-2026-2" alt="" aria-hidden="true" draggable="false">
           </span>
         </a>
         <sc-if value="{{ notMobile }}" hint-placeholder-val="{{ true }}">
-          <nav aria-label="Main" style="display: flex; align-items: center; gap: clamp(18px, 1.7vw, 28px); margin-left: auto; transform: translateX(10px);">
-            <a href="#about" style="font-size: 14px; font-weight: 650;" style-hover="color: #D9A23B;">About</a>
-            <a href="#focus" style="font-size: 14px; font-weight: 650;" style-hover="color: #D9A23B;">Focus areas</a>
-            <a href="#projects" style="font-size: 14px; font-weight: 650;" style-hover="color: #D9A23B;">Projects</a>
-            <a href="#publications" style="font-size: 14px; font-weight: 650;" style-hover="color: #D9A23B;">Publications</a>
-            <a href="#people" style="font-size: 14px; font-weight: 650;" style-hover="color: #D9A23B;">People</a>
-            <a class="hx-header-support" href="#support" style="font-size: 13.5px; font-weight: 750; color: #D9A23B; border-bottom: 2px solid #D9A23B; padding-bottom: 3px; white-space: nowrap;">Support our work</a>
+          <nav aria-label="Main" style="display: flex; align-items: center; gap: clamp(22px, 2.4vw, 36px); margin-left: auto;">
+            <a href="about.html" style="font-size: 14px; font-weight: 600; letter-spacing: 0.01em; opacity: 0.92;" style-hover="opacity: 1;">About</a>
+            <a href="work.html" style="font-size: 14px; font-weight: 600; letter-spacing: 0.01em; opacity: 0.92;" style-hover="opacity: 1;">Our work</a>
+            <a href="news.html" style="font-size: 14px; font-weight: 600; letter-spacing: 0.01em; opacity: 0.92;" style-hover="opacity: 1;">News &amp; events</a>
+            <a href="shop.html" style="font-size: 14px; font-weight: 600; letter-spacing: 0.01em; opacity: 0.92;" style-hover="opacity: 1;">Shop</a>
+            <a class="hx-header-support" href="volunteer.html" style="font-size: 14px; font-weight: 600; letter-spacing: 0.01em; opacity: 0.92; white-space: nowrap;">Get involved</a>
+            <span style="width: 1px; height: 26px; background: currentColor; opacity: 0.4; margin-left: clamp(4px, 0.8vw, 12px);"></span>
+            <button class="hx-header-menu hx-header-menu-word" type="button" aria-label="Open menu" onClick="{{ openMenu }}" style="background: none; border: 0; padding: 6px 2px; cursor: pointer; display: inline-flex; align-items: center; gap: 10px; color: inherit; font-family: inherit; font-size: 12px; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase; opacity: 0.92;">
+              <span style="display: flex; flex-direction: column; gap: 5px;"><span style="display: block; width: 20px; height: 1.5px; background: currentColor;"></span><span style="display: block; width: 20px; height: 1.5px; background: currentColor;"></span></span><span>Menu</span>
+            </button>
           </nav>
         </sc-if>
         <sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
@@ -222,8 +237,8 @@
       <div style="max-width: 1080px; width: 100%; margin: 0 auto; padding: clamp(64px, 10vh, 120px) clamp(20px, 4.5vw, 56px) clamp(48px, 7vh, 88px);">
         <h1 class="hx-hero-title" style="margin: 0 0 clamp(28px, 4vh, 44px); font-family: 'Schibsted Grotesk', 'Public Sans', system-ui, sans-serif; font-weight: 800; font-size: clamp(31px, 5.9vw, 84px); line-height: 0.9; letter-spacing: -0.032em; text-transform: uppercase; max-width: 20ch;">An international institute for sustainable human development</h1>
         <div class="hx-hero-links" style="display: flex; flex-wrap: wrap; gap: 16px 38px;">
-          <a href="#about" style="font-size: 14px; font-weight: 600; color: #F6F3E8; border-bottom: 1.5px solid rgba(246,243,232,0.85); padding-bottom: 4px;" style-hover="color: #D9A23B; border-color: #D9A23B;">Learn about the institute</a>
-          <a href="#publications" style="font-size: 14px; font-weight: 600; color: #F6F3E8; border-bottom: 1.5px solid rgba(246,243,232,0.85); padding-bottom: 4px;" style-hover="color: #D9A23B; border-color: #D9A23B;">Read the latest</a>
+          <a href="about.html" style="font-size: 14px; font-weight: 600; color: #F6F3E8; border-bottom: 1.5px solid rgba(246,243,232,0.85); padding-bottom: 4px;" style-hover="color: #D9A23B; border-color: #D9A23B;">Discover Helix</a>
+          <a href="about.html#mission" style="font-size: 14px; font-weight: 600; color: #F6F3E8; border-bottom: 1.5px solid rgba(246,243,232,0.85); padding-bottom: 4px;" style-hover="color: #D9A23B; border-color: #D9A23B;">Our mission</a>
         </div>
       </div>
     </div>
@@ -232,10 +247,7 @@
   <sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
     <div data-screen-label="Mobile menu" style="position: fixed; inset: 0; background: #20614B; color: #F6F3E8; z-index: 80; display: flex; flex-direction: column; overflow: auto;">
       <div style="display: flex; align-items: center; justify-content: space-between; padding: 20px clamp(20px, 4.5vw, 56px); border-bottom: 1px solid rgba(246,243,232,0.3);">
-        <span style="display: flex; align-items: center; gap: 12px;">
-          <img class="hx-header-mark" src="assets/helix-mark.png" alt="" style="width: 40px; height: 40px; object-fit: contain;">
-          <span style="font-family: 'Source Serif 4', Georgia, serif; font-size: 16px; font-weight: 650;">Helix Anthropis</span>
-        </span>
+        <img src="assets/helix-anthropis-wordmark-inverse.svg?v=brand-2026-2" alt="Helix Anthropis" draggable="false" style="display: block; width: 196px; height: 30px; object-fit: contain; object-position: left center;">
         <span style="display: flex; align-items: center; gap: 8px;">
           <button class="hx-theme-toggle" type="button" onClick="{{ toggleTheme }}" aria-label="{{ themeLabel }}" title="{{ themeLabel }}">
             <svg class="hx-theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M20 15.4A8.4 8.4 0 0 1 8.6 4a8.5 8.5 0 1 0 11.4 11.4Z"></path></svg>
@@ -244,14 +256,25 @@
           <button aria-label="Close menu" onClick="{{ closeMenu }}" style="background: none; border: 1px solid rgba(246,243,232,0.7); border-radius: 5px; color: #F6F3E8; padding: 10px 14px; cursor: pointer; font-size: 16px; line-height: 1; font-family: inherit;">✕</button>
         </span>
       </div>
-      <nav aria-label="Mobile" style="display: flex; flex-direction: column; padding: 8px clamp(20px, 4.5vw, 56px) 40px;">
-        <sc-for list="{{ menuLinks }}" as="lnk" hint-placeholder-count="6">
-          <a href="{{ lnk.href }}" onClick="{{ closeMenu }}" style="font-family: 'Source Serif 4', Georgia, serif; font-size: clamp(34px, 9vw, 52px); font-weight: 500; letter-spacing: -0.01em; padding: 18px 0; border-bottom: 1px solid rgba(246,243,232,0.28); display: flex; justify-content: space-between; align-items: baseline; color: #F6F3E8;" style-hover="color: #D9A23B;">
-            <span>{{ lnk.label }}</span>
-          </a>
-        </sc-for>
-        <a href="#support" onClick="{{ closeMenu }}" style="margin-top: 30px; align-self: flex-start; background: #D9A23B; color: #26241E; font-size: 15px; font-weight: 700; padding: 16px 22px;" style-hover="background: #F6F3E8; color: #26241E;">Support our work →</a>
-      </nav>
+      <div class="hx-menu-body" style="max-width: 1200px; width: 100%; margin: 0 auto; display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 0 clamp(20px, 4vw, 64px); flex: 1;">
+        <nav aria-label="All pages" style="display: flex; flex-direction: column; padding: 8px 0 24px clamp(20px, 4.5vw, 56px);">
+          <sc-for list="{{ menuLinks }}" as="lnk" hint-placeholder-count="8">
+            <a href="{{ lnk.href }}" onClick="{{ closeMenu }}" style="font-family: 'Source Serif 4', Georgia, serif; font-size: clamp(30px, 5.2vw, 60px); font-weight: 500; letter-spacing: -0.012em; line-height: 1.05; padding: clamp(12px, 1.6vh, 18px) 0; border-bottom: 1px solid rgba(246,243,232,0.28); display: flex; justify-content: space-between; align-items: baseline; gap: 20px; color: {{ lnk.color }};" style-hover="color: #D9A23B;">
+              <span>{{ lnk.label }}</span><span style="font-family: 'Public Sans', system-ui, sans-serif; font-size: 12px; font-weight: 800; letter-spacing: 0.2em; opacity: 0.6;">{{ lnk.num }}</span>
+            </a>
+          </sc-for>
+        </nav>
+        <div class="hx-menu-side" style="display: flex; flex-direction: column; gap: 14px; align-items: flex-start; padding: clamp(18px, 3vh, 34px) clamp(20px, 4.5vw, 56px) 48px;">
+          <p style="margin: 0 0 4px; font-size: 11px; font-weight: 800; letter-spacing: 0.22em; color: rgba(246,243,232,0.6);">GET INVOLVED</p>
+          <a href="volunteer.html#apply" style="background: #D9A23B; color: #26241E; font-size: 15px; font-weight: 700; padding: 15px 22px; margin-bottom: 6px;" style-hover="background: #F6F3E8; color: #26241E;">Volunteer with us →</a>
+          <a href="volunteer.html#community" style="font-size: 14.5px; font-weight: 700; border-bottom: 1.5px solid rgba(246,243,232,0.6); padding-bottom: 3px;" style-hover="color: #D9A23B; border-color: #D9A23B;">Join our community</a>
+          <a href="volunteer.html#support" style="font-size: 14.5px; font-weight: 700; border-bottom: 1.5px solid rgba(246,243,232,0.6); padding-bottom: 3px;" style-hover="color: #D9A23B; border-color: #D9A23B;">Support our work</a>
+          <p style="margin: 34px 0 4px; font-size: 11px; font-weight: 800; letter-spacing: 0.22em; color: rgba(246,243,232,0.6);">CONTACT</p>
+          <a href="mailto:helixanthropisinstitute@gmail.com" style="font-family: 'Source Serif 4', Georgia, serif; font-size: clamp(17px, 1.5vw, 21px); border-bottom: 1px solid rgba(246,243,232,0.6); padding-bottom: 3px; overflow-wrap: anywhere;" style-hover="color: #D9A23B; border-color: #D9A23B;">helixanthropisinstitute@gmail.com</a>
+          <p style="margin: 0; font-size: 14px; line-height: 1.6; color: rgba(246,243,232,0.8);">40 Bd Pierre Dupong<br>1430 Hollerich, Luxembourg</p>
+          <div style="display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 14px;"><a href="https://instagram.com/helixanthropis" target="_blank" rel="noopener" style-hover="color: #D9A23B;">Instagram ↗</a><a href="https://www.linkedin.com/company/helix-anthropis" target="_blank" rel="noopener" style-hover="color: #D9A23B;">LinkedIn ↗</a><a href="https://youtube.com/@helixanthropis" target="_blank" rel="noopener" style-hover="color: #D9A23B;">YouTube ↗</a><a href="https://discord.com" target="_blank" rel="noopener" style-hover="color: #D9A23B;">Discord ↗</a><a href="https://substack.com" target="_blank" rel="noopener" style-hover="color: #D9A23B;">Substack ↗</a></div>
+        </div>
+      </div>
     </div>
   </sc-if>
 
@@ -265,7 +288,7 @@
         <div style="height: 2px; background: #C6502F; margin: clamp(28px, 3.5vw, 44px) 0;"></div>
         <div id="focus" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 270px), 1fr)); gap: clamp(24px, 3vw, 40px) clamp(24px, 3vw, 48px);">
           <sc-for list="{{ focus }}" as="area" hint-placeholder-count="5">
-            <a href="#" style="display: flex; gap: 16px; align-items: flex-start;" style-hover="color: {{ area.tc }};">
+            <a href="work.html#areas" style="display: flex; gap: 16px; align-items: flex-start;" style-hover="color: {{ area.tc }};">
               <svg width="46" height="46" viewBox="0 0 44 44" style="flex: none;" aria-hidden="true">
                 <sc-for list="{{ area.icon }}" as="seg" hint-placeholder-count="8">
                   <line x1="{{ seg.x1 }}" y1="{{ seg.y }}" x2="{{ seg.x2 }}" y2="{{ seg.y }}" stroke="#26241E" stroke-width="2"></line>
@@ -314,12 +337,13 @@
               <span class="sdg-back" style="position: absolute; inset: 0; border-radius: 6px; background: {{ g.bg }}; color: {{ g.fg }}; padding: 13px 15px 14px; display: flex; flex-direction: column; gap: 8px; backface-visibility: hidden; transform: rotateY(180deg);">
                 <span style="font-size: 10.5px; font-weight: 800; letter-spacing: 0.15em; text-transform: uppercase; opacity: 0.85;">{{ g.eyebrow }}</span>
                 <span style="font-family: 'Source Serif 4', Georgia, serif; font-weight: 500; font-size: 13px; line-height: 1.32; text-wrap: pretty;">{{ g.aim }}</span>
-                <a href="{{ g.href }}" target="_blank" rel="noopener" onClick="{{ g.stop }}" style="margin-top: auto; align-self: flex-start; font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: {{ g.fg }}; border-bottom: 1.5px solid; padding-bottom: 2px;">View more ↗</a>
+                <a href="{{ g.href }}" onClick="{{ g.stop }}" style="margin-top: auto; align-self: flex-start; font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: {{ g.fg }}; border-bottom: 1.5px solid; padding-bottom: 2px;">View more ↗</a>
               </span>
             </span>
           </div>
         </sc-for>
       </div>
+      <div style="margin-top: clamp(28px, 3vw, 40px);"><a href="sdgs.html" style="display: inline-flex; background: #26241E; color: #F6F3E8; font-size: 15px; font-weight: 700; padding: 15px 22px;" style-hover="background: #D9A23B; color: #26241E;">Explore the 17 SDGs</a></div>
       <p style="margin: 24px 0 0; font-size: 13.5px; color: #5A554A;">Source: United Nations — <a href="https://sdgs.un.org/goals" target="_blank" rel="noopener" style="font-weight: 600; text-decoration: underline; text-underline-offset: 3px;">sdgs.un.org/goals</a></p>
     </div>
   </section>
@@ -328,7 +352,7 @@
     <div style="max-width: 1200px; margin: 0 auto; padding: clamp(48px, 6vw, 80px) clamp(20px, 4.5vw, 56px) clamp(64px, 8vw, 104px);">
       <div style="display: flex; flex-wrap: wrap; align-items: baseline; gap: 14px 28px; margin-bottom: clamp(28px, 3.5vw, 44px);">
         <h2 style="margin: 0; font-family: 'Source Serif 4', Georgia, serif; font-weight: 540; font-size: clamp(32px, 3.6vw, 50px); letter-spacing: -0.012em;">Featured projects</h2>
-        <a href="#" style="font-size: 14.5px; font-weight: 700; color: #26241E; border-bottom: 1.5px solid rgba(38,36,30,0.5); padding-bottom: 3px;" style-hover="color: #26241E; border-color: #26241E;">See all our projects</a>
+        <a href="work.html#projects" style="font-size: 14.5px; font-weight: 700; color: #26241E; border-bottom: 1.5px solid rgba(38,36,30,0.5); padding-bottom: 3px;" style-hover="color: #26241E; border-color: #26241E;">View all projects</a>
       </div>
       <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: clamp(22px, 2.6vw, 36px);">
         <article style="border: 1px solid #26241E; display: flex; flex-direction: column;">
@@ -381,7 +405,7 @@
     <div style="max-width: 1200px; margin: 0 auto; padding: clamp(48px, 6vw, 80px) clamp(20px, 4.5vw, 56px) clamp(64px, 8vw, 104px);">
       <div style="display: flex; flex-wrap: wrap; align-items: baseline; gap: 14px 28px; margin-bottom: clamp(24px, 3vw, 36px);">
         <h2 style="margin: 0; font-family: 'Source Serif 4', Georgia, serif; font-weight: 540; font-size: clamp(32px, 3.6vw, 50px); letter-spacing: -0.012em;">Latest publications</h2>
-        <a href="#" style="font-size: 14.5px; font-weight: 700; color: #26241E; border-bottom: 1.5px solid rgba(38,36,30,0.5); padding-bottom: 3px;" style-hover="color: #26241E; border-color: #26241E;">See all our work</a>
+        <a href="work.html#publications" style="font-size: 14.5px; font-weight: 700; color: #26241E; border-bottom: 1.5px solid rgba(38,36,30,0.5); padding-bottom: 3px;" style-hover="color: #26241E; border-color: #26241E;">View all publications</a>
       </div>
       <div style="border-top: 1px solid rgba(38,36,30,0.4);">
         <sc-for list="{{ pubs }}" as="pub" hint-placeholder-count="4">
@@ -440,21 +464,16 @@
       <h2 style="margin: 0 0 18px; font-family: 'Source Serif 4', Georgia, serif; font-weight: 520; font-size: clamp(34px, 4.4vw, 62px); line-height: 1.08; letter-spacing: -0.015em; max-width: 18ch;">Help advance the common good.</h2>
       <p style="margin: 0 0 32px; max-width: 56ch; font-size: 16px; line-height: 1.65; color: rgba(237,232,216,0.75);">Helix works in service of humanity and the common good. Join, support or partner with the institute.</p>
       <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 18px 40px;">
-        <a href="#" style="font-size: 15.5px; font-weight: 700; color: #D9A23B; border-bottom: 2px solid #D9A23B; padding-bottom: 4px;" style-hover="color: #F6F3E8; border-color: #F6F3E8;">Support our work</a>
-        <a href="mailto:helixanthropisinstitute@gmail.com" style="font-size: 15.5px; font-weight: 700; color: #EDE8D8; border-bottom: 2px solid rgba(237,232,216,0.6); padding-bottom: 4px;" style-hover="color: #D9A23B; border-color: #D9A23B;">Contact Helix</a>
+        <a href="volunteer.html#support" style="font-size: 15.5px; font-weight: 700; color: #D9A23B; border-bottom: 2px solid #D9A23B; padding-bottom: 4px;" style-hover="color: #F6F3E8; border-color: #F6F3E8;">Support our work</a>
+        <a href="volunteer.html#community" style="font-size: 15.5px; font-weight: 700; color: #EDE8D8; border-bottom: 2px solid rgba(237,232,216,0.6); padding-bottom: 4px;" style-hover="color: #D9A23B; border-color: #D9A23B;">Join our community</a>
+        <a href="contact.html" style="font-size: 15.5px; font-weight: 700; color: #EDE8D8; border-bottom: 2px solid rgba(237,232,216,0.6); padding-bottom: 4px;" style-hover="color: #D9A23B; border-color: #D9A23B;">Contact Helix</a>
       </div>
     </div>
     <footer data-screen-label="Footer" style="position: relative; border-top: 1px solid rgba(237,232,216,0.25);">
       <div style="max-width: 1200px; margin: 0 auto; padding: clamp(44px, 5vw, 64px) clamp(20px, 4.5vw, 56px) 30px;">
         <div style="display: flex; flex-wrap: wrap; gap: 44px clamp(44px, 5vw, 84px);">
           <div style="flex: 1.3 1 300px; min-width: min(100%, 280px); display: flex; flex-direction: column; gap: 20px;">
-            <span style="display: flex; align-items: center; gap: 14px;">
-              <img src="assets/helix-mark.png" alt="" style="width: 52px; height: 48px; object-fit: contain; filter: brightness(1.4) saturate(0.85);">
-              <span style="display: flex; flex-direction: column; gap: 2px;">
-                <span style="font-size: 13px; font-weight: 800; letter-spacing: 0.16em;">HELIX ANTHROPIS</span>
-                <span style="font-size: 9.5px; font-weight: 600; letter-spacing: 0.42em; color: rgba(237,232,216,0.6);">INSTITUTE</span>
-              </span>
-            </span>
+            <img src="assets/helix-h.svg?v=brand-2026-3" alt="Helix Anthropis" draggable="false" style="display: block; width: 68px; height: 104px; object-fit: contain; object-position: left center;">
             <p style="margin: 0; font-size: 14.5px; line-height: 1.6; color: rgba(237,232,216,0.7); max-width: 38ch;">Advancing humanity through cooperation and solidarity.</p>
             <div style="margin-top: 4px;">
               <p style="margin: 0 0 10px; font-size: 11px; font-weight: 800; letter-spacing: 0.22em; color: rgba(237,232,216,0.55);">NEWSLETTER</p>
@@ -467,19 +486,20 @@
           <nav aria-label="Footer institute" style="flex: 0 1 150px; min-width: 130px;">
             <p style="margin: 0 0 14px; font-size: 11px; font-weight: 800; letter-spacing: 0.22em; color: rgba(237,232,216,0.55);">INSTITUTE</p>
             <div style="display: flex; flex-direction: column; gap: 11px; font-size: 14.5px;">
-              <a href="#about" style-hover="color: #D9A23B;">About</a>
-              <a href="#people" style-hover="color: #D9A23B;">People</a>
-              <a href="#" style-hover="color: #D9A23B;">Partners</a>
-              <a href="#support" style-hover="color: #D9A23B;">Support</a>
+              <a href="about.html" style-hover="color: #D9A23B;">About</a>
+              <a href="work.html" style-hover="color: #D9A23B;">Our work</a>
+              <a href="about.html#leadership" style-hover="color: #D9A23B;">Leadership</a>
+              <a href="news.html" style-hover="color: #D9A23B;">News &amp; events</a>
+              <a href="sdgs.html" style-hover="color: #D9A23B;">UN SDGs</a>
             </div>
           </nav>
           <nav aria-label="Footer work" style="flex: 0 1 150px; min-width: 130px;">
-            <p style="margin: 0 0 14px; font-size: 11px; font-weight: 800; letter-spacing: 0.22em; color: rgba(237,232,216,0.55);">WORK</p>
+            <p style="margin: 0 0 14px; font-size: 11px; font-weight: 800; letter-spacing: 0.22em; color: rgba(237,232,216,0.55);">GET INVOLVED</p>
             <div style="display: flex; flex-direction: column; gap: 11px; font-size: 14.5px;">
-              <a href="#focus" style-hover="color: #D9A23B;">Focus areas</a>
-              <a href="#projects" style-hover="color: #D9A23B;">Projects</a>
-              <a href="#publications" style-hover="color: #D9A23B;">Publications</a>
-              <a href="#sdgs" style-hover="color: #D9A23B;">UN SDGs</a>
+              <a href="volunteer.html" style-hover="color: #D9A23B;">Volunteer</a>
+              <a href="volunteer.html#community" style-hover="color: #D9A23B;">Join our community</a>
+              <a href="volunteer.html#support" style-hover="color: #D9A23B;">Support us</a>
+              <a href="shop.html" style-hover="color: #D9A23B;">Shop</a>
             </div>
           </nav>
           <div style="flex: 0 1 260px; min-width: min(100%, 220px);">
@@ -487,9 +507,12 @@
             <div style="display: flex; flex-direction: column; gap: 11px; font-size: 14.5px; color: rgba(237,232,216,0.85);">
               <a href="mailto:helixanthropisinstitute@gmail.com" style="text-decoration: underline; text-underline-offset: 3px;" style-hover="color: #D9A23B;">helixanthropisinstitute@gmail.com</a>
               <p style="margin: 0; line-height: 1.6;">40 Bd Pierre Dupong<br>1430 Hollerich, Luxembourg</p>
-              <div style="display: flex; gap: 18px; margin-top: 4px;">
-                <a href="#" style-hover="color: #D9A23B;">LinkedIn ↗</a>
-                <a href="#" style-hover="color: #D9A23B;">X ↗</a>
+              <div style="display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: 4px;">
+                <a href="https://instagram.com/helixanthropis" target="_blank" rel="noopener" style-hover="color: #D9A23B;">Instagram ↗</a>
+                <a href="https://www.linkedin.com/company/helix-anthropis" target="_blank" rel="noopener" style-hover="color: #D9A23B;">LinkedIn ↗</a>
+                <a href="https://youtube.com/@helixanthropis" target="_blank" rel="noopener" style-hover="color: #D9A23B;">YouTube ↗</a>
+                <a href="https://discord.com" target="_blank" rel="noopener" style-hover="color: #D9A23B;">Discord ↗</a>
+                <a href="https://substack.com" target="_blank" rel="noopener" style-hover="color: #D9A23B;">Substack ↗</a>
               </div>
             </div>
           </div>
@@ -620,7 +643,7 @@ class Component extends DCLogic {
         gifMounted: hov === i || last === i,
         gifOpacity: hov === i ? 1 : 0,
         alt: 'Goal ' + (i + 1) + ': ' + t,
-        href: 'https://sdgs.un.org/goals/goal' + (i + 1),
+        href: 'sdg.html?goal=' + (i + 1),
         eyebrow: 'Goal ' + (i + 1),
         aim,
         bg,
@@ -737,12 +760,14 @@ class Component extends DCLogic {
       sdgSelected: selectedSdg,
       focus,
       menuLinks: [
-        { label: 'About', href: '#about', num: '01' },
-        { label: 'Focus areas', href: '#focus', num: '02' },
-        { label: 'Projects', href: '#projects', num: '03' },
-        { label: 'Publications', href: '#publications', num: '04' },
-        { label: 'People', href: '#people', num: '05' },
-        { label: 'Contact', href: 'mailto:helixanthropisinstitute@gmail.com', num: '06' }
+        { label: 'Home', href: 'index.html', num: '00', color: '#D9A23B' },
+        { label: 'About us', href: 'about.html', num: '01', color: '#F6F3E8' },
+        { label: 'Our work', href: 'work.html', num: '02', color: '#F6F3E8' },
+        { label: 'Volunteer', href: 'volunteer.html', num: '03', color: '#F6F3E8' },
+        { label: 'News & events', href: 'news.html', num: '04', color: '#F6F3E8' },
+        { label: 'Shop', href: 'shop.html', num: '05', color: '#F6F3E8' },
+        { label: 'The 17 SDGs', href: 'sdgs.html', num: '06', color: '#F6F3E8' },
+        { label: 'Contact', href: 'contact.html', num: '07', color: '#F6F3E8' }
       ],
       pubs: [
         { cat: 'Human development', chipBg: '#20614B', chipFg: '#F6F3E8', title: 'Publication title — a working paper placeholder' },

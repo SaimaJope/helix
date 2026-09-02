@@ -1,0 +1,42 @@
+[
+  {
+    "id": "harvest-evening-2026",
+    "title": "Common Ground Gardens harvest evening",
+    "date": "2026-09-19",
+    "time": "18:00",
+    "location": "Bonnevoie plot",
+    "kind": "Community",
+    "summary": "All plots bring something. Music, a long table, and the plan for next season.",
+    "link": "#"
+  },
+  {
+    "id": "assembly-2026-09",
+    "title": "Autumn Community Assembly",
+    "date": "2026-09-26",
+    "time": "14:00 to 17:30",
+    "location": "40 Bd Pierre Dupong, Hollerich, and online",
+    "kind": "Assembly",
+    "summary": "Members choose the institute's next two projects. Open to everyone, voting for members.",
+    "link": "#"
+  },
+  {
+    "id": "open-knowledge-lab-2026-10",
+    "title": "Open Knowledge Lab: monthly session",
+    "date": "2026-10-14",
+    "time": "18:30",
+    "location": "Online",
+    "kind": "Workshop",
+    "summary": "Working session on the community indicator dataset. New participants welcome.",
+    "link": "#"
+  },
+  {
+    "id": "dialogue-metz-2026",
+    "title": "Cross-Border Dialogue: Metz and Luxembourg on housing",
+    "date": "2026-11-05",
+    "time": "19:00",
+    "location": "Metz",
+    "kind": "Dialogue",
+    "summary": "A public evening comparing how two cities are handling housing pressure.",
+    "link": "#"
+  }
+]

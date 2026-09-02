@@ -1,0 +1,29 @@
+[
+  {
+    "id": "events-volunteer",
+    "title": "Events volunteer",
+    "team": "Events",
+    "commitment": "2 to 4 evenings a month",
+    "location": "Luxembourg City",
+    "summary": "Help set up, welcome people and keep assemblies, dialogues and harvest evenings running smoothly.",
+    "link": "mailto:helixanthropisinstitute@gmail.com?subject=Volunteer%3A%20Events"
+  },
+  {
+    "id": "comms-volunteer",
+    "title": "Communications volunteer",
+    "team": "Communications",
+    "commitment": "3 hours a week, remote",
+    "location": "Remote",
+    "summary": "Write Field Notes, edit photos and video from projects, and keep the socials honest and lively.",
+    "link": "mailto:helixanthropisinstitute@gmail.com?subject=Volunteer%3A%20Communications"
+  },
+  {
+    "id": "research-assistant",
+    "title": "Research assistant, Open Knowledge Lab",
+    "team": "Research",
+    "commitment": "One monthly session plus 4 hours a month",
+    "location": "Online and Esch-sur-Alzette",
+    "summary": "Help maintain the community indicator dataset and write plain-language summaries of new findings.",
+    "link": "mailto:helixanthropisinstitute@gmail.com?subject=Volunteer%3A%20Research"
+  }
+]

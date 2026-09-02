@@ -1,0 +1,23 @@
+{
+  "institute": {
+    "name": "Helix Anthropis Institute",
+    "tagline": "Working together towards the advancement of humanity and the common good.",
+    "email": "helixanthropisinstitute@gmail.com",
+    "address": "40 Bd Pierre Dupong\n1430 Hollerich, Luxembourg"
+  },
+  "mission": "To promote and facilitate initiatives that contribute to the advancement of humanity and the common good, without discrimination, through cooperation, knowledge and innovation.",
+  "vision": "A world in which people and institutions work together across borders and disciplines, so that every person can live, learn and flourish within the limits of a shared planet.",
+  "story": "A few friends came together with a dream and want to make it a reality.",
+  "socials": {
+    "instagram": "https://instagram.com/helixanthropis",
+    "linkedin": "https://www.linkedin.com/company/helix-anthropis",
+    "youtube": "https://youtube.com/@helixanthropis",
+    "discord": "https://discord.com",
+    "substack": "https://substack.com"
+  },
+  "membership": {
+    "member": { "label": "Member", "price": "", "note": "A seat and a vote at every assembly. Access to the Discord, the members' newsletter and project teams." },
+    "eco": { "label": "Eco Champion", "price": "", "discount": 10, "note": "Everything in Member, plus 10% off store products and your name in the annual report." },
+    "visionary": { "label": "Visionary", "price": "", "discount": 20, "note": "Everything in Eco Champion, plus 20% off store products and an invitation to the yearly Visionaries' dinner with the board." }
+  }
+}
