@@ -65,6 +65,8 @@
 .newsletter + .hx-form-privacy { max-width: 390px; margin-top: 9px; }
 .hx-privacy-open { appearance: none; border: 0; padding: 0; color: inherit; background: transparent; font: inherit; cursor: pointer; }
 .hx-privacy-open:hover { color: #d9a23b; }
+.hx-privacy-fab { position: fixed; z-index: 9998; left: 14px; bottom: 14px; appearance: none; padding: 9px 12px; color: #f6f3e8; background: #26241e; border: 1px solid rgba(246,243,232,.5); box-shadow: 0 6px 22px rgba(7,17,13,.2); font: 700 11px/1.2 "Public Sans", Arial, sans-serif; letter-spacing: .04em; cursor: pointer; }
+.hx-privacy-fab:hover { color: #26241e; background: #d9a23b; border-color: #d9a23b; }
 
 @media (max-width: 560px) {
   .hx-privacy-banner__actions { align-items: stretch; flex-direction: column; }

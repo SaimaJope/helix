@@ -41,7 +41,7 @@ is the only moving part.
 
    The deploy prints the Worker URL, e.g. `https://helix-content-api.<account>.workers.dev`.
 
-5. Put that URL into `admin.html` (`const API_BASE = '...'`) and push.
+5. Put that URL into `admin.html` (`const DEFAULT_API = '...'`) and push. Deployed 3 Sep 2026: https://helix-content-api.saimajope.workers.dev
 
 ## Security model
 

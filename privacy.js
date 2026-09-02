@@ -149,6 +149,15 @@
     });
   }
 
+  function ensureSettingsControl() {
+    if (document.querySelector('.hx-privacy-open, [data-hx-privacy-settings]')) return;
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'hx-privacy-open hx-privacy-fab';
+    button.textContent = 'Privacy settings';
+    document.body.appendChild(button);
+  }
+
   function boot() {
     document.addEventListener('click', function (event) {
       const opener = event.target.closest('[data-hx-privacy-settings], .hx-privacy-open');
@@ -156,7 +165,18 @@
       event.preventDefault();
       openSettings();
     });
+    document.addEventListener('submit', function (event) {
+      const form = event.target.closest('form[data-mailto]');
+      if (!form || event.defaultPrevented) return;
+      event.preventDefault();
+      const data = new FormData(form);
+      const subject = data.get('subject') || form.dataset.subject || 'Message from the website';
+      const lines = [];
+      data.forEach(function (value, key) { if (key !== 'subject') lines.push(key + ': ' + value); });
+      window.location.href = 'mailto:helixanthropisinstitute@gmail.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(lines.join('\n'));
+    });
     hardenExternalLinks();
+    ensureSettingsControl();
     addFormNotices();
     if (!readReceipt()) showBanner();
   }

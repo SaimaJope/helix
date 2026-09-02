@@ -243,10 +243,11 @@
           <p style="margin: 0; font-size: 14.5px; line-height: 1.6; color: rgba(237,232,216,0.7); max-width: 38ch;">Advancing humanity through cooperation and solidarity.</p>
           <div style="margin-top: 6px;">
             <p style="margin: 0 0 10px; font-size: 11px; font-weight: 700; letter-spacing: 0.22em; color: rgba(237,232,216,0.55);">NEWSLETTER</p>
-            <div style="display: flex; max-width: 360px;">
-              <input type="email" aria-label="Email address" placeholder="Email address" style="flex: 1; min-width: 0; background: transparent; border: 1px solid rgba(237,232,216,0.4); border-right: none; color: #EDE8D8; padding: 13px 14px; font-family: inherit; font-size: 14px;">
-              <button style="background: #D9A23B; color: #26241E; border: none; font-family: inherit; font-size: 14px; font-weight: 700; padding: 13px 18px; cursor: pointer;" style-hover="background: #C89230;">Subscribe</button>
-            </div>
+            <form data-mailto data-subject="Newsletter subscription" style="display: flex; max-width: 360px;">
+              <input type="email" name="email" required aria-label="Email address" placeholder="Email address" style="flex: 1; min-width: 0; background: transparent; border: 1px solid rgba(237,232,216,0.4); border-right: none; color: #EDE8D8; padding: 13px 14px; font-family: inherit; font-size: 14px;">
+              <button type="submit" style="background: #D9A23B; color: #26241E; border: none; font-family: inherit; font-size: 14px; font-weight: 700; padding: 13px 18px; cursor: pointer;" style-hover="background: #C89230;">Subscribe</button>
+            </form>
+            <p class="hx-form-privacy" data-for="Newsletter subscription">This opens a draft in your email app; nothing is sent unless you send it. <a href="privacy.html#email">Privacy details</a>.</p>
           </div>
         </div>
         <nav aria-label="Footer institute" style="flex: 0 1 160px; min-width: 140px;">

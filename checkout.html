@@ -79,14 +79,14 @@
         <div class="field"><label for="k-name">Full name</label><input id="k-name" name="name" required autocomplete="name"></div>
         <div class="field"><label for="k-email">Email</label><input id="k-email" name="email" type="email" required autocomplete="email"></div>
       </div>
-      <p class="label accent" style="margin-top:14px;">Shipping address</p>
+      <p class="label accent" style="margin-top:14px;">Delivery address preview</p>
       <div class="field"><label for="k-addr">Street and number</label><input id="k-addr" name="address" required autocomplete="street-address"></div>
       <div class="row">
         <div class="field"><label for="k-zip">Postal code</label><input id="k-zip" name="zip" required autocomplete="postal-code"></div>
         <div class="field"><label for="k-city">City</label><input id="k-city" name="city" required autocomplete="address-level2"></div>
       </div>
       <div class="field"><label for="k-country">Country</label><select id="k-country" name="country"><option>Luxembourg</option><option>Belgium</option><option>France</option><option>Germany</option><option>Netherlands</option><option>Portugal</option><option>Italy</option><option>Other EU country</option></select></div>
-      <p class="label accent" style="margin-top:14px;">Payment</p>
+      <p class="label accent" style="margin-top:14px;">Payment preview</p>
       <div class="field"><label>Method</label>
         <div class="checks"><label><input type="radio" name="pay" value="card" checked> Card</label><label><input type="radio" name="pay" value="bank"> Bank transfer</label><label><input type="radio" name="pay" value="paypal"> PayPal</label></div>
         <span class="hint">Prototype only: no payment provider is connected and nothing is charged.</span>
@@ -95,7 +95,7 @@
     </form>
     <aside class="sticky-aside">
       <div class="card" style="padding:clamp(20px,2.4vw,30px);gap:16px;">
-        <p class="label" style="margin:0;">Order summary</p>
+        <p class="label" style="margin:0;">Preview summary</p>
         <div data-summary></div>
       </div>
     </aside>
@@ -180,8 +180,8 @@
     HX.$('[data-place]').disabled = false;
     sum.innerHTML = `
       <div>${s.items.map((i) => `<div class="cart-item"><div class="thumb">${HX.art(i.art, i.color)}</div><div><div class="ttl">${HX.esc(i.name)}</div><div class="meta">${HX.esc(i.colorName)} · ${HX.esc(i.size)} · × ${i.qty}</div></div><div class="line-price">${HX.money(i.price * i.qty)}</div></div>`).join('')}</div>
-      <div class="field" style="margin-top:16px;"><label for="k-tier">Membership</label><select id="k-tier">${Object.entries(HX.TIERS).map(([k, v]) => `<option value="${k}" ${s.tier === k ? 'selected' : ''}>${v.label}${v.pct ? ` (${v.pct}% off)` : ''}</option>`).join('')}</select><span class="hint">Membership is verified against our records before shipping.</span></div>
-      <div class="totals" style="margin-top:16px;"><div><span>Subtotal</span><span>${HX.money(t.subtotal)}</span></div>${t.pct ? `<div class="disc"><span>Member discount ${t.pct}%</span><span>−${HX.money(t.discount)}</span></div>` : ''}<div><span>Shipping</span><span>Calculated by the provider</span></div><div class="total"><span>Total</span><span>${HX.money(t.total)}</span></div></div>`;
+      <div class="field" style="margin-top:16px;"><label for="k-tier">Membership preview</label><select id="k-tier">${Object.entries(HX.TIERS).map(([k, v]) => `<option value="${k}" ${s.tier === k ? 'selected' : ''}>${v.label}${v.pct ? ` (${v.pct}% off)` : ''}</option>`).join('')}</select><span class="hint">A future live shop would verify membership before applying a discount.</span></div>
+      <div class="totals" style="margin-top:16px;"><div><span>Subtotal</span><span>${HX.money(t.subtotal)}</span></div>${t.pct ? `<div class="disc"><span>Preview discount ${t.pct}%</span><span>−${HX.money(t.discount)}</span></div>` : ''}<div><span>Shipping</span><span>Not calculated in prototype</span></div><div class="total"><span>Preview total</span><span>${HX.money(t.total)}</span></div></div>`;
     sum.querySelector('#k-tier').onchange = (e) => { HX.cart.setTier(e.target.value); render(); };
   };
   render();

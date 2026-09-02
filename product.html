@@ -183,7 +183,7 @@
             <div class="btn-row" style="gap:8px;">${(p.sizes || ['One size']).map((s, i) => `<button class="opt-btn" type="button" data-size="${i}" aria-pressed="${i === size}">${HX.esc(s)}</button>`).join('')}</div></div>
           <div class="field" style="margin-top:18px;"><label>Quantity</label>
             <div class="qty"><button type="button" data-q="-1" aria-label="Decrease">−</button><input type="number" min="1" max="99" value="${qty}" data-qty aria-label="Quantity"><button type="button" data-q="1" aria-label="Increase">+</button></div></div>
-          <div class="btn-row" style="margin-top:26px;"><button class="btn" type="button" data-add>Add to Cart</button><button class="btn ink" type="button" data-buy>Buy Now</button></div>
+          <div class="btn-row" style="margin-top:26px;"><button class="btn" type="button" data-add>Add to prototype cart</button><button class="btn ink" type="button" data-buy>Preview checkout</button></div>
           <div class="targets" style="margin-top:32px;">${(p.details || []).map((d, i) => `<div><span class="k">${['i.', 'ii.', 'iii.', 'iv.', 'v.'][i] || ''}</span><p>${HX.esc(d)}</p></div>`).join('')}</div>
           <p class="small" style="margin-top:14px;">Members choose their tier in the cart. Discounts apply to store products only.</p>
         </div>
