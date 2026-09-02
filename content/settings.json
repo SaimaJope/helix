@@ -16,8 +16,22 @@
     "substack": "https://substack.com"
   },
   "membership": {
-    "member": { "label": "Member", "price": "", "note": "A seat and a vote at every assembly. Access to the Discord, the members' newsletter and project teams." },
-    "eco": { "label": "Eco Champion", "price": "", "discount": 10, "note": "Everything in Member, plus 10% off store products and your name in the annual report." },
-    "visionary": { "label": "Visionary", "price": "", "discount": 20, "note": "Everything in Eco Champion, plus 20% off store products and an invitation to the yearly Visionaries' dinner with the board." }
+    "member": {
+      "label": "Member",
+      "price": "",
+      "note": "A seat and a vote at every assembly. Access to the Discord, the members' newsletter and project teams."
+    },
+    "eco": {
+      "label": "Eco Champion",
+      "price": "",
+      "discount": 10,
+      "note": "Everything in Member, plus 10% off store products and your name in the annual report."
+    },
+    "visionary": {
+      "label": "Visionary",
+      "price": "",
+      "discount": 20,
+      "note": "Everything in Eco Champion, plus 20% off store products and an invitation to the yearly Visionaries' dinner with the board."
+    }
   }
 }
