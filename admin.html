@@ -4,7 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Content admin · Helix Anthropis Institute</title>
-<meta name="robots" content="noindex">
+<meta name="robots" content="noindex, nofollow">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://*.workers.dev http://127.0.0.1:* http://localhost:*; base-uri 'self'; form-action 'self'">
+<meta name="referrer" content="no-referrer">
 <link rel="icon" href="assets/helix-h-ink.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -143,6 +145,7 @@
     <form class="form" style="margin-top:22px;" data-login-form>
       <div class="field"><label for="l-user">Username</label><input id="l-user" name="username" autocomplete="username" required></div>
       <div class="field"><label for="l-pass">Password</label><input id="l-pass" name="password" type="password" autocomplete="current-password" required></div>
+      <div class="field" data-code-field hidden><label for="l-code">Authenticator code</label><input id="l-code" name="code" inputmode="numeric" pattern="[0-9 ]*" autocomplete="one-time-code" placeholder="6 digits"><span class="hint">From your authenticator app. Changes every 30 seconds.</span></div>
       <p class="notice" data-login-error hidden style="border-color:var(--red);"></p>
       <div class="btn-row"><button class="btn" type="submit">Log in</button><button class="btn outline" type="button" data-login-offline>Work offline</button></div>
       <details style="margin-top:8px;"><summary class="small" style="cursor:pointer;">Connection settings</summary>
@@ -188,7 +191,10 @@
   let current = 'news'; const data = {}, sha = {}, dirty = {};
   const key = (c) => 'helix-content:' + c;
   const apiBase = () => { try { return (localStorage.getItem('helix-api') || DEFAULT_API).replace(/\/+$/, ''); } catch (e) { return DEFAULT_API; } };
-  const token = () => { try { return localStorage.getItem('helix-admin-token') || ''; } catch (e) { return ''; } };
+  const token = () => { try { return sessionStorage.getItem('helix-admin-token') || ''; } catch (e) { return ''; } };
+  const IDLE_MS = 30 * 60 * 1000; let idleT;
+  const touch = () => { if (!me) return; clearTimeout(idleT); idleT = setTimeout(() => { sessionStorage.removeItem('helix-admin-token'); me = null; showLogin(); HX.toast('Logged out after 30 minutes without activity'); }, IDLE_MS); };
+  ['click', 'keydown', 'mousemove', 'touchstart'].forEach((ev) => document.addEventListener(ev, touch, { passive: true }));
   let me = null; let offline = false;
 
   async function api(path, opts = {}) {
@@ -323,7 +329,7 @@
     $('[data-preview-toggle]').textContent = pv ? 'Stop previewing on site' : 'Preview edits on site';
   }
   async function boot() {
-    if (apiBase() && token()) { try { me = (await api('/me')).user; } catch (e) { me = null; } }
+    if (apiBase() && token()) { try { me = (await api('/me')).user; touch(); } catch (e) { me = null; } }
     if (!me && apiBase()) showLogin(); else if (!apiBase()) { offline = true; showLogin(); }
     Object.keys(data).forEach((k) => delete data[k]);
     await render();
@@ -348,7 +354,7 @@
     else if (b.hasAttribute('data-reset')) { if (confirm('Discard the draft in this browser and reload the published version?')) { localStorage.removeItem(key(current)); delete data[current]; dirty[current] = false; render(); } }
     else if (b.hasAttribute('data-raw-apply')) { try { const v = JSON.parse($('[data-raw]').value); data[current] = v; persist(current); HX.toast('Raw JSON applied'); } catch (err) { alert('Invalid JSON: ' + err.message); } }
     else if (b.hasAttribute('data-preview-toggle')) { const on = localStorage.getItem('helix-content-preview') === 'on'; localStorage.setItem('helix-content-preview', on ? 'off' : 'on'); statusUI(); HX.toast(on ? 'Preview off' : 'Preview on: open any page in this browser'); }
-    else if (b.hasAttribute('data-logout')) { localStorage.removeItem('helix-admin-token'); me = null; offline = false; boot(); }
+    else if (b.hasAttribute('data-logout')) { sessionStorage.removeItem('helix-admin-token'); me = null; offline = false; boot(); }
     else if (b.hasAttribute('data-login-offline')) { offline = true; hideLogin(); Object.keys(data).forEach((k) => delete data[k]); render(); }
     else if (b.dataset.uploadFor) {
       pickFiles(b.dataset.accept || 'image/*', false, async ([f]) => { if (!f) return; try { const path = await upload(f); const inp = document.getElementById(b.dataset.uploadFor); inp.value = path; const prev = document.querySelector(`[data-prev-for="${b.dataset.uploadFor}"]`); if (prev) prev.src = path; HX.toast('Uploaded'); } catch (err) { alert(err.message); } });
@@ -379,10 +385,11 @@
     if (!apiBase()) { $('[data-login-error]').hidden = false; $('[data-login-error]').textContent = 'Enter the API address under Connection settings, or work offline.'; return; }
     const fd = new FormData(e.target);
     try {
-      const r = await fetch(apiBase() + '/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ username: fd.get('username'), password: fd.get('password') }) });
+      const r = await fetch(apiBase() + '/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ username: fd.get('username'), password: fd.get('password'), code: fd.get('code') || undefined }) });
       const j = await r.json().catch(() => ({}));
+      if (j.needCode) { $('[data-code-field]').hidden = false; $('#l-code').focus(); }
       if (!r.ok) throw new Error(j.error || 'Login failed');
-      localStorage.setItem('helix-admin-token', j.token); me = j.user; offline = false; hideLogin(); $('[data-login-error]').hidden = true;
+      sessionStorage.setItem('helix-admin-token', j.token); me = j.user; offline = false; hideLogin(); $('[data-login-error]').hidden = true; $('[data-code-field]').hidden = true; touch();
       Object.keys(data).forEach((k) => delete data[k]); render(); HX.toast('Welcome, ' + me.name);
     } catch (err) { $('[data-login-error]').hidden = false; $('[data-login-error]').textContent = err.message; }
   });

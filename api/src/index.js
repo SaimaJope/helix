@@ -3,10 +3,12 @@
    everything as commits to the GitHub repository that GitHub Pages serves.
 
    Secrets / vars (wrangler secret put NAME):
-     USERS           JSON array: [{"username":"martim","hash":"pbkdf2$...","name":"Martim Galésio"}]
-                     Generate hashes with:  node hash-password.mjs <password>
+     USERS           JSON array: [{"username":"martim","hash":"pbkdf2$...","name":"Martim Galésio","totp":"BASE32SECRET"}]
+                     Generate entries with:  node hash-password.mjs <username> "<Full name>" <password> --totp
+                     "totp" is optional; when present the login also requires a 6-digit authenticator code.
      SESSION_SECRET  long random string, signs session tokens
      GITHUB_TOKEN    fine-grained token with Contents: read and write on the repo
+   Optional binding (wrangler.toml [[ratelimits]] LOGIN_LIMIT): throttles login attempts per IP and username.
    Vars (wrangler.toml):
      GITHUB_REPO     "SaimaJope/helix"
      GITHUB_BRANCH   "main"
@@ -20,18 +22,31 @@ const fromB64url = (s) => Uint8Array.from(atob(s.replace(/-/g, '+').replace(/_/g
 const utf8ToB64 = (str) => b64(enc.encode(str));
 
 const CONTENT_FILES = ['projects', 'publications', 'initiatives', 'news', 'events', 'products', 'opportunities', 'team', 'settings'];
-const IMAGE_TYPES = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp', 'image/gif': 'gif', 'image/svg+xml': 'svg', 'application/pdf': 'pdf' };
+const IMAGE_TYPES = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp', 'image/gif': 'gif', 'application/pdf': 'pdf' };
+// File signatures: the browser-supplied MIME type is not trusted. SVG is refused on purpose (it can carry scripts).
+function sniff(bytes) {
+  const h = Array.from(bytes.slice(0, 12));
+  const str = (a, b) => String.fromCharCode(...h.slice(a, b));
+  if (h[0] === 0xFF && h[1] === 0xD8 && h[2] === 0xFF) return 'jpg';
+  if (h[0] === 0x89 && str(1, 4) === 'PNG') return 'png';
+  if (str(0, 4) === 'RIFF' && str(8, 12) === 'WEBP') return 'webp';
+  if (str(0, 4) === 'GIF8') return 'gif';
+  if (str(0, 5) === '%PDF-') return 'pdf';
+  return null;
+}
+const SESSION_HOURS = 8;
+const PBKDF2_MAX = 100000; // Cloudflare Workers refuse more iterations than this
 const MAX_UPLOAD = 8 * 1024 * 1024;
 
 /* ------------------------------------------------------------ passwords */
-async function pbkdf2(password, salt, iterations = 120000) {
+async function pbkdf2(password, salt, iterations = PBKDF2_MAX) {
   const key = await crypto.subtle.importKey('raw', enc.encode(password), 'PBKDF2', false, ['deriveBits']);
   const bits = await crypto.subtle.deriveBits({ name: 'PBKDF2', hash: 'SHA-256', salt, iterations }, key, 256);
   return new Uint8Array(bits);
 }
 export async function hashPassword(password) {
   const salt = crypto.getRandomValues(new Uint8Array(16));
-  const iterations = 120000;
+  const iterations = PBKDF2_MAX;
   const dk = await pbkdf2(password, salt, iterations);
   return `pbkdf2$${iterations}$${b64url(salt)}$${b64url(dk)}`;
 }
@@ -39,7 +54,7 @@ async function verifyPassword(password, stored) {
   try {
     const [algo, iter, salt, hash] = stored.split('$');
     if (algo !== 'pbkdf2') return false;
-    const dk = await pbkdf2(password, fromB64url(salt), parseInt(iter, 10));
+    const dk = await pbkdf2(password, fromB64url(salt), Math.min(parseInt(iter, 10), PBKDF2_MAX));
     const want = fromB64url(hash);
     if (dk.length !== want.length) return false;
     let diff = 0;
@@ -48,13 +63,38 @@ async function verifyPassword(password, stored) {
   } catch (e) { return false; }
 }
 
+/* ------------------------------------------------------------------ TOTP */
+function base32Decode(str) {
+  const A = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
+  const clean = String(str || '').toUpperCase().replace(/[^A-Z2-7]/g, '');
+  let bits = 0, value = 0; const out = [];
+  for (const ch of clean) { value = (value << 5) | A.indexOf(ch); bits += 5; if (bits >= 8) { out.push((value >>> (bits - 8)) & 0xFF); bits -= 8; } }
+  return new Uint8Array(out);
+}
+async function totpCode(secretB32, step) {
+  const key = await crypto.subtle.importKey('raw', base32Decode(secretB32), { name: 'HMAC', hash: 'SHA-1' }, false, ['sign']);
+  const msg = new Uint8Array(8); let v = step;
+  for (let i = 7; i >= 0; i--) { msg[i] = v & 0xFF; v = Math.floor(v / 256); }
+  const mac = new Uint8Array(await crypto.subtle.sign('HMAC', key, msg));
+  const off = mac[mac.length - 1] & 0x0F;
+  const code = ((mac[off] & 0x7F) << 24) | (mac[off + 1] << 16) | (mac[off + 2] << 8) | mac[off + 3];
+  return String(code % 1000000).padStart(6, '0');
+}
+async function verifyTotp(secretB32, code) {
+  const c = String(code || '').replace(/\s+/g, '');
+  if (!/^\d{6}$/.test(c)) return false;
+  const now = Math.floor(Date.now() / 30000);
+  for (const d of [0, -1, 1]) if (await totpCode(secretB32, now + d) === c) return true;
+  return false;
+}
+
 /* -------------------------------------------------------------- sessions */
 async function hmac(secret, data) {
   const key = await crypto.subtle.importKey('raw', enc.encode(secret), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
   return b64url(await crypto.subtle.sign('HMAC', key, enc.encode(data)));
 }
 async function makeToken(env, username) {
-  const exp = Date.now() + 12 * 3600 * 1000;
+  const exp = Date.now() + SESSION_HOURS * 3600 * 1000;
   const payload = b64url(enc.encode(JSON.stringify({ u: username, exp })));
   return payload + '.' + await hmac(env.SESSION_SECRET, payload);
 }
@@ -120,7 +160,7 @@ function cors(env, req) {
     Vary: 'Origin'
   };
 }
-const json = (data, status = 200, headers = {}) => new Response(JSON.stringify(data), { status, headers: { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store', ...headers } });
+const json = (data, status = 200, headers = {}) => new Response(JSON.stringify(data), { status, headers: { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff', 'Referrer-Policy': 'no-referrer', 'Strict-Transport-Security': 'max-age=31536000', ...headers } });
 const slug = (s) => String(s || 'file').toLowerCase().normalize('NFKD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 60) || 'file';
 
 /* ------------------------------------------------------------------ app */
@@ -134,11 +174,21 @@ export default {
       if (path === '/' || path === '/health') return json({ ok: true, service: 'helix-content-api', repo: env.GITHUB_REPO, branch: env.GITHUB_BRANCH }, 200, h);
 
       if (path === '/login' && req.method === 'POST') {
-        const { username, password } = await req.json().catch(() => ({}));
-        const user = users(env).find((x) => x.username === String(username || '').trim().toLowerCase());
+        const { username, password, code } = await req.json().catch(() => ({}));
+        const uname = String(username || '').trim().toLowerCase().slice(0, 64);
+        const ip = req.headers.get('CF-Connecting-IP') || 'unknown';
+        if (env.LOGIN_LIMIT) {
+          const [byIp, byUser] = await Promise.all([env.LOGIN_LIMIT.limit({ key: 'ip:' + ip }), env.LOGIN_LIMIT.limit({ key: 'user:' + uname })]);
+          if (!byIp.success || !byUser.success) return json({ error: 'Too many attempts. Wait a minute and try again.' }, 429, h);
+        }
+        const user = users(env).find((x) => x.username === uname);
         const ok = user && await verifyPassword(String(password || ''), user.hash);
-        if (!ok) { await new Promise((r) => setTimeout(r, 600)); return json({ error: 'Wrong username or password.' }, 401, h); }
-        return json({ token: await makeToken(env, user.username), user: { username: user.username, name: user.name || user.username } }, 200, h);
+        if (!ok) { await new Promise((r) => setTimeout(r, 800)); return json({ error: 'Wrong username or password.' }, 401, h); }
+        if (user.totp) {
+          if (!code) return json({ error: 'Enter the 6-digit code from your authenticator app.', needCode: true }, 401, h);
+          if (!(await verifyTotp(user.totp, code))) { await new Promise((r) => setTimeout(r, 800)); return json({ error: 'That code is not valid. Codes change every 30 seconds.', needCode: true }, 401, h); }
+        }
+        return json({ token: await makeToken(env, user.username), user: { username: user.username, name: user.name || user.username }, expiresIn: SESSION_HOURS * 3600 }, 200, h);
       }
 
       const me = await readToken(env, req);
@@ -171,9 +221,10 @@ export default {
         const form = await req.formData();
         const file = form.get('file');
         if (!file || typeof file === 'string') return json({ error: 'No file.' }, 400, h);
-        const ext = IMAGE_TYPES[file.type];
-        if (!ext) return json({ error: 'Only JPG, PNG, WebP, GIF, SVG or PDF files.' }, 415, h);
         if (file.size > MAX_UPLOAD) return json({ error: 'File is larger than 8 MB.' }, 413, h);
+        const head = new Uint8Array(await file.slice(0, 16).arrayBuffer());
+        const ext = sniff(head);
+        if (!ext || !Object.values(IMAGE_TYPES).includes(ext)) return json({ error: 'Only JPG, PNG, WebP, GIF or PDF files. SVG is not accepted.' }, 415, h);
         const d = new Date();
         const base = slug((form.get('name') || file.name || 'upload').replace(/\.[a-z0-9]+$/i, ''));
         const rel = `uploads/${d.getFullYear()}/${String(d.getMonth() + 1).padStart(2, '0')}/${base}-${Date.now().toString(36)}.${ext}`;

@@ -15,6 +15,15 @@ Use this as the prompt for whoever continues (Claude, GPT, a human). State as of
 - Pages are generated from the scratch scripts `shell.py`, `pages_a.py`, `pages_b.py` (they were in a temp folder; if missing, just edit the HTML files directly, the header/footer is identical in each).
 - Reused from the home page: `procedural-fields.js` (WebGL hero/footer field, `canvas[data-procedural-field]`), `stock-footage.js` (`video[data-stock-footage]`), `assets/sdg/NN.png|inv-NN.png|gif-NN.gif`, `assets/video/*.mp4`.
 
+## Backend for staff (added 3 Sep 2026)
+- `api/` is a Cloudflare Worker: username + password login (PBKDF2 hashes in the USERS secret), 12 h signed tokens, GET/PUT `content/<name>.json` and POST `/upload` that commit straight to `SaimaJope/helix` on GitHub via the Contents API, so GitHub Pages republishes within a minute. See `api/README.md` for the five-minute deploy (wrangler login, GitHub fine-grained token, three secrets, `wrangler deploy`, paste the Worker URL into `admin.html` DEFAULT_API or in the login screen's Connection settings).
+- Security (see api/README.md): PBKDF2 100k (Workers cap), optional TOTP two-factor per user (`--totp`), login rate limit binding (5/min per IP and username), 8 h tokens in sessionStorage with 30 min idle logout, upload magic-byte sniffing (no SVG), CSP on admin.html.
+- `admin.html`: login screen, per-collection lists, editor with image upload, photo galleries, Markdown body with live preview, Site settings form (mission, vision, story, contact, socials, membership). Drafts live in localStorage; Preview shows them on the live pages in the same browser; Publish commits. Offline mode still downloads JSON.
+- `post.html?id=` and `project.html?id=` are the article pages (cover image or video, Markdown body, gallery, aside, related, prev/next). Cards link there unless an entry has an external `link`.
+- `HX.md` in site.js is the Markdown renderer (headings, bold, italic, links, lists, quotes, images, rules). Products with `images[]` show photos instead of the drawn art.
+- Local testing: `node api/dev-server.mjs 8787` with `api/.dev.vars` (never commit it). `npx wrangler dev` on this Windows machine hangs every other POST and stale workerd/node processes on the port cause hangs; kill them first.
+- Git: `helix-main` is now its own repo tracking `origin/main` of SaimaJope/helix (nested inside the accidental home-directory repo). Commit made locally; push publishes the site.
+
 ## Verified
 - All pages render with zero console errors at 1440 and 390 px (Playwright, served over http; `fetch` of content JSON needs http, e.g. Live Server at 127.0.0.1:5500 or `python -m http.server`).
 
