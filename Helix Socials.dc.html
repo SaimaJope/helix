@@ -7,6 +7,7 @@
 <link rel="stylesheet" href="fonts.css">
 <link rel="stylesheet" href="privacy.css">
 <script src="./support.js"></script>
+<script src="./procedural-fields.js" defer></script>
 <script src="./privacy.js" defer></script>
 </head>
 <body>
@@ -139,43 +140,63 @@
     </div>
   </div>
 
-  <footer data-screen-label="Footer" style="background: #26241E; color: #EDE8D8;">
-    <div style="max-width: 1200px; margin: 0 auto; padding: clamp(44px, 5vw, 64px) clamp(20px, 4.5vw, 56px) 30px;">
-      <div style="display: flex; flex-wrap: wrap; gap: 40px clamp(44px, 5vw, 84px);">
-        <div style="flex: 1.3 1 300px; min-width: min(100%, 280px); display: flex; flex-direction: column; gap: 18px;">
-          <img src="assets/helix-h.svg?v=brand-2026-3" alt="Helix Anthropis" draggable="false" style="display: block; width: 68px; height: 104px; object-fit: contain; object-position: left center;">
-          <p style="margin: 0; font-size: 14.5px; line-height: 1.6; color: rgba(237,232,216,0.7); max-width: 38ch;">Advancing humanity through cooperation and solidarity.</p>
-        </div>
-        <nav aria-label="Footer institute" style="flex: 0 1 150px; min-width: 130px;">
-          <p style="margin: 0 0 14px; font-size: 11px; font-weight: 800; letter-spacing: 0.22em; color: rgba(237,232,216,0.55);">INSTITUTE</p>
-          <div style="display: flex; flex-direction: column; gap: 11px; font-size: 14.5px;">
-            <a href="Helix Home v2.dc.html#about" style-hover="color: #D9A23B;">About</a>
-            <a href="Helix Home v2.dc.html#people" style-hover="color: #D9A23B;">People</a>
-            <a href="Helix Home v2.dc.html#support" style-hover="color: #D9A23B;">Support</a>
-          </div>
-        </nav>
-        <nav aria-label="Footer work" style="flex: 0 1 150px; min-width: 130px;">
-          <p style="margin: 0 0 14px; font-size: 11px; font-weight: 800; letter-spacing: 0.22em; color: rgba(237,232,216,0.55);">WORK</p>
-          <div style="display: flex; flex-direction: column; gap: 11px; font-size: 14.5px;">
-            <a href="Helix Home v2.dc.html#focus" style-hover="color: #D9A23B;">Focus areas</a>
-            <a href="Helix Home v2.dc.html#projects" style-hover="color: #D9A23B;">Projects</a>
-            <a href="Helix Home v2.dc.html#sdgs" style-hover="color: #D9A23B;">UN SDGs</a>
-          </div>
-        </nav>
-        <div style="flex: 0 1 260px; min-width: min(100%, 220px);">
-          <p style="margin: 0 0 14px; font-size: 11px; font-weight: 800; letter-spacing: 0.22em; color: rgba(237,232,216,0.55);">CONTACT</p>
-          <div style="display: flex; flex-direction: column; gap: 11px; font-size: 14.5px; color: rgba(237,232,216,0.85);">
-            <a href="mailto:helixanthropisinstitute@gmail.com" style="text-decoration: underline; text-underline-offset: 3px;" style-hover="color: #D9A23B;">helixanthropisinstitute@gmail.com</a>
-            <p style="margin: 0; line-height: 1.6;">40 Bd Pierre Dupong<br>1430 Hollerich, Luxembourg</p>
-          </div>
-        </div>
-      </div>
-      <div style="margin-top: clamp(36px, 4.5vw, 56px); padding-top: 20px; border-top: 1px solid rgba(237,232,216,0.22); display: flex; flex-wrap: wrap; gap: 10px 32px; justify-content: space-between; font-size: 13px; color: rgba(237,232,216,0.55);">
-        <p style="margin: 0;">© Helix Anthropis Institute, 2026</p>
-        <p style="margin: 0; display: flex; gap: 22px; flex-wrap: wrap;"><span>Design prototype — placeholder handles where noted</span><a href="privacy.html" style-hover="color: #D9A23B;">Privacy</a><a href="legal.html" style-hover="color: #D9A23B;">Legal notice</a><button type="button" class="hx-privacy-open" style="appearance: none; border: 0; padding: 0; background: transparent; color: inherit; font: inherit; cursor: pointer;">Privacy settings</button></p>
+  <section id="support" data-screen-label="Support and footer" style="background: #26241E; color: #EDE8D8; position: relative; overflow: hidden;">
+    <canvas class="hx-procedural-field hx-footer-field" data-procedural-field="footer" aria-hidden="true"></canvas>
+    <div style="position: relative; max-width: 1200px; margin: 0 auto; padding: clamp(64px, 8vw, 110px) clamp(20px, 4.5vw, 56px) clamp(40px, 5vw, 64px);">
+      <h2 style="margin: 0 0 18px; font-family: 'Source Serif 4', Georgia, serif; font-weight: 520; font-size: clamp(34px, 4.4vw, 62px); line-height: 1.08; letter-spacing: -0.015em; max-width: 18ch;">Help advance the common good.</h2>
+      <p style="margin: 0 0 32px; max-width: 56ch; font-size: 16px; line-height: 1.65; color: rgba(237,232,216,0.75);">Helix works in service of humanity and the common good. Join, support or partner with the institute.</p>
+      <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 18px 40px;">
+        <a href="volunteer.html#support" style="font-size: 15.5px; font-weight: 700; color: #D9A23B; border-bottom: 2px solid #D9A23B; padding-bottom: 4px;" style-hover="color: #F6F3E8; border-color: #F6F3E8;">Support our work</a>
+        <a href="volunteer.html#community" style="font-size: 15.5px; font-weight: 700; color: #EDE8D8; border-bottom: 2px solid rgba(237,232,216,0.6); padding-bottom: 4px;" style-hover="color: #D9A23B; border-color: #D9A23B;">Join our community</a>
+        <a href="contact.html" style="font-size: 15.5px; font-weight: 700; color: #EDE8D8; border-bottom: 2px solid rgba(237,232,216,0.6); padding-bottom: 4px;" style-hover="color: #D9A23B; border-color: #D9A23B;">Contact Helix</a>
       </div>
     </div>
-  </footer>
+    <footer data-screen-label="Footer" style="position: relative; border-top: 1px solid rgba(237,232,216,0.25);">
+      <div style="max-width: 1200px; margin: 0 auto; padding: clamp(44px, 5vw, 64px) clamp(20px, 4.5vw, 56px) 30px;">
+        <div style="display: flex; flex-wrap: wrap; gap: 44px clamp(44px, 5vw, 84px);">
+          <div style="flex: 1.3 1 300px; min-width: min(100%, 280px); display: flex; flex-direction: column; gap: 20px;">
+            <img src="assets/helix-h.svg?v=brand-2026-3" alt="Helix Anthropis" draggable="false" style="display: block; width: 68px; height: 104px; object-fit: contain; object-position: left center;">
+            <p style="margin: 0; font-size: 14.5px; line-height: 1.6; color: rgba(237,232,216,0.7); max-width: 38ch;">Advancing humanity through cooperation and solidarity.</p>
+            <div style="margin-top: 4px;">
+              <p style="margin: 0 0 10px; font-size: 11px; font-weight: 800; letter-spacing: 0.22em; color: rgba(237,232,216,0.55);">NEWSLETTER</p>
+              <form data-mailto data-subject="Newsletter subscription" style="display: flex; max-width: 360px;">
+                <input type="email" name="email" required aria-label="Email address" placeholder="Email address" style="flex: 1; min-width: 0; background: transparent; border: 1px solid rgba(237,232,216,0.4); border-right: none; color: #EDE8D8; padding: 13px 14px; font-family: inherit; font-size: 14px;">
+                <button type="submit" style="background: #D9A23B; color: #26241E; border: none; font-family: inherit; font-size: 14px; font-weight: 700; padding: 13px 18px; cursor: pointer;" style-hover="background: #C89230;">Subscribe</button>
+              </form>
+              <p class="hx-form-privacy" data-for="Newsletter subscription">This opens a draft in your email app; nothing is sent unless you send it. <a href="privacy.html#email">Privacy details</a>.</p>
+            </div>
+          </div>
+          <nav aria-label="Footer institute" style="flex: 0 1 150px; min-width: 130px;">
+            <p style="margin: 0 0 14px; font-size: 11px; font-weight: 800; letter-spacing: 0.22em; color: rgba(237,232,216,0.55);">INSTITUTE</p>
+            <div style="display: flex; flex-direction: column; gap: 11px; font-size: 14.5px;">
+              <a href="about.html" style-hover="color: #D9A23B;">About</a><a href="work.html" style-hover="color: #D9A23B;">Our work</a><a href="about.html#leadership" style-hover="color: #D9A23B;">Leadership</a><a href="news.html" style-hover="color: #D9A23B;">News &amp; events</a><a href="sdgs.html" style-hover="color: #D9A23B;">UN SDGs</a>
+            </div>
+          </nav>
+          <nav aria-label="Footer get involved" style="flex: 0 1 150px; min-width: 130px;">
+            <p style="margin: 0 0 14px; font-size: 11px; font-weight: 800; letter-spacing: 0.22em; color: rgba(237,232,216,0.55);">GET INVOLVED</p>
+            <div style="display: flex; flex-direction: column; gap: 11px; font-size: 14.5px;">
+              <a href="volunteer.html" style-hover="color: #D9A23B;">Volunteer</a><a href="volunteer.html#community" style-hover="color: #D9A23B;">Join our community</a><a href="volunteer.html#support" style-hover="color: #D9A23B;">Support us</a><a href="shop.html" style-hover="color: #D9A23B;">Shop</a>
+            </div>
+          </nav>
+          <div style="flex: 0 1 260px; min-width: min(100%, 220px);">
+            <p style="margin: 0 0 14px; font-size: 11px; font-weight: 800; letter-spacing: 0.22em; color: rgba(237,232,216,0.55);">CONTACT</p>
+            <div style="display: flex; flex-direction: column; gap: 11px; font-size: 14.5px; color: rgba(237,232,216,0.85);">
+              <a href="mailto:helixanthropisinstitute@gmail.com" style="text-decoration: underline; text-underline-offset: 3px;" style-hover="color: #D9A23B;">helixanthropisinstitute@gmail.com</a>
+              <p style="margin: 0; line-height: 1.6;">40 Bd Pierre Dupong<br>1430 Hollerich, Luxembourg</p>
+              <div style="display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: 4px;">
+                <a href="https://instagram.com/helixanthropis" target="_blank" rel="noopener" style-hover="color: #D9A23B;">Instagram ↗</a><a href="https://www.linkedin.com/company/helix-anthropis" target="_blank" rel="noopener" style-hover="color: #D9A23B;">LinkedIn ↗</a><a href="https://youtube.com/@helixanthropis" target="_blank" rel="noopener" style-hover="color: #D9A23B;">YouTube ↗</a><a href="https://discord.com" target="_blank" rel="noopener" style-hover="color: #D9A23B;">Discord ↗</a><a href="https://substack.com" target="_blank" rel="noopener" style-hover="color: #D9A23B;">Substack ↗</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top: clamp(40px, 5vw, 60px); padding-top: 20px; border-top: 1px solid rgba(237,232,216,0.22); display: flex; flex-wrap: wrap; gap: 10px 32px; justify-content: space-between; font-size: 13px; color: rgba(237,232,216,0.55);">
+          <p style="margin: 0;">© Helix Anthropis Institute, 2026</p>
+          <p style="margin: 0;">Design prototype — placeholder content where noted</p>
+          <p style="margin: 0; display: flex; gap: 22px; align-items: center; flex-wrap: wrap;"><a href="privacy.html" style-hover="color: #D9A23B;">Privacy</a><a href="legal.html" style-hover="color: #D9A23B;">Legal notice</a><button type="button" class="hx-privacy-open" style="appearance: none; border: 0; padding: 0; background: transparent; color: inherit; font: inherit; cursor: pointer;" style-hover="color: #D9A23B;">Privacy settings</button></p>
+        </div>
+      </div>
+    </footer>
+  </section>
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script>
