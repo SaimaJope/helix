@@ -10,3 +10,4 @@ api/.dev.vars
 api/node_modules/
 api/.wrangler/
 tmp/
+api/USERS.secret.json

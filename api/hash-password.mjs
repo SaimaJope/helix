@@ -5,12 +5,13 @@ import { webcrypto as crypto } from 'node:crypto';
 
 const args = process.argv.slice(2);
 const wantTotp = args.includes('--totp');
-const [username, name, password] = args.filter((a) => a !== '--totp');
+const allowShort = args.includes('--allow-short');
+const [username, name, password] = args.filter((a) => a !== '--totp' && a !== '--allow-short');
 if (!username || !name || !password) {
   console.error('Usage: node hash-password.mjs <username> "<Full name>" <password> [--totp]');
   process.exit(1);
 }
-if (password.length < 12) { console.error('Use a password of at least 12 characters (a sentence works well).'); process.exit(1); }
+if (password.length < 12 && !allowShort) { console.error('Use a password of at least 12 characters (a sentence works well).'); process.exit(1); }
 const enc = new TextEncoder();
 const b64url = (buf) => Buffer.from(buf).toString('base64').replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 const salt = crypto.getRandomValues(new Uint8Array(16));
