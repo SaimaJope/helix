@@ -24,6 +24,8 @@ Use this as the prompt for whoever continues (Claude, GPT, a human). State as of
 - Local testing: `node api/dev-server.mjs 8787` with `api/.dev.vars` (never commit it). `npx wrangler dev` on this Windows machine hangs every other POST and stale workerd/node processes on the port cause hangs; kill them first.
 - Git: `helix-main` is now its own repo tracking `origin/main` of SaimaJope/helix (nested inside the accidental home-directory repo). Commit made locally; push publishes the site.
 
+- Deployed 3 Sep 2026: Worker at https://helix-content-api.saimajope.workers.dev (Cloudflare account saimajope@gmail.com), admin.html points at it. Accounts user1/user2/user3 (temporary passwords, in api/USERS.secret.json, not in git). GITHUB_TOKEN secret is currently the gh CLI OAuth token; replace with a fine-grained token scoped to SaimaJope/helix when convenient. Worker secrets are changed with `CLOUDFLARE_API_TOKEN=... npx wrangler secret put NAME` from api/.
+
 ## Verified
 - All pages render with zero console errors at 1440 and 390 px (Playwright, served over http; `fetch` of content JSON needs http, e.g. Live Server at 127.0.0.1:5500 or `python -m http.server`).
 
