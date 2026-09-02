@@ -5,12 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Content admin · Helix Anthropis Institute</title>
 <meta name="robots" content="noindex, nofollow">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://*.workers.dev http://127.0.0.1:* http://localhost:*; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob: https:; connect-src 'self' https://*.workers.dev http://127.0.0.1:* http://localhost:*; base-uri 'self'; form-action 'self'">
 <meta name="referrer" content="no-referrer">
 <link rel="icon" href="assets/helix-h-ink.svg" type="image/svg+xml">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,100..900;1,100..900&family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="fonts.css">
 <link rel="stylesheet" href="site.css">
 <script>try{if(localStorage.getItem('helix-theme')==='dark')document.documentElement.classList.add('hx-document-dark')}catch(e){}</script>
 <script src="site.js"></script>
@@ -145,7 +143,6 @@
     <form class="form" style="margin-top:22px;" data-login-form>
       <div class="field"><label for="l-user">Username</label><input id="l-user" name="username" autocomplete="username" required></div>
       <div class="field"><label for="l-pass">Password</label><input id="l-pass" name="password" type="password" autocomplete="current-password" required></div>
-      <div class="field" data-code-field hidden><label for="l-code">Authenticator code</label><input id="l-code" name="code" inputmode="numeric" pattern="[0-9 ]*" autocomplete="one-time-code" placeholder="6 digits"><span class="hint">From your authenticator app. Changes every 30 seconds.</span></div>
       <p class="notice" data-login-error hidden style="border-color:var(--red);"></p>
       <div class="btn-row"><button class="btn" type="submit">Log in</button><button class="btn outline" type="button" data-login-offline>Work offline</button></div>
       <details style="margin-top:8px;"><summary class="small" style="cursor:pointer;">Connection settings</summary>
@@ -385,11 +382,10 @@
     if (!apiBase()) { $('[data-login-error]').hidden = false; $('[data-login-error]').textContent = 'Enter the API address under Connection settings, or work offline.'; return; }
     const fd = new FormData(e.target);
     try {
-      const r = await fetch(apiBase() + '/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ username: fd.get('username'), password: fd.get('password'), code: fd.get('code') || undefined }) });
+      const r = await fetch(apiBase() + '/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ username: fd.get('username'), password: fd.get('password')) });
       const j = await r.json().catch(() => ({}));
-      if (j.needCode) { $('[data-code-field]').hidden = false; $('#l-code').focus(); }
       if (!r.ok) throw new Error(j.error || 'Login failed');
-      sessionStorage.setItem('helix-admin-token', j.token); me = j.user; offline = false; hideLogin(); $('[data-login-error]').hidden = true; $('[data-code-field]').hidden = true; touch();
+      sessionStorage.setItem('helix-admin-token', j.token); me = j.user; offline = false; hideLogin(); $('[data-login-error]').hidden = true; touch();
       Object.keys(data).forEach((k) => delete data[k]); render(); HX.toast('Welcome, ' + me.name);
     } catch (err) { $('[data-login-error]').hidden = false; $('[data-login-error]').textContent = err.message; }
   });

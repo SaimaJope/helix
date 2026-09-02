@@ -136,6 +136,19 @@
     });
   }
 
+  function hardenExternalLinks() {
+    document.querySelectorAll('a[href]').forEach(function (link) {
+      let destination;
+      try { destination = new URL(link.href, window.location.href); } catch (error) { return; }
+      if (!/^https?:$/.test(destination.protocol) || destination.origin === window.location.origin) return;
+      const rel = new Set((link.getAttribute('rel') || '').split(/\s+/).filter(Boolean));
+      rel.add('noopener');
+      rel.add('noreferrer');
+      link.setAttribute('rel', Array.from(rel).join(' '));
+      link.referrerPolicy = 'no-referrer';
+    });
+  }
+
   function boot() {
     document.addEventListener('click', function (event) {
       const opener = event.target.closest('[data-hx-privacy-settings], .hx-privacy-open');
@@ -143,6 +156,7 @@
       event.preventDefault();
       openSettings();
     });
+    hardenExternalLinks();
     addFormNotices();
     if (!readReceipt()) showBanner();
   }

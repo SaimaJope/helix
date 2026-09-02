@@ -4,17 +4,17 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="icon" href="assets/helix-h-ink.svg" type="image/svg+xml">
+<link rel="stylesheet" href="fonts.css">
+<link rel="stylesheet" href="privacy.css">
 <script src="./support.js"></script>
 <script src="./procedural-fields.js?v=helix-hero-resolution-fix" defer></script>
 <script src="./stock-footage.js" defer></script>
+<script src="./privacy.js" defer></script>
 </head>
 <body>
 <x-dc>
 <helmet>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,100..900;1,100..900&amp;family=Schibsted+Grotesk:wght@400..900&amp;family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&amp;display=swap" rel="stylesheet">
   <style>
     html { scroll-behavior: smooth; }
     *, *::before, *::after { box-sizing: border-box; }
@@ -520,7 +520,7 @@
         <div style="margin-top: clamp(40px, 5vw, 60px); padding-top: 20px; border-top: 1px solid rgba(237,232,216,0.22); display: flex; flex-wrap: wrap; gap: 10px 32px; justify-content: space-between; font-size: 13px; color: rgba(237,232,216,0.55);">
           <p style="margin: 0;">© Helix Anthropis Institute, 2026</p>
           <p style="margin: 0;">Design prototype — placeholder content where noted</p>
-          <p style="margin: 0; display: flex; gap: 22px; align-items: center;"><button type="button" onClick="{{ toggleTheme }}" aria-label="{{ themeLabel }}" style="appearance: none; border: 0; padding: 0; background: transparent; color: inherit; font: inherit; cursor: pointer;" style-hover="color: #D9A23B;">{{ themeLabel }}</button><a href="#" style-hover="color: #D9A23B;">Privacy</a><a href="#" style-hover="color: #D9A23B;">Legal notice</a></p>
+          <p style="margin: 0; display: flex; gap: 22px; align-items: center; flex-wrap: wrap;"><button type="button" onClick="{{ toggleTheme }}" aria-label="{{ themeLabel }}" style="appearance: none; border: 0; padding: 0; background: transparent; color: inherit; font: inherit; cursor: pointer;" style-hover="color: #D9A23B;">{{ themeLabel }}</button><a href="privacy.html" style-hover="color: #D9A23B;">Privacy</a><a href="legal.html" style-hover="color: #D9A23B;">Legal notice</a><button type="button" class="hx-privacy-open" style="appearance: none; border: 0; padding: 0; background: transparent; color: inherit; font: inherit; cursor: pointer;" style-hover="color: #D9A23B;">Privacy settings</button></p>
         </div>
       </div>
     </footer>
