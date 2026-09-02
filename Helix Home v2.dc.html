@@ -259,8 +259,8 @@
       <div class="hx-menu-body" style="max-width: 1200px; width: 100%; margin: 0 auto; display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 0 clamp(20px, 4vw, 64px); flex: 1;">
         <nav aria-label="All pages" style="display: flex; flex-direction: column; padding: 8px 0 24px clamp(20px, 4.5vw, 56px);">
           <sc-for list="{{ menuLinks }}" as="lnk" hint-placeholder-count="8">
-            <a href="{{ lnk.href }}" onClick="{{ closeMenu }}" style="font-family: 'Source Serif 4', Georgia, serif; font-size: clamp(30px, 5.2vw, 60px); font-weight: 500; letter-spacing: -0.012em; line-height: 1.05; padding: clamp(12px, 1.6vh, 18px) 0; border-bottom: 1px solid rgba(246,243,232,0.28); display: flex; justify-content: space-between; align-items: baseline; gap: 20px; color: {{ lnk.color }};" style-hover="color: #D9A23B;">
-              <span>{{ lnk.label }}</span><span style="font-family: 'Public Sans', system-ui, sans-serif; font-size: 12px; font-weight: 800; letter-spacing: 0.2em; opacity: 0.6;">{{ lnk.num }}</span>
+            <a href="{{ lnk.href }}" onClick="{{ closeMenu }}" style="font-family: 'Source Serif 4', Georgia, serif; font-size: clamp(30px, 5.2vw, 60px); font-weight: 500; letter-spacing: -0.012em; line-height: 1.05; padding: clamp(12px, 1.6vh, 18px) 0; border-bottom: 1px solid rgba(246,243,232,0.28); display: flex; justify-content: flex-start; align-items: baseline; color: {{ lnk.color }};" style-hover="color: #D9A23B;">
+              <span>{{ lnk.label }}</span>
             </a>
           </sc-for>
         </nav>
@@ -761,14 +761,14 @@ class Component extends DCLogic {
       sdgSelected: selectedSdg,
       focus,
       menuLinks: [
-        { label: 'Home', href: 'index.html', num: '00', color: '#D9A23B' },
-        { label: 'About us', href: 'about.html', num: '01', color: '#F6F3E8' },
-        { label: 'Our work', href: 'work.html', num: '02', color: '#F6F3E8' },
-        { label: 'Volunteer', href: 'volunteer.html', num: '03', color: '#F6F3E8' },
-        { label: 'News & events', href: 'news.html', num: '04', color: '#F6F3E8' },
-        { label: 'Shop', href: 'shop.html', num: '05', color: '#F6F3E8' },
-        { label: 'The 17 SDGs', href: 'sdgs.html', num: '06', color: '#F6F3E8' },
-        { label: 'Contact', href: 'contact.html', num: '07', color: '#F6F3E8' }
+        { label: 'Home', href: 'index.html', color: '#D9A23B' },
+        { label: 'About us', href: 'about.html', color: '#F6F3E8' },
+        { label: 'Our work', href: 'work.html', color: '#F6F3E8' },
+        { label: 'Volunteer', href: 'volunteer.html', color: '#F6F3E8' },
+        { label: 'News & events', href: 'news.html', color: '#F6F3E8' },
+        { label: 'Shop', href: 'shop.html', color: '#F6F3E8' },
+        { label: 'The 17 SDGs', href: 'sdgs.html', color: '#F6F3E8' },
+        { label: 'Contact', href: 'contact.html', color: '#F6F3E8' }
       ],
       pubs: [
         { cat: 'Human development', chipBg: '#20614B', chipFg: '#F6F3E8', title: 'Publication title — a working paper placeholder' },

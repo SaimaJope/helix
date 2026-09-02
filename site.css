@@ -213,17 +213,16 @@ html.hx-document-dark .hx-site-header.is-opaque .hx-wordmark-green { opacity: 0;
   .hx-header-menu .word { display: none; }
 }
 
-/* Full-screen menu (all pages, numbered) */
+/* Full-screen menu (all pages) */
 .hx-mobile-menu { position: fixed; inset: 0; background: var(--green); color: #F6F3E8; z-index: 80; display: none; flex-direction: column; overflow: auto; }
 .hx-mobile-menu.is-open { display: flex; }
 .hx-mobile-menu .top { display: flex; align-items: center; justify-content: space-between; padding: 20px var(--pad-x); border-bottom: 1px solid rgba(246,243,232,0.3); flex: none; }
 .hx-mobile-menu .top img { display: block; width: 196px; height: 30px; object-fit: contain; object-position: left center; }
 .hx-mobile-menu .menu-body { max-width: 1200px; width: 100%; margin: 0 auto; padding: 8px var(--pad-x) 48px; display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 0 clamp(40px, 6vw, 96px); flex: 1; }
 .hx-mobile-menu nav { display: flex; flex-direction: column; }
-.hx-mobile-menu nav a { font-family: var(--serif); font-size: clamp(30px, 5.2vw, 60px); font-weight: 500; letter-spacing: -0.012em; line-height: 1.05; padding: clamp(12px, 1.6vh, 18px) 0; border-bottom: 1px solid rgba(246,243,232,0.28); display: flex; justify-content: space-between; align-items: baseline; gap: 20px; color: #F6F3E8; transition: color 0.16s ease, padding-left 0.2s cubic-bezier(0.22,1,0.36,1); }
+.hx-mobile-menu nav a { font-family: var(--serif); font-size: clamp(30px, 5.2vw, 60px); font-weight: 500; letter-spacing: -0.012em; line-height: 1.05; padding: clamp(12px, 1.6vh, 18px) 0; border-bottom: 1px solid rgba(246,243,232,0.28); display: flex; justify-content: flex-start; align-items: baseline; color: #F6F3E8; transition: color 0.16s ease, padding-left 0.2s cubic-bezier(0.22,1,0.36,1); }
 .hx-mobile-menu nav a:hover { color: var(--yellow); padding-left: 14px; }
 .hx-mobile-menu nav a[aria-current="page"] { color: var(--yellow); }
-.hx-mobile-menu nav a .n { font-family: var(--sans); font-size: 12px; font-weight: 800; letter-spacing: 0.2em; opacity: 0.6; flex: none; }
 .hx-mobile-menu .menu-side { padding-top: clamp(18px, 3vh, 34px); display: flex; flex-direction: column; gap: 14px; align-items: flex-start; }
 .hx-mobile-menu .menu-side .fl { margin: 0 0 4px; font-size: 11px; font-weight: 800; letter-spacing: 0.22em; color: rgba(246,243,232,0.6); }
 .hx-mobile-menu .cta { background: var(--yellow); color: #26241E; font-size: 15px; font-weight: 700; padding: 15px 22px; margin-bottom: 6px; }

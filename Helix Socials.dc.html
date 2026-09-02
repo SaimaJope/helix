@@ -58,8 +58,8 @@
       </div>
       <nav aria-label="Mobile" style="display: flex; flex-direction: column; padding: 8px clamp(20px, 4.5vw, 56px) 40px;">
         <sc-for list="{{ menuLinks }}" as="lnk" hint-placeholder-count="6">
-          <a href="{{ lnk.href }}" onClick="{{ closeMenu }}" style="font-family: 'Source Serif 4', Georgia, serif; font-size: clamp(32px, 8.5vw, 50px); font-weight: 500; letter-spacing: -0.01em; padding: 17px 0; border-bottom: 1px solid rgba(246,243,232,0.28); display: flex; justify-content: space-between; align-items: baseline; color: #F6F3E8;" style-hover="color: #D9A23B;">
-            <span>{{ lnk.label }}</span><span style="font-family: 'Public Sans', sans-serif; font-size: 12px; letter-spacing: 0.14em; opacity: 0.6;">{{ lnk.num }}</span>
+          <a href="{{ lnk.href }}" onClick="{{ closeMenu }}" style="font-family: 'Source Serif 4', Georgia, serif; font-size: clamp(32px, 8.5vw, 50px); font-weight: 500; letter-spacing: -0.01em; padding: 17px 0; border-bottom: 1px solid rgba(246,243,232,0.28); display: flex; justify-content: flex-start; align-items: baseline; color: #F6F3E8;" style-hover="color: #D9A23B;">
+            <span>{{ lnk.label }}</span>
           </a>
         </sc-for>
         <a href="Helix Home v2.dc.html#support" onClick="{{ closeMenu }}" style="margin-top: 30px; align-self: flex-start; background: #D9A23B; color: #26241E; font-size: 15px; font-weight: 700; padding: 16px 22px;" style-hover="background: #F6F3E8; color: #26241E;">Support our work →</a>
@@ -218,12 +218,12 @@ class Component extends DCLogic {
       openMenu: () => this.setState({ menuOpen: true }),
       closeMenu: () => this.setState({ menuOpen: false }),
       menuLinks: [
-        { label: 'About', href: 'Helix Home v2.dc.html#about', num: '01' },
-        { label: 'Focus areas', href: 'Helix Home v2.dc.html#focus', num: '02' },
-        { label: 'Projects', href: 'Helix Home v2.dc.html#projects', num: '03' },
-        { label: 'Publications', href: 'Helix Home v2.dc.html#publications', num: '04' },
-        { label: 'Socials', href: '#follow', num: '05' },
-        { label: 'Contact', href: 'mailto:helixanthropisinstitute@gmail.com', num: '06' }
+        { label: 'About', href: 'Helix Home v2.dc.html#about' },
+        { label: 'Focus areas', href: 'Helix Home v2.dc.html#focus' },
+        { label: 'Projects', href: 'Helix Home v2.dc.html#projects' },
+        { label: 'Publications', href: 'Helix Home v2.dc.html#publications' },
+        { label: 'Socials', href: '#follow' },
+        { label: 'Contact', href: 'mailto:helixanthropisinstitute@gmail.com' }
       ],
       sideLinks: [
         { label: 'Follow', href: '#follow' },
