@@ -1,11 +1,13 @@
 # Helix content API
 
 A Cloudflare Worker (free tier) that gives the institute's staff a username and
-password login for `admin.html`, and publishes their edits and image uploads as
-commits to the GitHub repository that GitHub Pages serves.
+password login for `admin.html`, lets each person choose a password on first
+sign-in, and publishes their edits and image uploads as commits to the GitHub
+repository that GitHub Pages serves. Cloudflare KV stores only the mutable
+password hashes.
 
-No database. The repository is the database, GitHub Pages is the host, the Worker
-is the only moving part.
+The repository is the content database, GitHub Pages is the site host, and the
+Worker plus one KV namespace handle authentication and publishing.
 
 ## Deploy (once, about five minutes)
 
@@ -18,7 +20,7 @@ is the only moving part.
    Fine-grained tokens → Generate. Repository access: only `SaimaJope/helix`.
    Permissions: **Contents: Read and write**. Copy the token.
 
-3. Create the staff accounts. One line per person:
+3. Create the staff accounts with temporary passwords. One line per person:
 
        node hash-password.mjs martim "Martim Galésio" "a long password sentence" --totp
        node hash-password.mjs giovanni "Giovanni De Brito" "another long password" --totp
@@ -27,12 +29,21 @@ is the only moving part.
    `--totp` turns on two-factor login: the script prints a setup key for each
    person to enter in an authenticator app (Google Authenticator, Authy,
    1Password, Microsoft Authenticator). Give each person their own key privately.
-   Passwords must be at least 12 characters.
+   Passwords must be at least 12 characters. Each person replaces this temporary
+   password with their own password the first time they sign in.
 
    Put the printed objects into one JSON array, for example
    `[{"username":"martim",...},{"username":"giovanni",...}]`.
 
-4. Store the secrets and deploy:
+4. Create the password store:
+
+       npx wrangler kv namespace create AUTH_KV
+
+   Copy the returned namespace ID into the `[[kv_namespaces]]` block in
+   `wrangler.toml` and uncomment that block. This is required for first-login
+   password setup; the Worker refuses password login without it.
+
+5. Store the secrets and deploy:
 
        npx wrangler secret put USERS            # paste the JSON array
        npx wrangler secret put SESSION_SECRET   # any long random string
@@ -41,12 +52,15 @@ is the only moving part.
 
    The deploy prints the Worker URL, e.g. `https://helix-content-api.<account>.workers.dev`.
 
-5. Put that URL into `admin.html` (`const DEFAULT_API = '...'`) and push. Deployed 3 Sep 2026: https://helix-content-api.saimajope.workers.dev
+6. Put that URL into `admin.html` (`const DEFAULT_API = '...'`) and push. Deployed 3 Sep 2026: https://helix-content-api.saimajope.workers.dev
 
 ## Security model
 
-- Passwords are never stored: PBKDF2-SHA256 with a random salt, 100k iterations,
-  compared in constant time. Wrong attempts are delayed.
+- Plaintext passwords are never stored: PBKDF2-SHA256 with a random salt, 100k
+  iterations, compared in constant time. Wrong attempts are delayed.
+- The temporary password is accepted once, then replaced by a new PBKDF2 hash in
+  KV. The first-login setup token expires after 15 minutes and is never stored in
+  the browser's persistent storage.
 - Optional two-factor codes (TOTP, RFC 6238, 30 s window, one step of drift).
 - Login attempts are rate limited: 5 per minute per IP and per username.
 - Sessions are HMAC-signed tokens that expire after 8 hours; the admin keeps them
@@ -64,7 +78,8 @@ is the only moving part.
 
 | Method | Path              | What                                                     |
 |--------|-------------------|----------------------------------------------------------|
-| POST   | /login            | `{username, password, code?}` → `{token, user}` (8 h)     |
+| POST   | /login            | `{username, password, code?}` → session (8 h) or first-login setup token (15 min) |
+| POST   | /password/setup   | `{setupToken, password, confirmPassword}` → `{token, user}` |
 | GET    | /me               | who am I                                                 |
 | GET    | /content/:name    | latest published JSON plus its git sha                   |
 | PUT    | /content/:name    | `{data, sha}` → commits `content/<name>.json`            |
@@ -76,8 +91,11 @@ opportunities, team, settings.
 
 ## Changing a password
 
-Run `hash-password.mjs` again, replace that person's entry in the USERS secret,
-`npx wrangler secret put USERS`, done. Removing an entry removes the login.
+Password recovery is intentionally manual: the admin page tells the person to
+contact Jomppa Tykkyläinen on WhatsApp at +358408451893. To reset an account,
+replace that person's temporary hash in `USERS`, delete their `auth-user:<username>`
+key from `AUTH_KV`, and update the `USERS` secret. Their next login will ask them
+to choose a new password again. Removing an entry from `USERS` removes the login.
 
 ## Local test
 

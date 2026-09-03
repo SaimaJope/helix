@@ -16,6 +16,17 @@ try {
   for (const m of toml.matchAll(/^([A-Z_]+)\s*=\s*"([^"]*)"/gm)) env[m[1]] = env[m[1]] ?? m[2];
 } catch (e) {}
 
+// Cloudflare KV shim for local first-login/password-setup testing.
+const localKv = new Map();
+env.AUTH_KV = {
+  async get(key, type) {
+    const value = localKv.get(key);
+    if (value == null) return null;
+    return type === 'json' ? JSON.parse(value) : value;
+  },
+  async put(key, value) { localKv.set(key, String(value)); }
+};
+
 http.createServer(async (req, res) => {
   const t0 = Date.now(); console.error('IN', req.method, req.url, 'len=' + (req.headers['content-length'] || '-'), 'origin=' + (req.headers.origin || '-'), 'acrm=' + (req.headers['access-control-request-method'] || '-'));
   const chunks = []; for await (const c of req) chunks.push(c);

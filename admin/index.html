@@ -146,16 +146,25 @@
   <div class="box">
     <img src="/assets/helix-anthropis-wordmark.svg" alt="Helix Anthropis" style="width:200px;height:30px;object-fit:contain;object-position:left;display:block;">
     <h1 class="t3" style="margin-top:22px;">Content admin</h1>
-    <p class="small" style="margin-top:6px;">Staff only. Ask the board for an account.</p>
+    <p class="small" style="margin-top:6px;">Staff only. Use the temporary password you were given. The first time you sign in, you will choose your own password.</p>
     <form class="form" style="margin-top:22px;" data-login-form>
       <div class="field"><label for="l-user">Username</label><input id="l-user" name="username" autocomplete="username" required></div>
       <div class="field"><label for="l-pass">Password</label><input id="l-pass" name="password" type="password" autocomplete="current-password" required></div>
+      <div class="field" data-login-code-wrap hidden><label for="l-code">Authenticator code</label><input id="l-code" name="code" data-login-code inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6"></div>
       <p class="notice" data-login-error hidden style="border-color:var(--red);"></p>
       <div class="btn-row"><button class="btn" type="submit">Log in</button><button class="btn outline" type="button" data-login-offline>Work offline</button></div>
       <details style="margin-top:8px;"><summary class="small" style="cursor:pointer;">Connection settings</summary>
         <div class="field" style="margin-top:10px;"><label for="l-api">API address</label><input id="l-api" placeholder="https://helix-content-api.<account>.workers.dev" data-api-input><span class="hint">Set once after the Worker is deployed. Leave empty to work offline with downloads.</span></div>
       </details>
     </form>
+    <p class="notice" data-password-setup-note hidden style="margin-top:22px;border-color:var(--green);">This is your first sign-in. Choose a new password for this account. It must be at least 12 characters.</p>
+    <form class="form" style="margin-top:14px;" data-password-setup-form hidden>
+      <div class="field"><label for="l-new-pass">New password</label><input id="l-new-pass" name="password" data-new-pass type="password" autocomplete="new-password" minlength="12" maxlength="256" required></div>
+      <div class="field"><label for="l-confirm-pass">Confirm new password</label><input id="l-confirm-pass" name="confirmPassword" data-confirm-pass type="password" autocomplete="new-password" minlength="12" maxlength="256" required></div>
+      <p class="notice" data-password-setup-error hidden style="border-color:var(--red);"></p>
+      <div class="btn-row"><button class="btn" type="submit">Save password</button><button class="btn outline" type="button" data-password-setup-back>Back</button></div>
+    </form>
+    <p class="small" style="margin-top:18px;">Forgot your password? <a href="https://wa.me/358408451893" target="_blank" rel="noreferrer">Contact Jomppa Tykkyläinen on WhatsApp: +358408451893</a>.</p>
   </div>
 </div>
 
@@ -199,7 +208,7 @@
   const IDLE_MS = 30 * 60 * 1000; let idleT;
   const touch = () => { if (!me) return; clearTimeout(idleT); idleT = setTimeout(() => { sessionStorage.removeItem('helix-admin-token'); me = null; showLogin(); HX.toast('Logged out after 30 minutes without activity'); }, IDLE_MS); };
   ['click', 'keydown', 'mousemove', 'touchstart'].forEach((ev) => document.addEventListener(ev, touch, { passive: true }));
-  let me = null; let offline = false;
+  let me = null; let offline = false; let setupToken = '';
 
   async function api(path, opts = {}) {
     const res = await fetch(apiBase() + path, { ...opts, headers: { ...(opts.headers || {}), Authorization: 'Bearer ' + token() } });
@@ -321,8 +330,33 @@
   }
 
   /* ------------------------------------------------------------- login UI */
-  function showLogin() { $('[data-login]').classList.add('open'); const inp = $('[data-api-input]'); inp.value = apiBase(); }
+  function showLogin(message) {
+    setupToken = '';
+    $('[data-login]').classList.add('open');
+    $('[data-login-form]').hidden = false;
+    $('[data-password-setup-form]').hidden = true;
+    $('[data-password-setup-note]').hidden = true;
+    $('[data-password-setup-error]').hidden = true;
+    $('[data-login-code-wrap]').hidden = true;
+    $('[data-login-code]').value = '';
+    const inp = $('[data-api-input]'); inp.value = apiBase();
+    if (message) { $('[data-login-error]').hidden = false; $('[data-login-error]').textContent = message; }
+    else $('[data-login-error]').hidden = true;
+  }
+  function showPasswordSetup(token) {
+    setupToken = token;
+    $('[data-login-form]').hidden = true;
+    $('[data-password-setup-note]').hidden = false;
+    $('[data-password-setup-form]').hidden = false;
+    $('[data-password-setup-error]').hidden = true;
+    $('[data-new-pass]').value = ''; $('[data-confirm-pass]').value = '';
+    $('[data-new-pass]').focus();
+  }
   function hideLogin() { $('[data-login]').classList.remove('open'); }
+  function finishLogin(r) {
+    sessionStorage.setItem('helix-admin-token', r.token); me = r.user; offline = false; setupToken = ''; hideLogin(); $('[data-login-error]').hidden = true; touch();
+    Object.keys(data).forEach((k) => delete data[k]); render(); HX.toast('Welcome, ' + me.name);
+  }
   function statusUI() {
     const st = $('[data-api-status]'); const on = connected();
     st.classList.toggle('on', on); st.querySelector('span:last-child').textContent = on ? `Connected · ${me.name}` : (apiBase() ? 'Offline' : 'No API set');
@@ -389,13 +423,33 @@
     if (!apiBase()) { $('[data-login-error]').hidden = false; $('[data-login-error]').textContent = 'Enter the API address under Connection settings, or work offline.'; return; }
     const fd = new FormData(e.target);
     try {
-      const r = await fetch(apiBase() + '/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ username: fd.get('username'), password: fd.get('password') }) });
+      const body = { username: fd.get('username'), password: fd.get('password') };
+      if (fd.get('code')) body.code = fd.get('code');
+      const r = await fetch(apiBase() + '/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
       const j = await r.json().catch(() => ({}));
-      if (!r.ok) throw new Error(j.error || 'Login failed');
-      sessionStorage.setItem('helix-admin-token', j.token); me = j.user; offline = false; hideLogin(); $('[data-login-error]').hidden = true; touch();
-      Object.keys(data).forEach((k) => delete data[k]); render(); HX.toast('Welcome, ' + me.name);
+      if (!r.ok) {
+        if (j.needCode) { $('[data-login-code-wrap]').hidden = false; $('[data-login-error]').hidden = false; $('[data-login-error]').textContent = j.error; $('[data-login-code]').focus(); return; }
+        throw new Error(j.error || 'Login failed');
+      }
+      if (j.setupRequired) { $('[data-login-error]').hidden = true; showPasswordSetup(j.setupToken); return; }
+      finishLogin(j);
     } catch (err) { $('[data-login-error]').hidden = false; $('[data-login-error]').textContent = err.message; }
   });
+  $('[data-password-setup-form]').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const password = $('[data-new-pass]').value;
+    const confirmPassword = $('[data-confirm-pass]').value;
+    const error = $('[data-password-setup-error]');
+    if (password.length < 12) { error.hidden = false; error.textContent = 'Choose a password of at least 12 characters.'; return; }
+    if (password !== confirmPassword) { error.hidden = false; error.textContent = 'The two new passwords do not match.'; return; }
+    try {
+      const r = await fetch(apiBase() + '/password/setup', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ setupToken, password, confirmPassword }) });
+      const j = await r.json().catch(() => ({}));
+      if (!r.ok) throw new Error(j.error || 'Could not save the password');
+      finishLogin(j);
+    } catch (err) { error.hidden = false; error.textContent = err.message; }
+  });
+  $('[data-password-setup-back]').addEventListener('click', () => showLogin('Enter the temporary password again to start password setup.'));
   boot();
 })();
 </script>

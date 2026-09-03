@@ -6,6 +6,8 @@
      USERS           JSON array: [{"username":"martim","hash":"pbkdf2$...","name":"Martim Galésio","totp":"BASE32SECRET"}]
                      Generate entries with:  node hash-password.mjs <username> "<Full name>" <password> --totp
                      "totp" is optional; when present the login also requires a 6-digit authenticator code.
+   KV binding:
+     AUTH_KV        stores the replacement password hash after first sign-in.
      SESSION_SECRET  long random string, signs session tokens
      GITHUB_TOKEN    fine-grained token with Contents: read and write on the repo
    Optional binding (wrangler.toml [[ratelimits]] LOGIN_LIMIT): throttles login attempts per IP and username.
@@ -35,6 +37,8 @@ function sniff(bytes) {
   return null;
 }
 const SESSION_HOURS = 8;
+const SETUP_MINUTES = 15;
+const PASSWORD_MIN = 12;
 const PBKDF2_MAX = 100000; // Cloudflare Workers refuse more iterations than this
 const MAX_UPLOAD = 8 * 1024 * 1024;
 
@@ -93,25 +97,48 @@ async function hmac(secret, data) {
   const key = await crypto.subtle.importKey('raw', enc.encode(secret), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
   return b64url(await crypto.subtle.sign('HMAC', key, enc.encode(data)));
 }
+async function signPayload(env, data) {
+  const payload = b64url(enc.encode(JSON.stringify(data)));
+  return payload + '.' + await hmac(env.SESSION_SECRET, payload);
+}
+async function readSignedPayload(env, token) {
+  try {
+    const [payload, sig] = String(token || '').split('.');
+    if (!payload || !sig || await hmac(env.SESSION_SECRET, payload) !== sig) return null;
+    const data = JSON.parse(new TextDecoder().decode(fromB64url(payload)));
+    return data && data.exp >= Date.now() ? data : null;
+  } catch (e) { return null; }
+}
 async function makeToken(env, username) {
   const exp = Date.now() + SESSION_HOURS * 3600 * 1000;
-  const payload = b64url(enc.encode(JSON.stringify({ u: username, exp })));
-  return payload + '.' + await hmac(env.SESSION_SECRET, payload);
+  return signPayload(env, { u: username, exp });
+}
+async function makeSetupToken(env, username) {
+  const exp = Date.now() + SETUP_MINUTES * 60 * 1000;
+  return signPayload(env, { p: 'password-setup', u: username, exp });
 }
 async function readToken(env, req) {
   const auth = req.headers.get('Authorization') || '';
   const token = auth.startsWith('Bearer ') ? auth.slice(7) : '';
-  const [payload, sig] = token.split('.');
-  if (!payload || !sig) return null;
-  if (await hmac(env.SESSION_SECRET, payload) !== sig) return null;
-  const data = JSON.parse(new TextDecoder().decode(fromB64url(payload)));
-  if (!data.exp || data.exp < Date.now()) return null;
+  const data = await readSignedPayload(env, token);
+  if (!data || data.p) return null;
   const user = users(env).find((x) => x.username === data.u);
   return user ? { username: user.username, name: user.name || user.username } : null;
 }
 function users(env) {
   try { return JSON.parse(env.USERS || '[]'); } catch (e) { return []; }
 }
+function findUser(env, username) {
+  return users(env).find((x) => x.username === username) || null;
+}
+const userKey = (username) => 'auth-user:' + username;
+async function savedUser(env, username) {
+  if (!env.AUTH_KV) return null;
+  const saved = await env.AUTH_KV.get(userKey(username), 'json');
+  return saved && typeof saved.hash === 'string' ? saved : null;
+}
+const publicUser = (user) => ({ username: user.username, name: user.name || user.username });
+const validPassword = (password) => typeof password === 'string' && password.length >= PASSWORD_MIN && password.length <= 256;
 
 /* ---------------------------------------------------------------- github */
 async function gh(env, path, init = {}) {
@@ -173,7 +200,26 @@ export default {
     try {
       if (path === '/' || path === '/health') return json({ ok: true, service: 'helix-content-api', repo: env.GITHUB_REPO, branch: env.GITHUB_BRANCH }, 200, h);
 
+      if (path === '/password/setup' && req.method === 'POST') {
+        if (!env.AUTH_KV) return json({ error: 'Password setup is not configured yet. Please contact Jomppa Tykkyläinen on WhatsApp: +358408451893.' }, 503, h);
+        const body = await req.json().catch(() => ({}));
+        const setup = await readSignedPayload(env, body.setupToken);
+        if (!setup || setup.p !== 'password-setup') return json({ error: 'This setup session has expired. Log in again with your temporary password.' }, 401, h);
+        const password = String(body.password || '');
+        const confirmation = String(body.confirmPassword || '');
+        if (!validPassword(password)) return json({ error: `Choose a password between ${PASSWORD_MIN} and 256 characters.` }, 400, h);
+        if (password !== confirmation) return json({ error: 'The two new passwords do not match.' }, 400, h);
+        const user = findUser(env, setup.u);
+        if (!user) return json({ error: 'That account is no longer active.' }, 401, h);
+        const existing = await savedUser(env, user.username);
+        if (existing) return json({ error: 'This account has already chosen a password. Log in normally or contact Jomppa Tykkyläinen on WhatsApp.' }, 409, h);
+        if (await verifyPassword(password, user.hash)) return json({ error: 'Choose a new password different from the temporary one.' }, 400, h);
+        await env.AUTH_KV.put(userKey(user.username), JSON.stringify({ hash: await hashPassword(password), updatedAt: new Date().toISOString() }));
+        return json({ token: await makeToken(env, user.username), user: publicUser(user), expiresIn: SESSION_HOURS * 3600 }, 200, h);
+      }
+
       if (path === '/login' && req.method === 'POST') {
+        if (!env.AUTH_KV) return json({ error: 'First-login password setup is not configured yet. Please contact Jomppa Tykkyläinen on WhatsApp: +358408451893.' }, 503, h);
         const { username, password, code } = await req.json().catch(() => ({}));
         const uname = String(username || '').trim().toLowerCase().slice(0, 64);
         const ip = req.headers.get('CF-Connecting-IP') || 'unknown';
@@ -181,14 +227,16 @@ export default {
           const [byIp, byUser] = await Promise.all([env.LOGIN_LIMIT.limit({ key: 'ip:' + ip }), env.LOGIN_LIMIT.limit({ key: 'user:' + uname })]);
           if (!byIp.success || !byUser.success) return json({ error: 'Too many attempts. Wait a minute and try again.' }, 429, h);
         }
-        const user = users(env).find((x) => x.username === uname);
-        const ok = user && await verifyPassword(String(password || ''), user.hash);
+        const user = findUser(env, uname);
+        const saved = user && await savedUser(env, user.username);
+        const ok = user && await verifyPassword(String(password || ''), saved ? saved.hash : user.hash);
         if (!ok) { await new Promise((r) => setTimeout(r, 800)); return json({ error: 'Wrong username or password.' }, 401, h); }
         if (user.totp) {
           if (!code) return json({ error: 'Enter the 6-digit code from your authenticator app.', needCode: true }, 401, h);
           if (!(await verifyTotp(user.totp, code))) { await new Promise((r) => setTimeout(r, 800)); return json({ error: 'That code is not valid. Codes change every 30 seconds.', needCode: true }, 401, h); }
         }
-        return json({ token: await makeToken(env, user.username), user: { username: user.username, name: user.name || user.username }, expiresIn: SESSION_HOURS * 3600 }, 200, h);
+        if (!saved) return json({ setupRequired: true, setupToken: await makeSetupToken(env, user.username), user: publicUser(user), expiresIn: SETUP_MINUTES * 60 }, 200, h);
+        return json({ token: await makeToken(env, user.username), user: publicUser(user), expiresIn: SESSION_HOURS * 3600 }, 200, h);
       }
 
       const me = await readToken(env, req);
