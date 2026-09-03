@@ -15,6 +15,18 @@
 (function () {
   var cache = null;
 
+  function dismissLoader() {
+    var loader = document.querySelector('[data-site-loader]');
+    if (!loader || loader.classList.contains('is-hidden')) return;
+    loader.classList.add('is-hidden');
+    document.body.removeAttribute('aria-busy');
+    window.setTimeout(function () { if (loader.parentNode) loader.parentNode.removeChild(loader); }, 420);
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', dismissLoader, { once: true });
+  else dismissLoader();
+  window.setTimeout(dismissLoader, 1600);
+
   function getPath(o, p) {
     return String(p).split('.').reduce(function (a, k) { return a == null ? undefined : a[k]; }, o);
   }

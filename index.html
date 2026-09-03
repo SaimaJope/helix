@@ -11,8 +11,27 @@
 <script src="/stock-footage.js" defer></script>
 <script src="/privacy.js" defer></script>
 <script src="/settings.js" defer></script>
+<style>
+  .hx-loader { position: fixed; inset: 0; z-index: 9999; display: grid; place-items: center; background: #184E3D; color: #F6F3E8; opacity: 1; visibility: visible; pointer-events: auto; transition: opacity .36s ease, visibility 0s linear .36s; animation: hx-loader-failsafe .42s ease 1.6s forwards; }
+  .hx-loader.is-hidden { opacity: 0; visibility: hidden; pointer-events: none; animation: none; }
+  .hx-loader-core { display: grid; justify-items: center; gap: 18px; transform: translateY(-2vh); }
+  .hx-loader-core img { width: clamp(42px, 9vw, 68px); height: clamp(64px, 14vw, 104px); object-fit: contain; }
+  .hx-loader-core span { font: 800 clamp(10px, 1.5vw, 13px)/1.2 system-ui, sans-serif; letter-spacing: .18em; }
+  .hx-loader-line { width: clamp(72px, 14vw, 104px); height: 2px; overflow: hidden; background: rgba(246,243,232,.22); }
+  .hx-loader-line::after { content: ''; display: block; width: 42%; height: 100%; background: #D9A23B; transform: translateX(-110%); animation: hx-loader-line 1.05s cubic-bezier(.22,1,.36,1) infinite; }
+  @keyframes hx-loader-line { to { transform: translateX(360%); } }
+  @keyframes hx-loader-failsafe { to { opacity: 0; visibility: hidden; pointer-events: none; } }
+  @media (prefers-reduced-motion: reduce) { .hx-loader { transition: none; animation-delay: .9s; } .hx-loader-line::after { animation: none; transform: translateX(0); } }
+</style>
 </head>
-<body>
+<body aria-busy="true">
+<div class="hx-loader" data-site-loader role="status" aria-label="Loading Helix Anthropis">
+  <div class="hx-loader-core">
+    <img src="/assets/helix-h.svg" alt="" aria-hidden="true">
+    <span aria-hidden="true">HELIX ANTHROPIS</span>
+    <span class="hx-loader-line" aria-hidden="true"></span>
+  </div>
+</div>
 <x-dc>
 <helmet>
   <meta name="viewport" content="width=device-width, initial-scale=1">
