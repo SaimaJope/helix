@@ -56,7 +56,6 @@
       <a class="ul on-dark" href="volunteer.html#support">Support our work</a>
       <p class="fl" style="margin-top:34px;">CONTACT</p>
       <a href="mailto:helixanthropisinstitute@gmail.com" class="mail">helixanthropisinstitute@gmail.com</a>
-      <p class="addr">40 Bd Pierre Dupong<br>1430 Hollerich, Luxembourg</p>
       <div class="socials"><a href="https://instagram.com/helixanthropis" target="_blank" rel="noopener">Instagram ↗</a><a href="https://www.linkedin.com/company/helix-anthropis" target="_blank" rel="noopener">LinkedIn ↗</a><a href="https://youtube.com/@helixanthropis" target="_blank" rel="noopener">YouTube ↗</a><a href="https://discord.com" target="_blank" rel="noopener">Discord ↗</a><a href="https://substack.com" target="_blank" rel="noopener">Substack ↗</a></div>
     </div>
   </div>
@@ -130,7 +129,6 @@
           <p class="fl">CONTACT</p>
           <div class="c">
             <a href="mailto:helixanthropisinstitute@gmail.com" style="text-decoration:underline;text-underline-offset:3px;">helixanthropisinstitute@gmail.com</a>
-            <p>40 Bd Pierre Dupong<br>1430 Hollerich, Luxembourg</p>
             <div class="socials">
               <a href="https://instagram.com/helixanthropis" target="_blank" rel="noopener">Instagram ↗</a>
               <a href="https://www.linkedin.com/company/helix-anthropis" target="_blank" rel="noopener">LinkedIn ↗</a>
@@ -175,7 +173,7 @@
           <span class="chip outline">${HX.esc(p.category)}</span>
           <h1 class="t2" style="margin-top:16px;">${HX.esc(p.name)}</h1>
           <div class="price-big" style="margin-top:14px;">${HX.money(p.price)}</div>
-          <p class="small" style="margin-top:6px;">Eco Champion members ${HX.money(p.price * 0.9)} · Visionary members ${HX.money(p.price * 0.8)}</p>
+          ${HX.MEMBER_DISCOUNTS ? `<p class="small" style="margin-top:6px;">Eco Champion members ${HX.money(p.price * 0.9)} · Visionary members ${HX.money(p.price * 0.8)}</p>` : ''}
           <p class="prose" style="margin-top:22px;">${HX.esc(p.description)}</p>
           <div class="field" style="margin-top:26px;"><label>Colour: ${HX.esc(colorNames[color] || '')}</label>
             <div class="btn-row" style="gap:8px;">${colors.map((c, i) => `<button class="swatch-btn" type="button" data-color="${i}" aria-pressed="${i === color}" aria-label="${HX.esc(colorNames[i] || c)}"><span style="background:${c}"></span></button>`).join('')}</div></div>
@@ -185,7 +183,7 @@
             <div class="qty"><button type="button" data-q="-1" aria-label="Decrease">−</button><input type="number" min="1" max="99" value="${qty}" data-qty aria-label="Quantity"><button type="button" data-q="1" aria-label="Increase">+</button></div></div>
           <div class="btn-row" style="margin-top:26px;"><button class="btn" type="button" data-add>Add to prototype cart</button><button class="btn ink" type="button" data-buy>Preview checkout</button></div>
           <div class="targets" style="margin-top:32px;">${(p.details || []).map((d, i) => `<div><span class="k">${['i.', 'ii.', 'iii.', 'iv.', 'v.'][i] || ''}</span><p>${HX.esc(d)}</p></div>`).join('')}</div>
-          <p class="small" style="margin-top:14px;">Members choose their tier in the cart. Discounts apply to store products only.</p>
+          ${HX.MEMBER_DISCOUNTS ? '<p class="small" style="margin-top:14px;">Members choose their tier in the cart. Discounts apply to store products only.</p>' : ''}
         </div>
       </div>`;
   };

@@ -339,6 +339,11 @@
     </article>`;
 
   /* ------------------------------------------------------------------- cart */
+  /* Membership discounts are switched off (client feedback, 3 Sep 2026). Set
+     MEMBER_DISCOUNTS back to true to restore the tier picker in the cart and at
+     checkout, the discount line in the totals, the member prices on product
+     pages and every [data-member-only] block in the HTML. */
+  const MEMBER_DISCOUNTS = false;
   const TIERS = { none: { label: 'No membership', pct: 0 }, eco: { label: 'Eco Champion member', pct: 10 }, visionary: { label: 'Visionary member', pct: 20 } };
   const cart = {
     key: 'helix-cart',
@@ -357,7 +362,7 @@
     setTier(t) { const s = this.read(); s.tier = TIERS[t] ? t : 'none'; this.write(s); },
     totals(s = this.read()) {
       const subtotal = s.items.reduce((a, i) => a + i.price * i.qty, 0);
-      const pct = (TIERS[s.tier] || TIERS.none).pct;
+      const pct = MEMBER_DISCOUNTS ? (TIERS[s.tier] || TIERS.none).pct : 0;
       const discount = +(subtotal * pct / 100).toFixed(2);
       return { subtotal, pct, discount, total: +(subtotal - discount).toFixed(2), count: s.items.reduce((a, i) => a + i.qty, 0) };
     },
@@ -391,7 +396,7 @@
           <div class="line-price">${money(i.price * i.qty)}</div>
         </div>`).join('');
       foot.innerHTML = `
-        <div class="field"><label for="cart-tier">Membership</label><select id="cart-tier">${Object.entries(TIERS).map(([k, v]) => `<option value="${k}" ${s.tier === k ? 'selected' : ''}>${v.label}${v.pct ? ` (${v.pct}% off)` : ''}</option>`).join('')}</select></div>
+        ${MEMBER_DISCOUNTS ? `<div class="field"><label for="cart-tier">Membership</label><select id="cart-tier">${Object.entries(TIERS).map(([k, v]) => `<option value="${k}" ${s.tier === k ? 'selected' : ''}>${v.label}${v.pct ? ` (${v.pct}% off)` : ''}</option>`).join('')}</select></div>` : ''}
         <div class="totals"><div><span>Subtotal</span><span>${money(t.subtotal)}</span></div>${t.pct ? `<div class="disc"><span>Member discount ${t.pct}%</span><span>−${money(t.discount)}</span></div>` : ''}<div class="total"><span>Total</span><span>${money(t.total)}</span></div></div>
         <a class="btn block" href="checkout.html">Checkout</a>
         <a class="ul" href="shop.html" style="justify-self:center;">Continue shopping</a>`;
@@ -401,7 +406,7 @@
         if (b.dataset.dec) this.setQty(b.dataset.dec, (s.items.find((i) => i.key === b.dataset.dec) || { qty: 0 }).qty - 1);
         if (b.dataset.rm) this.remove(b.dataset.rm);
       };
-      foot.querySelector('#cart-tier').onchange = (e) => this.setTier(e.target.value);
+      const tierSel = foot.querySelector('#cart-tier'); if (tierSel) tierSel.onchange = (e) => this.setTier(e.target.value);
     }
   };
 
@@ -475,11 +480,18 @@
       location.href = `mailto:${EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(lines.join('\n'))}`;
       const ok = f.querySelector('[data-sent]'); if (ok) ok.hidden = false;
     }));
+    /* [data-member-only] is hidden by site.css and revealed only when membership
+       discounts are switched back on; [data-member-alt] is the stand-in shown
+       while they are off. Flipping MEMBER_DISCOUNTS swaps the two. */
+    if (MEMBER_DISCOUNTS) {
+      $$('[data-member-only]').forEach((el) => el.removeAttribute('data-member-only'));
+      $$('[data-member-alt]').forEach((el) => el.remove());
+    }
     applySettings();
     previewBanner();
   }
 
   /* ------------------------------------------------------------- exports */
-  window.HX = { EMAIL, esc, $, $$, money, fmtDate, parseDate, param, lum, onColor, chipClass, load, settings, getPath, md, gallery, detailHref, productVisual, SDGS, sdgGrid, sdgPills, iconSVG, ICONS, mediaHTML, projectCard, newsCard, pubRow, eventRow, icsLink, art, productCard, cart, TIERS, toast, applyTheme };
+  window.HX = { EMAIL, esc, $, $$, money, fmtDate, parseDate, param, lum, onColor, chipClass, load, settings, getPath, md, gallery, detailHref, productVisual, SDGS, sdgGrid, sdgPills, iconSVG, ICONS, mediaHTML, projectCard, newsCard, pubRow, eventRow, icsLink, art, productCard, cart, TIERS, MEMBER_DISCOUNTS, toast, applyTheme };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', chrome, { once: true }); else chrome();
 })();

@@ -56,7 +56,6 @@
       <a class="ul on-dark" href="volunteer.html#support">Support our work</a>
       <p class="fl" style="margin-top:34px;">CONTACT</p>
       <a href="mailto:helixanthropisinstitute@gmail.com" class="mail">helixanthropisinstitute@gmail.com</a>
-      <p class="addr">40 Bd Pierre Dupong<br>1430 Hollerich, Luxembourg</p>
       <div class="socials"><a href="https://instagram.com/helixanthropis" target="_blank" rel="noopener">Instagram ↗</a><a href="https://www.linkedin.com/company/helix-anthropis" target="_blank" rel="noopener">LinkedIn ↗</a><a href="https://youtube.com/@helixanthropis" target="_blank" rel="noopener">YouTube ↗</a><a href="https://discord.com" target="_blank" rel="noopener">Discord ↗</a><a href="https://substack.com" target="_blank" rel="noopener">Substack ↗</a></div>
     </div>
   </div>
@@ -151,7 +150,6 @@
           <p class="fl">CONTACT</p>
           <div class="c">
             <a href="mailto:helixanthropisinstitute@gmail.com" style="text-decoration:underline;text-underline-offset:3px;">helixanthropisinstitute@gmail.com</a>
-            <p>40 Bd Pierre Dupong<br>1430 Hollerich, Luxembourg</p>
             <div class="socials">
               <a href="https://instagram.com/helixanthropis" target="_blank" rel="noopener">Instagram ↗</a>
               <a href="https://www.linkedin.com/company/helix-anthropis" target="_blank" rel="noopener">LinkedIn ↗</a>
@@ -180,9 +178,9 @@
     HX.$('[data-place]').disabled = false;
     sum.innerHTML = `
       <div>${s.items.map((i) => `<div class="cart-item"><div class="thumb">${HX.art(i.art, i.color)}</div><div><div class="ttl">${HX.esc(i.name)}</div><div class="meta">${HX.esc(i.colorName)} · ${HX.esc(i.size)} · × ${i.qty}</div></div><div class="line-price">${HX.money(i.price * i.qty)}</div></div>`).join('')}</div>
-      <div class="field" style="margin-top:16px;"><label for="k-tier">Membership preview</label><select id="k-tier">${Object.entries(HX.TIERS).map(([k, v]) => `<option value="${k}" ${s.tier === k ? 'selected' : ''}>${v.label}${v.pct ? ` (${v.pct}% off)` : ''}</option>`).join('')}</select><span class="hint">A future live shop would verify membership before applying a discount.</span></div>
+      ${HX.MEMBER_DISCOUNTS ? `<div class="field" style="margin-top:16px;"><label for="k-tier">Membership preview</label><select id="k-tier">${Object.entries(HX.TIERS).map(([k, v]) => `<option value="${k}" ${s.tier === k ? 'selected' : ''}>${v.label}${v.pct ? ` (${v.pct}% off)` : ''}</option>`).join('')}</select><span class="hint">A future live shop would verify membership before applying a discount.</span></div>` : ''}
       <div class="totals" style="margin-top:16px;"><div><span>Subtotal</span><span>${HX.money(t.subtotal)}</span></div>${t.pct ? `<div class="disc"><span>Preview discount ${t.pct}%</span><span>−${HX.money(t.discount)}</span></div>` : ''}<div><span>Shipping</span><span>Not calculated in prototype</span></div><div class="total"><span>Preview total</span><span>${HX.money(t.total)}</span></div></div>`;
-    sum.querySelector('#k-tier').onchange = (e) => { HX.cart.setTier(e.target.value); render(); };
+    const tierSel = sum.querySelector('#k-tier'); if (tierSel) tierSel.onchange = (e) => { HX.cart.setTier(e.target.value); render(); };
   };
   render();
   form.addEventListener('submit', (e) => {
