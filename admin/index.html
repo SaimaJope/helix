@@ -150,17 +150,16 @@
     <form class="form" style="margin-top:22px;" data-login-form>
       <div class="field"><label for="l-user">Username</label><input id="l-user" name="username" autocomplete="username" required></div>
       <div class="field"><label for="l-pass">Password</label><input id="l-pass" name="password" type="password" autocomplete="current-password" required></div>
-      <div class="field" data-login-code-wrap hidden><label for="l-code">Authenticator code</label><input id="l-code" name="code" data-login-code inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6"></div>
       <p class="notice" data-login-error hidden style="border-color:var(--red);"></p>
       <div class="btn-row"><button class="btn" type="submit">Log in</button><button class="btn outline" type="button" data-login-offline>Work offline</button></div>
       <details style="margin-top:8px;"><summary class="small" style="cursor:pointer;">Connection settings</summary>
         <div class="field" style="margin-top:10px;"><label for="l-api">API address</label><input id="l-api" placeholder="https://helix-content-api.<account>.workers.dev" data-api-input><span class="hint">Set once after the Worker is deployed. Leave empty to work offline with downloads.</span></div>
       </details>
     </form>
-    <p class="notice" data-password-setup-note hidden style="margin-top:22px;border-color:var(--green);">This is your first sign-in. Choose a new password for this account. It must be at least 12 characters.</p>
+    <p class="notice" data-password-setup-note hidden style="margin-top:22px;border-color:var(--green);">This is your first sign-in. Choose a new password for this account. Use 2–6 characters with at least one uppercase letter and one number.</p>
     <form class="form" style="margin-top:14px;" data-password-setup-form hidden>
-      <div class="field"><label for="l-new-pass">New password</label><input id="l-new-pass" name="password" data-new-pass type="password" autocomplete="new-password" minlength="12" maxlength="256" required></div>
-      <div class="field"><label for="l-confirm-pass">Confirm new password</label><input id="l-confirm-pass" name="confirmPassword" data-confirm-pass type="password" autocomplete="new-password" minlength="12" maxlength="256" required></div>
+      <div class="field"><label for="l-new-pass">New password</label><input id="l-new-pass" name="password" data-new-pass type="password" autocomplete="new-password" minlength="2" maxlength="6" pattern="(?=.*[A-Z])(?=.*[0-9]).{2,6}" title="2–6 characters, including at least one uppercase letter and one number" required></div>
+      <div class="field"><label for="l-confirm-pass">Confirm new password</label><input id="l-confirm-pass" name="confirmPassword" data-confirm-pass type="password" autocomplete="new-password" minlength="2" maxlength="6" pattern="(?=.*[A-Z])(?=.*[0-9]).{2,6}" title="2–6 characters, including at least one uppercase letter and one number" required></div>
       <p class="notice" data-password-setup-error hidden style="border-color:var(--red);"></p>
       <div class="btn-row"><button class="btn" type="submit">Save password</button><button class="btn outline" type="button" data-password-setup-back>Back</button></div>
     </form>
@@ -337,8 +336,6 @@
     $('[data-password-setup-form]').hidden = true;
     $('[data-password-setup-note]').hidden = true;
     $('[data-password-setup-error]').hidden = true;
-    $('[data-login-code-wrap]').hidden = true;
-    $('[data-login-code]').value = '';
     const inp = $('[data-api-input]'); inp.value = apiBase();
     if (message) { $('[data-login-error]').hidden = false; $('[data-login-error]').textContent = message; }
     else $('[data-login-error]').hidden = true;
@@ -423,14 +420,9 @@
     if (!apiBase()) { $('[data-login-error]').hidden = false; $('[data-login-error]').textContent = 'Enter the API address under Connection settings, or work offline.'; return; }
     const fd = new FormData(e.target);
     try {
-      const body = { username: fd.get('username'), password: fd.get('password') };
-      if (fd.get('code')) body.code = fd.get('code');
-      const r = await fetch(apiBase() + '/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+      const r = await fetch(apiBase() + '/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ username: fd.get('username'), password: fd.get('password') }) });
       const j = await r.json().catch(() => ({}));
-      if (!r.ok) {
-        if (j.needCode) { $('[data-login-code-wrap]').hidden = false; $('[data-login-error]').hidden = false; $('[data-login-error]').textContent = j.error; $('[data-login-code]').focus(); return; }
-        throw new Error(j.error || 'Login failed');
-      }
+      if (!r.ok) throw new Error(j.error || 'Login failed');
       if (j.setupRequired) { $('[data-login-error]').hidden = true; showPasswordSetup(j.setupToken); return; }
       finishLogin(j);
     } catch (err) { $('[data-login-error]').hidden = false; $('[data-login-error]').textContent = err.message; }
@@ -440,7 +432,7 @@
     const password = $('[data-new-pass]').value;
     const confirmPassword = $('[data-confirm-pass]').value;
     const error = $('[data-password-setup-error]');
-    if (password.length < 12) { error.hidden = false; error.textContent = 'Choose a password of at least 12 characters.'; return; }
+    if (password.length < 2 || password.length > 6 || !/[A-Z]/.test(password) || !/\d/.test(password)) { error.hidden = false; error.textContent = 'Use 2–6 characters with at least one uppercase letter and one number.'; return; }
     if (password !== confirmPassword) { error.hidden = false; error.textContent = 'The two new passwords do not match.'; return; }
     try {
       const r = await fetch(apiBase() + '/password/setup', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ setupToken, password, confirmPassword }) });

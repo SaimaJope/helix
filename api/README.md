@@ -22,15 +22,11 @@ Worker plus one KV namespace handle authentication and publishing.
 
 3. Create the staff accounts with temporary passwords. One line per person:
 
-       node hash-password.mjs martim "Martim Galésio" "a long password sentence" --totp
-       node hash-password.mjs giovanni "Giovanni De Brito" "another long password" --totp
-       node hash-password.mjs mathieu "Mathieu Plaquevent" "third long password" --totp
+       node hash-password.mjs martim "Martim Galésio" "M4rtim"
+       node hash-password.mjs giovanni "Giovanni De Brito" "G1ovio"
+       node hash-password.mjs mathieu "Mathieu Plaquevent" "M2thie"
 
-   `--totp` turns on two-factor login: the script prints a setup key for each
-   person to enter in an authenticator app (Google Authenticator, Authy,
-   1Password, Microsoft Authenticator). Give each person their own key privately.
-   Passwords must be at least 12 characters. Each person replaces this temporary
-   password with their own password the first time they sign in.
+   Passwords must be 2–6 characters with at least one uppercase letter and one number. Each person replaces this temporary password with their own password the first time they sign in.
 
    Put the printed objects into one JSON array, for example
    `[{"username":"martim",...},{"username":"giovanni",...}]`.
@@ -61,7 +57,8 @@ Worker plus one KV namespace handle authentication and publishing.
 - The temporary password is accepted once, then replaced by a new PBKDF2 hash in
   KV. The first-login setup token expires after 15 minutes and is never stored in
   the browser's persistent storage.
-- Optional two-factor codes (TOTP, RFC 6238, 30 s window, one step of drift).
+- New passwords are limited to 2–6 characters and must include an uppercase
+  letter and a number.
 - Login attempts are rate limited: 5 per minute per IP and per username.
 - Sessions are HMAC-signed tokens that expire after 8 hours; the admin keeps them
   in session storage (gone when the tab closes) and logs out after 30 idle
@@ -78,7 +75,7 @@ Worker plus one KV namespace handle authentication and publishing.
 
 | Method | Path              | What                                                     |
 |--------|-------------------|----------------------------------------------------------|
-| POST   | /login            | `{username, password, code?}` → session (8 h) or first-login setup token (15 min) |
+| POST   | /login            | `{username, password}` -> session (8 h) or first-login setup token (15 min) |
 | POST   | /password/setup   | `{setupToken, password, confirmPassword}` → `{token, user}` |
 | GET    | /me               | who am I                                                 |
 | GET    | /content/:name    | latest published JSON plus its git sha                   |

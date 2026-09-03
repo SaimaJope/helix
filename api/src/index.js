@@ -3,9 +3,8 @@
    everything as commits to the GitHub repository that GitHub Pages serves.
 
    Secrets / vars (wrangler secret put NAME):
-     USERS           JSON array: [{"username":"martim","hash":"pbkdf2$...","name":"Martim Galésio","totp":"BASE32SECRET"}]
-                     Generate entries with:  node hash-password.mjs <username> "<Full name>" <password> --totp
-                     "totp" is optional; when present the login also requires a 6-digit authenticator code.
+     USERS           JSON array: [{"username":"martim","hash":"pbkdf2$...","name":"Martim Galésio"}]
+                     Generate entries with:  node hash-password.mjs <username> "<Full name>" <password>
    KV binding:
      AUTH_KV        stores the replacement password hash after first sign-in.
      SESSION_SECRET  long random string, signs session tokens
@@ -38,7 +37,8 @@ function sniff(bytes) {
 }
 const SESSION_HOURS = 8;
 const SETUP_MINUTES = 15;
-const PASSWORD_MIN = 12;
+const PASSWORD_MIN = 2;
+const PASSWORD_MAX = 6;
 const PBKDF2_MAX = 100000; // Cloudflare Workers refuse more iterations than this
 const MAX_UPLOAD = 8 * 1024 * 1024;
 
@@ -65,31 +65,6 @@ async function verifyPassword(password, stored) {
     for (let i = 0; i < dk.length; i++) diff |= dk[i] ^ want[i];
     return diff === 0;
   } catch (e) { return false; }
-}
-
-/* ------------------------------------------------------------------ TOTP */
-function base32Decode(str) {
-  const A = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
-  const clean = String(str || '').toUpperCase().replace(/[^A-Z2-7]/g, '');
-  let bits = 0, value = 0; const out = [];
-  for (const ch of clean) { value = (value << 5) | A.indexOf(ch); bits += 5; if (bits >= 8) { out.push((value >>> (bits - 8)) & 0xFF); bits -= 8; } }
-  return new Uint8Array(out);
-}
-async function totpCode(secretB32, step) {
-  const key = await crypto.subtle.importKey('raw', base32Decode(secretB32), { name: 'HMAC', hash: 'SHA-1' }, false, ['sign']);
-  const msg = new Uint8Array(8); let v = step;
-  for (let i = 7; i >= 0; i--) { msg[i] = v & 0xFF; v = Math.floor(v / 256); }
-  const mac = new Uint8Array(await crypto.subtle.sign('HMAC', key, msg));
-  const off = mac[mac.length - 1] & 0x0F;
-  const code = ((mac[off] & 0x7F) << 24) | (mac[off + 1] << 16) | (mac[off + 2] << 8) | mac[off + 3];
-  return String(code % 1000000).padStart(6, '0');
-}
-async function verifyTotp(secretB32, code) {
-  const c = String(code || '').replace(/\s+/g, '');
-  if (!/^\d{6}$/.test(c)) return false;
-  const now = Math.floor(Date.now() / 30000);
-  for (const d of [0, -1, 1]) if (await totpCode(secretB32, now + d) === c) return true;
-  return false;
 }
 
 /* -------------------------------------------------------------- sessions */
@@ -138,7 +113,7 @@ async function savedUser(env, username) {
   return saved && typeof saved.hash === 'string' ? saved : null;
 }
 const publicUser = (user) => ({ username: user.username, name: user.name || user.username });
-const validPassword = (password) => typeof password === 'string' && password.length >= PASSWORD_MIN && password.length <= 256;
+const validPassword = (password) => typeof password === 'string' && password.length >= PASSWORD_MIN && password.length <= PASSWORD_MAX && /[A-Z]/.test(password) && /\d/.test(password);
 
 /* ---------------------------------------------------------------- github */
 async function gh(env, path, init = {}) {
@@ -207,7 +182,7 @@ export default {
         if (!setup || setup.p !== 'password-setup') return json({ error: 'This setup session has expired. Log in again with your temporary password.' }, 401, h);
         const password = String(body.password || '');
         const confirmation = String(body.confirmPassword || '');
-        if (!validPassword(password)) return json({ error: `Choose a password between ${PASSWORD_MIN} and 256 characters.` }, 400, h);
+        if (!validPassword(password)) return json({ error: `Choose a password of ${PASSWORD_MIN}–${PASSWORD_MAX} characters with at least one uppercase letter and one number.` }, 400, h);
         if (password !== confirmation) return json({ error: 'The two new passwords do not match.' }, 400, h);
         const user = findUser(env, setup.u);
         if (!user) return json({ error: 'That account is no longer active.' }, 401, h);
@@ -220,7 +195,7 @@ export default {
 
       if (path === '/login' && req.method === 'POST') {
         if (!env.AUTH_KV) return json({ error: 'First-login password setup is not configured yet. Please contact Jomppa Tykkyläinen on WhatsApp: +358408451893.' }, 503, h);
-        const { username, password, code } = await req.json().catch(() => ({}));
+        const { username, password } = await req.json().catch(() => ({}));
         const uname = String(username || '').trim().toLowerCase().slice(0, 64);
         const ip = req.headers.get('CF-Connecting-IP') || 'unknown';
         if (env.LOGIN_LIMIT) {
@@ -231,10 +206,6 @@ export default {
         const saved = user && await savedUser(env, user.username);
         const ok = user && await verifyPassword(String(password || ''), saved ? saved.hash : user.hash);
         if (!ok) { await new Promise((r) => setTimeout(r, 800)); return json({ error: 'Wrong username or password.' }, 401, h); }
-        if (user.totp) {
-          if (!code) return json({ error: 'Enter the 6-digit code from your authenticator app.', needCode: true }, 401, h);
-          if (!(await verifyTotp(user.totp, code))) { await new Promise((r) => setTimeout(r, 800)); return json({ error: 'That code is not valid. Codes change every 30 seconds.', needCode: true }, 401, h); }
-        }
         if (!saved) return json({ setupRequired: true, setupToken: await makeSetupToken(env, user.username), user: publicUser(user), expiresIn: SETUP_MINUTES * 60 }, 200, h);
         return json({ token: await makeToken(env, user.username), user: publicUser(user), expiresIn: SESSION_HOURS * 3600 }, 200, h);
       }
