@@ -13,6 +13,7 @@
 <script>try{if(localStorage.getItem('helix-theme')==='dark')document.documentElement.classList.add('hx-document-dark')}catch(e){}</script>
 <script src="/site.js"></script>
 <style>
+  html, body { width: 100%; max-width: 100%; overflow-x: hidden; -webkit-text-size-adjust: 100%; }
   body { background: var(--cream); }
   body.pin-locked > :not(.hx-loader):not(.pin-gate) { visibility: hidden; }
   .pin-gate { position: fixed; inset: 0; z-index: 110; display: grid; place-items: center; padding: 20px; background: radial-gradient(circle at 50% 0%, rgba(42, 112, 86, .55), transparent 45%), linear-gradient(145deg, var(--green-deep), #12382D 70%, #0E2A22); color: #F6F3E8; transition: opacity .34s ease, visibility 0s linear .34s; }
@@ -83,6 +84,31 @@
   .pill { font-size: 11px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; padding: 4px 8px; border: 1px solid var(--line); color: var(--muted); }
   .settings-form { max-width: 720px; }
   .settings-form h3 { margin: 26px 0 10px; font-family: var(--serif); font-weight: 560; font-size: 20px; }
+  @media (max-width: 700px) {
+    .hx-site-header { height: auto; min-height: var(--header-h); }
+    .hx-header-inner { height: auto; min-height: var(--header-h); flex-wrap: wrap; gap: 10px 12px; padding-top: 10px; padding-bottom: 10px; }
+    .hx-header-logo { width: min(176px, 58vw); }
+    .hx-header-inner > span[style*="margin-left"] { display: none; }
+    .top-status { flex: 1 0 100%; width: 100%; min-width: 0; margin-left: 0; justify-content: flex-start; gap: 8px; }
+    .top-status .status { min-width: 0; font-size: 11px; }
+    .top-status .status span:last-child { overflow: hidden; text-overflow: ellipsis; }
+    .top-status .btn { min-width: 0; }
+    .adm-main { padding: 22px 16px 56px; }
+    .adm-side { padding: 22px 16px; }
+    .section-head { align-items: flex-start; }
+    .section-head > .btn-row { width: 100%; }
+    .section-head > .btn-row .btn { flex: 1 1 0; min-width: 0; padding-left: 10px; padding-right: 10px; }
+    .adm-row { grid-template-columns: 48px minmax(0, 1fr); gap: 10px 12px; }
+    .adm-row .th { width: 48px; height: 42px; }
+    .adm-row .acts { grid-column: 2; justify-content: flex-start; }
+    .editor .panel .head, .editor .panel .fields, .editor .panel .foot { padding-left: 16px; padding-right: 16px; }
+    .login { padding: 16px; overflow: auto; }
+    .login .box { width: 100%; max-width: 420px; margin: auto 0; padding: 24px 20px; }
+    .login .box input, .login .box textarea, .login .box select { font-size: 16px; }
+    .pin-gate { padding: 16px; overflow: auto; }
+    .pin-card { margin: auto 0; padding: 28px 22px; }
+    .pin-input { font-size: 30px; }
+  }
 </style>
 </head>
 <body data-page="/admin/" class="pin-locked" aria-busy="true">
