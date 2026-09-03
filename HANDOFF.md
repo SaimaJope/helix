@@ -3,7 +3,7 @@
 Use this as the prompt for whoever continues (Claude, GPT, a human). State as of 3 Sep 2026.
 
 ## Rules
-- `Helix Home v2.dc.html` is the approved home page and the brand reference; `index.html` redirects to it. On 3 Sep 2026 the client allowed edits: its header, full-screen menu, hero links, SDG cards, support CTA and footer now link to the inner pages. A pre-edit copy is in `tmp/backup/`. Do not restyle it beyond that.
+- `home.html` is the approved home page and the brand reference; `index.html` redirects to it. The former `Helix Home v2.dc.html` URL redirects to `home.html` for backwards compatibility. On 3 Sep 2026 the client allowed edits: its header, full-screen menu, hero links, SDG cards, support CTA and footer now link to the inner pages. A pre-edit copy is in `tmp/backup/`. Do not restyle it beyond that.
 - Brand: `../helixanthropisbrandguidelines.pdf`. Paper #F6F3E8, Cream #EEE9D8, Ink #26241E, Green 500 #20614B (hero green #184E3D), Red #C6502F, Yellow #D9A23B, Purple #7D5BA6. Public Sans for UI/body, Source Serif 4 for titles, Schibsted Grotesk for the home hero only. Square corners, 1px ink rules, one colour family leads per page. Logo only from the SVG masters in `assets/`.
 - No em dashes in copy.
 - Client brief: `../Website Design.pdf` (pages: Home, About, Our Work, Volunteer, News/Events, Shop, Contact, SDGs with one page per goal).
