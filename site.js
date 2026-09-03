@@ -487,7 +487,7 @@
       $$('[data-member-only]').forEach((el) => el.removeAttribute('data-member-only'));
       $$('[data-member-alt]').forEach((el) => el.remove());
     }
-    applySettings();
+    if (window.HXSettings) window.HXSettings.apply(); else applySettings();
     previewBanner();
   }
 
