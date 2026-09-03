@@ -31,7 +31,7 @@
   .pin-error { margin: 12px 0 0; color: var(--red) !important; font-size: 13px; }
   .pin-foot { margin-top: 28px; padding-top: 16px; border-top: 1px solid var(--line); font-size: 12px; }
   @media (prefers-reduced-motion: reduce) { .pin-gate { transition: none; } }
-  .adm { display: grid; grid-template-columns: 250px minmax(0, 1fr); min-height: calc(100vh - var(--header-h)); }
+  .adm { display: grid; grid-template-columns: 250px minmax(0, 1fr); width: 100%; max-width: 100%; min-width: 0; min-height: calc(100vh - var(--header-h)); }
   @media (max-width: 860px) { .adm { grid-template-columns: 1fr; } }
   .adm-side { border-right: 1px solid var(--line); padding: 28px 20px; background: var(--cream); }
   .adm-side button.tab { display: flex; justify-content: space-between; width: 100%; text-align: left; background: transparent; border: 0; border-bottom: 1px solid var(--line-soft); padding: 12px 6px; color: var(--ink); font-size: 14.5px; font-weight: 650; cursor: pointer; }
@@ -89,10 +89,14 @@
     .hx-header-inner { height: auto; min-height: var(--header-h); flex-wrap: wrap; gap: 10px 12px; padding-top: 10px; padding-bottom: 10px; }
     .hx-header-logo { width: min(176px, 58vw); }
     .hx-header-inner > span[style*="margin-left"] { display: none; }
-    .top-status { flex: 1 0 100%; width: 100%; min-width: 0; margin-left: 0; justify-content: flex-start; gap: 8px; }
+    .top-status { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); flex: 1 0 100%; width: 100%; min-width: 0; margin-left: 0; gap: 8px; }
     .top-status .status { min-width: 0; font-size: 11px; }
     .top-status .status span:last-child { overflow: hidden; text-overflow: ellipsis; }
     .top-status .btn { min-width: 0; }
+    .top-status [data-preview-toggle] { grid-column: 1 / -1; width: 100%; }
+    .top-status [data-logout] { width: 100%; }
+    .top-status .hx-theme-toggle { justify-self: end; }
+    .adm > *, .adm-main > *, .adm-side > *, .section-head > *, .adm-row > *, .login .box, .pin-card, .editor .panel { min-width: 0; max-width: 100%; }
     .adm-main { padding: 22px 16px 56px; }
     .adm-side { padding: 22px 16px; }
     .section-head { align-items: flex-start; }
@@ -108,6 +112,14 @@
     .pin-gate { padding: 16px; overflow: auto; }
     .pin-card { margin: auto 0; padding: 28px 22px; }
     .pin-input { font-size: 30px; }
+  }
+  @media (max-width: 380px) {
+    .login { padding: 12px; }
+    .login .box { padding: 22px 16px; }
+    .login .box .btn-row .btn { flex: 1 1 100%; }
+    .pin-gate { padding: 12px; }
+    .pin-card { padding: 24px 18px; }
+    .section-head > .btn-row .btn { flex-basis: 100%; }
   }
 </style>
 </head>
