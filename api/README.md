@@ -22,14 +22,14 @@ Worker plus one KV namespace handle authentication and publishing.
 
 3. Create the staff accounts with temporary passwords. One line per person:
 
-       node hash-password.mjs martim "Martim Galésio" "M4rtim"
-       node hash-password.mjs giovanni "Giovanni De Brito" "G1ovio"
-       node hash-password.mjs mathieu "Mathieu Plaquevent" "M2thie"
+       node hash-password.mjs topgun "TopGun" "T4pgun"
+       node hash-password.mjs thomas-shelby "Thomas Shelby" "T2Shel"
+       node hash-password.mjs seraphim "Seraphim" "S3raph"
 
    Passwords must be 2–6 characters with at least one uppercase letter and one number. Each person replaces this temporary password with their own password the first time they sign in.
 
    Put the printed objects into one JSON array, for example
-   `[{"username":"martim",...},{"username":"giovanni",...}]`.
+   `[{"username":"topgun",...},{"username":"thomas-shelby",...},{"username":"seraphim",...}]`.
 
 4. Create the password store:
 

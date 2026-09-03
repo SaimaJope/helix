@@ -3,7 +3,7 @@
    everything as commits to the GitHub repository that GitHub Pages serves.
 
    Secrets / vars (wrangler secret put NAME):
-     USERS           JSON array: [{"username":"martim","hash":"pbkdf2$...","name":"Martim Galésio"}]
+     USERS           JSON array: [{"username":"topgun","hash":"pbkdf2$...","name":"TopGun"}]
                      Generate entries with:  node hash-password.mjs <username> "<Full name>" <password>
    KV binding:
      AUTH_KV        stores the replacement password hash after first sign-in.
