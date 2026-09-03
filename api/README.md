@@ -22,11 +22,11 @@ Worker plus one KV namespace handle authentication and publishing.
 
 3. Create the staff accounts with temporary passwords. One line per person:
 
-       node hash-password.mjs topgun "TopGun" "T4pgun"
-       node hash-password.mjs thomas-shelby "Thomas Shelby" "T2Shel"
-       node hash-password.mjs seraphim "Seraphim" "S3raph"
+       node hash-password.mjs topgun "TopGun" "1234" --bootstrap
+       node hash-password.mjs thomas-shelby "Thomas Shelby" "1234" --bootstrap
+       node hash-password.mjs seraphim "Seraphim" "1234" --bootstrap
 
-   Passwords must be 2–6 characters with at least one uppercase letter and one number. Each person replaces this temporary password with their own password the first time they sign in.
+   `1234` is the one-time bootstrap password. Each person replaces it with their own 2–6 character password, including at least one uppercase letter and one number, the first time they sign in.
 
    Put the printed objects into one JSON array, for example
    `[{"username":"topgun",...},{"username":"thomas-shelby",...},{"username":"seraphim",...}]`.
@@ -59,6 +59,8 @@ Worker plus one KV namespace handle authentication and publishing.
   the browser's persistent storage.
 - New passwords are limited to 2–6 characters and must include an uppercase
   letter and a number.
+- The static admin page has a session-only front-door PIN (`404`) for casual
+  access control; the Worker account login remains the real authorization check.
 - Login attempts are rate limited: 5 per minute per IP and per username.
 - Sessions are HMAC-signed tokens that expire after 8 hours; the admin keeps them
   in session storage (gone when the tab closes) and logs out after 30 idle

@@ -1,15 +1,17 @@
-// Usage: node hash-password.mjs <username> "<Full name>" <password>
+// Usage: node hash-password.mjs <username> "<Full name>" <password> [--bootstrap]
 // Prints a JSON user entry for the USERS secret.
 import { webcrypto as crypto } from 'node:crypto';
 
 const args = process.argv.slice(2);
-const [username, name, password] = args;
+const bootstrap = args.includes('--bootstrap');
+const [username, name, password] = args.filter((arg) => arg !== '--bootstrap');
 if (!username || !name || !password) {
-  console.error('Usage: node hash-password.mjs <username> "<Full name>" <password>');
+  console.error('Usage: node hash-password.mjs <username> "<Full name>" <password> [--bootstrap]');
   process.exit(1);
 }
-if (password.length < 2 || password.length > 6 || !/[A-Z]/.test(password) || !/\d/.test(password)) {
-  console.error('Use 2–6 characters with at least one uppercase letter and one number.');
+const validChosenPassword = password.length >= 2 && password.length <= 6 && /[A-Z]/.test(password) && /\d/.test(password);
+if (!validChosenPassword && !(bootstrap && password === '1234')) {
+  console.error(bootstrap ? 'Use 1234 for the one-time bootstrap password, or a 2–6 character password with an uppercase letter and a number.' : 'Use 2–6 characters with at least one uppercase letter and one number.');
   process.exit(1);
 }
 const enc = new TextEncoder();
