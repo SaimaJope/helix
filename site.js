@@ -1,6 +1,6 @@
 /* Helix Anthropis Institute: shared runtime for the inner pages.
    Plain JavaScript, no build step. Content lives in content/*.json and can be
-   edited with admin.html (which can also preview unsaved edits on this browser). */
+   edited through /admin/ (which can also preview unsaved edits on this browser). */
 (() => {
   'use strict';
 
@@ -8,6 +8,13 @@
 
   /* ------------------------------------------------------------------ utils */
   const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const siteURL = (p) => {
+    const s = String(p ?? '');
+    return !s || /^(?:[a-z][a-z\d+.-]*:|\/|#)/i.test(s) ? s : '/' + s.replace(/^\.\//, '');
+  };
+  const cleanHref = (p) => siteURL(p)
+    .replace(/^\/index\.html(?=($|[?#]))/, '/')
+    .replace(/^\/(about|admin|checkout|contact|legal|news|post|privacy|product|project|sdg|sdgs|shop|volunteer|work)\.html(?=($|[?#]))/, '/$1/');
   const $ = (sel, root = document) => root.querySelector(sel);
   const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
   const money = (n) => '€' + Number(n).toFixed(2);
@@ -37,8 +44,8 @@
   /* -------------------------------------------------------------- markdown */
   function inline(t) {
     return t
-      .replace(/!\[([^\]]*)\]\(([^)\s]+)\)/g, (m, alt, src) => `<img src="${esc(src)}" alt="${esc(alt)}" loading="lazy">`)
-      .replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, (m, txt, href) => `<a href="${esc(href)}"${/^https?:/.test(href) ? ' target="_blank" rel="noopener"' : ''}>${txt}</a>`)
+      .replace(/!\[([^\]]*)\]\(([^)\s]+)\)/g, (m, alt, src) => `<img src="${esc(siteURL(src))}" alt="${esc(alt)}" loading="lazy">`)
+      .replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, (m, txt, href) => `<a href="${esc(cleanHref(href))}"${/^https?:/.test(href) ? ' target="_blank" rel="noopener"' : ''}>${txt}</a>`)
       .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
       .replace(/(^|[^*])\*([^*]+)\*/g, '$1<em>$2</em>')
       .replace(/`([^`]+)`/g, '<code>$1</code>');
@@ -58,15 +65,15 @@
       if ((m = l.match(/^&gt;\s?(.*)$/))) { flushP(); flushL(); quote.push(m[1]); continue; }
       if ((m = l.match(/^[-*]\s+(.*)$/))) { flushP(); flushQ(); if (!list || list.tag !== 'ul') { flushL(); list = { tag: 'ul', items: [] }; } list.items.push(m[1]); continue; }
       if ((m = l.match(/^\d+[.)]\s+(.*)$/))) { flushP(); flushQ(); if (!list || list.tag !== 'ol') { flushL(); list = { tag: 'ol', items: [] }; } list.items.push(m[1]); continue; }
-      if ((m = l.match(/^!\[([^\]]*)\]\(([^)\s]+)\)$/))) { flushP(); flushL(); flushQ(); out.push(`<figure><img src="${m[2]}" alt="${m[1]}" loading="lazy">${m[1] ? `<figcaption>${m[1]}</figcaption>` : ''}</figure>`); continue; }
+      if ((m = l.match(/^!\[([^\]]*)\]\(([^)\s]+)\)$/))) { flushP(); flushL(); flushQ(); out.push(`<figure><img src="${siteURL(m[2])}" alt="${m[1]}" loading="lazy">${m[1] ? `<figcaption>${m[1]}</figcaption>` : ''}</figure>`); continue; }
       if (quote.length) { quote.push(l); continue; }
       para.push(l);
     }
     flushP(); flushL(); flushQ();
     return out.join('\n');
   }
-  const gallery = (paths) => (paths && paths.length) ? `<div class="gallery-grid">${paths.map((g) => { const src = typeof g === 'string' ? g : g.src; const cap = typeof g === 'string' ? '' : (g.caption || ''); return `<figure><img src="${esc(src)}" alt="${esc(cap)}" loading="lazy">${cap ? `<figcaption>${esc(cap)}</figcaption>` : ''}</figure>`; }).join('')}</div>` : '';
-  const detailHref = (kind, item) => (item.link && item.link !== '#') ? item.link : `${kind}.html?id=${encodeURIComponent(item.id)}`;
+  const gallery = (paths) => (paths && paths.length) ? `<div class="gallery-grid">${paths.map((g) => { const src = typeof g === 'string' ? g : g.src; const cap = typeof g === 'string' ? '' : (g.caption || ''); return `<figure><img src="${esc(siteURL(src))}" alt="${esc(cap)}" loading="lazy">${cap ? `<figcaption>${esc(cap)}</figcaption>` : ''}</figure>`; }).join('')}</div>` : '';
+  const detailHref = (kind, item) => (item.link && item.link !== '#') ? cleanHref(item.link) : `/${kind}/?id=${encodeURIComponent(item.id)}`;
 
   /* --------------------------------------------------------------- content */
   const cache = {};
@@ -79,13 +86,13 @@
     } catch (e) {}
     if (override) { cache[name] = override; return override; }
     try {
-      const res = await fetch('content/' + name + '.json', { cache: 'no-store' });
+      const res = await fetch('/content/' + name + '.json', { cache: 'no-store' });
       if (!res.ok) throw new Error(res.status);
       const data = await res.json();
       cache[name] = Array.isArray(data) ? data : [];
       return cache[name];
     } catch (e) {
-      console.warn('Could not load content/' + name + '.json', e);
+      console.warn('Could not load /content/' + name + '.json', e);
       cache[name] = [];
       return cache[name];
     }
@@ -96,7 +103,7 @@
     let override = null;
     try { const raw = localStorage.getItem('helix-content:settings'); if (raw && localStorage.getItem('helix-content-preview') === 'on') override = JSON.parse(raw); } catch (e) {}
     if (override) { settingsCache = override; return override; }
-    try { const res = await fetch('content/settings.json', { cache: 'no-store' }); settingsCache = res.ok ? await res.json() : {}; } catch (e) { settingsCache = {}; }
+    try { const res = await fetch('/content/settings.json', { cache: 'no-store' }); settingsCache = res.ok ? await res.json() : {}; } catch (e) { settingsCache = {}; }
     return settingsCache;
   }
   const getPath = (o, p) => String(p).split('.').reduce((a, k) => (a == null ? undefined : a[k]), o);
@@ -116,7 +123,7 @@
       if (localStorage.getItem('helix-content-preview') !== 'on') return;
       const b = document.createElement('div');
       b.style.cssText = 'position:fixed;left:0;right:0;bottom:0;z-index:95;background:#D9A23B;color:#26241E;font:600 13px/1.4 "Public Sans",system-ui,sans-serif;padding:10px 16px;display:flex;gap:18px;align-items:center;justify-content:center;flex-wrap:wrap;';
-      b.innerHTML = '<span>Previewing unsaved content edits from the admin on this browser.</span><a href="admin.html" style="text-decoration:underline;">Open admin</a><button type="button" style="border:1px solid #26241E;background:transparent;color:#26241E;font:inherit;padding:4px 10px;cursor:pointer;">Stop preview</button>';
+      b.innerHTML = '<span>Previewing unsaved content edits from the admin on this browser.</span><a href="/admin/" style="text-decoration:underline;">Open admin</a><button type="button" style="border:1px solid #26241E;background:transparent;color:#26241E;font:inherit;padding:4px 10px;cursor:pointer;">Stop preview</button>';
       b.querySelector('button').onclick = () => { localStorage.setItem('helix-content-preview', 'off'); location.reload(); };
       document.body.appendChild(b);
     } catch (e) {}
@@ -143,10 +150,10 @@
     ['Partnerships for the Goals', '#19486A', 'Strengthen global partnerships for sustainable development.', 'None of the other sixteen goals can be reached alone. The last goal is about the means: finance, technology, trade, data and the partnerships between governments, institutions and communities.', ['Strengthen domestic resource mobilisation and meet development assistance commitments.', 'Enhance cooperation on science, technology and innovation.', 'Promote a universal, rules-based, open and equitable trading system.', 'Encourage effective public, private and civil society partnerships.'], 'Cooperation']
   ].map(([title, color, description, why, targets, area], i) => ({
     n: i + 1, nn: String(i + 1).padStart(2, '0'), title, color, description, why, targets, area,
-    png: 'assets/sdg/' + String(i + 1).padStart(2, '0') + '.png',
-    inv: 'assets/sdg/inv-' + String(i + 1).padStart(2, '0') + '.png',
-    gif: 'assets/sdg/gif-' + String(i + 1).padStart(2, '0') + '.gif',
-    href: 'sdg.html?goal=' + (i + 1),
+    png: '/assets/sdg/' + String(i + 1).padStart(2, '0') + '.png',
+    inv: '/assets/sdg/inv-' + String(i + 1).padStart(2, '0') + '.png',
+    gif: '/assets/sdg/gif-' + String(i + 1).padStart(2, '0') + '.gif',
+    href: '/sdg/?goal=' + (i + 1),
     un: 'https://sdgs.un.org/goals/goal' + (i + 1),
     fg: onColor(color)
   }));
@@ -190,10 +197,10 @@
   /* ---------------------------------------------------------------- media */
   function mediaHTML(media = {}, o = {}) {
     const tag = o.tag ? `<span class="chip paper tag">${esc(o.tag)}</span>` : '';
-    if (media.image) return `<img src="${esc(media.image)}" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" loading="lazy">${tag}`;
-    if (media.video) return `<video class="hx-stock-video" data-stock-footage muted loop playsinline preload="metadata" aria-hidden="true" tabindex="-1"><source src="${esc(media.video)}" type="video/mp4"></video><span class="hx-stock-shade" aria-hidden="true"></span>${tag}`;
+    if (media.image) return `<img src="${esc(siteURL(media.image))}" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" loading="lazy">${tag}`;
+    if (media.video) return `<video class="hx-stock-video" data-stock-footage muted loop playsinline preload="metadata" aria-hidden="true" tabindex="-1"><source src="${esc(siteURL(media.video))}" type="video/mp4"></video><span class="hx-stock-shade" aria-hidden="true"></span>${tag}`;
     const bg = media.poster || '#184E3D';
-    return `<div class="poster" style="background:${esc(bg)};"><span class="big">${esc(o.big || '')}</span><img class="mark" src="${onColor(bg) === '#FFFFFF' ? 'assets/helix-h.svg' : 'assets/helix-h-ink.svg'}" alt=""></div>${tag}`;
+    return `<div class="poster" style="background:${esc(bg)};"><span class="big">${esc(o.big || '')}</span><img class="mark" src="${onColor(bg) === '#FFFFFF' ? '/assets/helix-h.svg' : '/assets/helix-h-ink.svg'}" alt=""></div>${tag}`;
   }
 
   /* -------------------------------------------------------------- renderers */
@@ -249,7 +256,7 @@
   /* ------------------------------------------------------------ product art */
   function art(type, color = '#20614B', view = 'front', alt = '#F6F3E8') {
     const light = onColor(color) === '#26241E';
-    const mark = light ? 'assets/helix-h-ink.svg' : 'assets/helix-h.svg';
+    const mark = light ? '/assets/helix-h-ink.svg' : '/assets/helix-h.svg';
     const line = light ? 'rgba(38,36,30,0.55)' : 'rgba(246,243,232,0.5)';
     const H = (x, y, w, op = 1) => `<image href="${mark}" x="${x}" y="${y}" width="${w}" height="${w * 1.524}" opacity="${op}" preserveAspectRatio="xMidYMid meet"/>`;
     const detail = view === 'detail';
@@ -325,16 +332,16 @@
     }
     return `<svg viewBox="0 0 200 200" role="img" aria-label="${esc(type)} in ${esc(color)}">${body}</svg>`;
   }
-  const productVisual = (p, i = 0) => (p.images && p.images.length) ? `<img src="${esc(p.images[Math.min(i, p.images.length - 1)])}" alt="" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;">` : art(p.art, (p.colors || ['#20614B'])[0]);
+  const productVisual = (p, i = 0) => (p.images && p.images.length) ? `<img src="${esc(siteURL(p.images[Math.min(i, p.images.length - 1)]))}" alt="" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;">` : art(p.art, (p.colors || ['#20614B'])[0]);
   const productCard = (p) => `
     <article class="card link product-card">
-      <a class="art${p.images && p.images.length ? ' photo' : ''}" href="product.html?id=${encodeURIComponent(p.id)}" aria-hidden="true" tabindex="-1">${productVisual(p)}</a>
+      <a class="art${p.images && p.images.length ? ' photo' : ''}" href="/product/?id=${encodeURIComponent(p.id)}" aria-hidden="true" tabindex="-1">${productVisual(p)}</a>
       <div class="body">
         <span class="chip outline" style="align-self:flex-start;">${esc(p.category)}</span>
-        <h3 class="name"><a href="product.html?id=${encodeURIComponent(p.id)}">${esc(p.name)}</a></h3>
+        <h3 class="name"><a href="/product/?id=${encodeURIComponent(p.id)}">${esc(p.name)}</a></h3>
         <div class="price">${money(p.price)}</div>
         <div class="swatches">${(p.colors || []).map((c) => `<span class="swatch" style="background:${esc(c)}"></span>`).join('')}</div>
-        <a class="ul" href="product.html?id=${encodeURIComponent(p.id)}">View product</a>
+        <a class="ul" href="/product/?id=${encodeURIComponent(p.id)}">View product</a>
       </div>
     </article>`;
 
@@ -385,7 +392,7 @@
       const items = d.querySelector('.items'); const foot = d.querySelector('.foot');
       if (!s.items.length) {
         items.innerHTML = `<p class="empty" style="margin:24px 0;">Your cart is empty.</p>`;
-        foot.innerHTML = `<a class="btn ink block" href="shop.html">Browse the shop</a>`;
+        foot.innerHTML = `<a class="btn ink block" href="/shop/">Browse the shop</a>`;
         return;
       }
       items.innerHTML = s.items.map((i) => `
@@ -398,8 +405,8 @@
       foot.innerHTML = `
         ${MEMBER_DISCOUNTS ? `<div class="field"><label for="cart-tier">Membership</label><select id="cart-tier">${Object.entries(TIERS).map(([k, v]) => `<option value="${k}" ${s.tier === k ? 'selected' : ''}>${v.label}${v.pct ? ` (${v.pct}% off)` : ''}</option>`).join('')}</select></div>` : ''}
         <div class="totals"><div><span>Subtotal</span><span>${money(t.subtotal)}</span></div>${t.pct ? `<div class="disc"><span>Member discount ${t.pct}%</span><span>−${money(t.discount)}</span></div>` : ''}<div class="total"><span>Total</span><span>${money(t.total)}</span></div></div>
-        <a class="btn block" href="checkout.html">Checkout</a>
-        <a class="ul" href="shop.html" style="justify-self:center;">Continue shopping</a>`;
+        <a class="btn block" href="/checkout/">Checkout</a>
+        <a class="ul" href="/shop/" style="justify-self:center;">Continue shopping</a>`;
       items.onclick = (e) => {
         const b = e.target.closest('button'); if (!b) return;
         if (b.dataset.inc) this.setQty(b.dataset.inc, (s.items.find((i) => i.key === b.dataset.inc) || { qty: 0 }).qty + 1);
@@ -492,6 +499,6 @@
   }
 
   /* ------------------------------------------------------------- exports */
-  window.HX = { EMAIL, esc, $, $$, money, fmtDate, parseDate, param, lum, onColor, chipClass, load, settings, getPath, md, gallery, detailHref, productVisual, SDGS, sdgGrid, sdgPills, iconSVG, ICONS, mediaHTML, projectCard, newsCard, pubRow, eventRow, icsLink, art, productCard, cart, TIERS, MEMBER_DISCOUNTS, toast, applyTheme };
+  window.HX = { EMAIL, esc, siteURL, cleanHref, $, $$, money, fmtDate, parseDate, param, lum, onColor, chipClass, load, settings, getPath, md, gallery, detailHref, productVisual, SDGS, sdgGrid, sdgPills, iconSVG, ICONS, mediaHTML, projectCard, newsCard, pubRow, eventRow, icsLink, art, productCard, cart, TIERS, MEMBER_DISCOUNTS, toast, applyTheme };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', chrome, { once: true }); else chrome();
 })();

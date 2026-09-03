@@ -40,7 +40,7 @@
         <p>We use only essential browser storage for your privacy acknowledgement, theme and shopping cart. There is no analytics, advertising or cross-site tracking.</p>
         <div class="hx-privacy-banner__actions">
           <button class="hx-privacy-button" type="button" data-hx-privacy-ack>Understood</button>
-          <a class="hx-privacy-link" href="privacy.html">Read the privacy notice</a>
+          <a class="hx-privacy-link" href="/privacy/">Read the privacy notice</a>
         </div>
       </div>`;
     banner.querySelector('[data-hx-privacy-ack]').addEventListener('click', function () {
@@ -82,7 +82,7 @@
         </div>
         <div class="hx-privacy-dialog__actions">
           <button class="hx-privacy-text-button" type="button" data-hx-privacy-clear>Clear visitor preferences</button>
-          <a class="hx-privacy-link" href="privacy.html">Full privacy &amp; storage notice</a>
+          <a class="hx-privacy-link" href="/privacy/">Full privacy &amp; storage notice</a>
         </div>
       </div>`;
     dialog.addEventListener('click', function (event) {
@@ -116,13 +116,13 @@
       notice.className = 'hx-form-privacy';
       notice.dataset.for = form.dataset.subject || 'message';
       if (subject.includes('newsletter')) {
-        notice.innerHTML = 'This opens a draft in your email app; the website sends nothing itself. If you send it, we use your address for newsletter requests until you unsubscribe. <a href="privacy.html#email">Privacy details</a>.';
+        notice.innerHTML = 'This opens a draft in your email app; the website sends nothing itself. If you send it, we use your address for newsletter requests until you unsubscribe. <a href="/privacy/#email">Privacy details</a>.';
         form.insertAdjacentElement('afterend', notice);
       } else if (subject.includes('volunteer')) {
-        notice.innerHTML = 'The website does not transmit this form. It opens a draft in your email app; if you send it, we use the details to assess and answer your application. <a href="privacy.html#email">Privacy details</a>.';
+        notice.innerHTML = 'The website does not transmit this form. It opens a draft in your email app; if you send it, we use the details to assess and answer your application. <a href="/privacy/#email">Privacy details</a>.';
         form.appendChild(notice);
       } else {
-        notice.innerHTML = 'The website does not transmit this form. It opens a draft in your email app; if you send it, we use the details only to answer your request. <a href="privacy.html#email">Privacy details</a>.';
+        notice.innerHTML = 'The website does not transmit this form. It opens a draft in your email app; if you send it, we use the details only to answer your request. <a href="/privacy/#email">Privacy details</a>.';
         form.appendChild(notice);
       }
     });
@@ -131,7 +131,7 @@
       if (form.querySelector('.hx-form-privacy')) return;
       const notice = document.createElement('p');
       notice.className = 'hx-form-privacy';
-      notice.innerHTML = '<strong>Prototype checkout:</strong> entries remain in this browser tab and are not transmitted or stored. No payment is taken. <a href="privacy.html#checkout">Privacy details</a>.';
+      notice.innerHTML = '<strong>Prototype checkout:</strong> entries remain in this browser tab and are not transmitted or stored. No payment is taken. <a href="/privacy/#checkout">Privacy details</a>.';
       form.appendChild(notice);
     });
   }

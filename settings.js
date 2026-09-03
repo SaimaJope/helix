@@ -83,7 +83,7 @@
       if (raw && localStorage.getItem('helix-content-preview') === 'on') override = JSON.parse(raw);
     } catch (e) {}
     if (override) { cache = override; return Promise.resolve(cache); }
-    return fetch('content/settings.json', { cache: 'no-store' })
+    return fetch('/content/settings.json', { cache: 'no-store' })
       .then(function (r) { return r.ok ? r.json() : {}; })
       .catch(function () { return {}; })
       .then(function (j) { cache = j; return j; });

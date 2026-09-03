@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="icon" href="assets/helix-h-ink.svg" type="image/svg+xml">
-<link rel="stylesheet" href="fonts.css">
-<link rel="stylesheet" href="privacy.css">
-<script src="./support.js"></script>
-<script src="./procedural-fields.js" defer></script>
-<script src="./privacy.js" defer></script>
-<script src="./settings.js" defer></script>
+<link rel="icon" href="/assets/helix-h-ink.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/fonts.css">
+<link rel="stylesheet" href="/privacy.css">
+<script src="/support.js"></script>
+<script src="/procedural-fields.js" defer></script>
+<script src="/privacy.js" defer></script>
+<script src="/settings.js" defer></script>
 </head>
 <body>
 <x-dc>
@@ -24,21 +24,21 @@
     :focus-visible { outline: 2px solid #D9A23B; outline-offset: 2px; }
     input::placeholder { color: rgba(237,232,216,0.45); }
   </style>
-  <script src="./image-slot.js"></script>
+  <script src="/image-slot.js"></script>
 </helmet>
 <div style="min-height: 100vh; background: #F6F3E8; color: #26241E; font-family: 'Public Sans', system-ui, sans-serif; font-size: 16px; line-height: 1.55;">
 
   <header data-screen-label="Header" style="background: #20614B; color: #F6F3E8;">
     <div style="max-width: 1200px; margin: 0 auto; padding: 0 clamp(20px, 4.5vw, 56px); height: 84px; display: flex; align-items: center; justify-content: space-between; gap: 24px;">
-      <a href="home.html" aria-label="Helix Anthropis home" style="display: flex; align-items: center; min-width: 220px;">
-        <img src="assets/helix-anthropis-wordmark-inverse.svg?v=brand-2026-2" alt="Helix Anthropis" draggable="false" style="display: block; width: 220px; height: 32px; object-fit: contain; object-position: left center;">
+      <a href="/" aria-label="Helix Anthropis home" style="display: flex; align-items: center; min-width: 220px;">
+        <img src="/assets/helix-anthropis-wordmark-inverse.svg?v=brand-2026-2" alt="Helix Anthropis" draggable="false" style="display: block; width: 220px; height: 32px; object-fit: contain; object-position: left center;">
       </a>
       <sc-if value="{{ notMobile }}" hint-placeholder-val="{{ true }}">
         <nav aria-label="Main" style="display: flex; align-items: center; gap: clamp(18px, 2.4vw, 34px);">
-          <a href="home.html#about" style="font-size: 15px; font-weight: 600;" style-hover="color: #D9A23B;">About</a>
-          <a href="home.html#focus" style="font-size: 15px; font-weight: 600;" style-hover="color: #D9A23B;">Focus areas</a>
-          <a href="home.html#projects" style="font-size: 15px; font-weight: 600;" style-hover="color: #D9A23B;">Projects</a>
-          <a href="home.html#publications" style="font-size: 15px; font-weight: 600;" style-hover="color: #D9A23B;">Publications</a>
+          <a href="/#about" style="font-size: 15px; font-weight: 600;" style-hover="color: #D9A23B;">About</a>
+          <a href="/#focus" style="font-size: 15px; font-weight: 600;" style-hover="color: #D9A23B;">Focus areas</a>
+          <a href="/#projects" style="font-size: 15px; font-weight: 600;" style-hover="color: #D9A23B;">Projects</a>
+          <a href="/#publications" style="font-size: 15px; font-weight: 600;" style-hover="color: #D9A23B;">Publications</a>
           <a href="#" style="font-size: 15px; font-weight: 700; color: #D9A23B; border-bottom: 2px solid #D9A23B; padding-bottom: 2px;" style-hover="color: #F6F3E8; border-color: #F6F3E8;">Socials</a>
         </nav>
       </sc-if>
@@ -54,7 +54,7 @@
   <sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
     <div data-screen-label="Mobile menu" style="position: fixed; inset: 0; background: #20614B; color: #F6F3E8; z-index: 60; display: flex; flex-direction: column; overflow: auto;">
       <div style="display: flex; align-items: center; justify-content: space-between; padding: 20px clamp(20px, 4.5vw, 56px); border-bottom: 1px solid rgba(246,243,232,0.3);">
-        <img src="assets/helix-anthropis-wordmark-inverse.svg?v=brand-2026-2" alt="Helix Anthropis" draggable="false" style="display: block; width: 196px; height: 30px; object-fit: contain; object-position: left center;">
+        <img src="/assets/helix-anthropis-wordmark-inverse.svg?v=brand-2026-2" alt="Helix Anthropis" draggable="false" style="display: block; width: 196px; height: 30px; object-fit: contain; object-position: left center;">
         <button aria-label="Close menu" onClick="{{ closeMenu }}" style="background: none; border: 1px solid rgba(246,243,232,0.7); color: #F6F3E8; padding: 10px 14px; cursor: pointer; font-size: 16px; line-height: 1; font-family: inherit;">✕</button>
       </div>
       <nav aria-label="Mobile" style="display: flex; flex-direction: column; padding: 8px clamp(20px, 4.5vw, 56px) 40px;">
@@ -63,14 +63,14 @@
             <span>{{ lnk.label }}</span>
           </a>
         </sc-for>
-        <a href="home.html#support" onClick="{{ closeMenu }}" style="margin-top: 30px; align-self: flex-start; background: #D9A23B; color: #26241E; font-size: 15px; font-weight: 700; padding: 16px 22px;" style-hover="background: #F6F3E8; color: #26241E;">Support our work →</a>
+        <a href="/#support" onClick="{{ closeMenu }}" style="margin-top: 30px; align-self: flex-start; background: #D9A23B; color: #26241E; font-size: 15px; font-weight: 700; padding: 16px 22px;" style-hover="background: #F6F3E8; color: #26241E;">Support our work →</a>
       </nav>
     </div>
   </sc-if>
 
   <div style="max-width: 1200px; margin: 0 auto; padding: clamp(40px, 5vw, 68px) clamp(20px, 4.5vw, 56px) 0;">
     <p style="margin: 0 0 clamp(18px, 2.4vw, 28px); font-size: 12.5px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #5A554A; display: flex; gap: 10px; flex-wrap: wrap;">
-      <a href="home.html" style="text-decoration: underline; text-underline-offset: 3px;" style-hover="color: #1F5B46;">Institute</a><span aria-hidden="true" style="opacity: 0.5;">/</span><span>Socials</span>
+      <a href="/" style="text-decoration: underline; text-underline-offset: 3px;" style-hover="color: #1F5B46;">Institute</a><span aria-hidden="true" style="opacity: 0.5;">/</span><span>Socials</span>
     </p>
     <h1 style="margin: 0 0 20px; font-family: 'Source Serif 4', Georgia, serif; font-weight: 540; font-size: clamp(38px, 5.4vw, 70px); line-height: 1.06; letter-spacing: -0.018em;">Socials</h1>
     <div style="height: 1px; background: #26241E;"></div>
@@ -135,7 +135,7 @@
         <p style="margin: 0 0 22px; max-width: 60ch; color: #3E3A31; font-size: 16.5px; line-height: 1.65;">For interviews, statements or use of the institute's name and mark, write to the communications address below.</p>
         <div style="display: flex; flex-wrap: wrap; gap: 16px 40px;">
           <a href="mailto:helixanthropisinstitute@gmail.com" style="font-size: 15.5px; font-weight: 700; border-bottom: 1.5px solid rgba(38,36,30,0.5); padding-bottom: 3px;" style-hover="color: #26241E; border-color: #26241E;">helixanthropisinstitute@gmail.com</a>
-          <a href="home.html#support" style="font-size: 15.5px; font-weight: 700; color: #C6502F; border-bottom: 1.5px solid #C6502F; padding-bottom: 3px;" style-hover="color: #26241E; border-color: #26241E;">Support our work</a>
+          <a href="/#support" style="font-size: 15.5px; font-weight: 700; color: #C6502F; border-bottom: 1.5px solid #C6502F; padding-bottom: 3px;" style-hover="color: #26241E; border-color: #26241E;">Support our work</a>
         </div>
       </section>
     </div>
@@ -147,16 +147,16 @@
       <h2 style="margin: 0 0 18px; font-family: 'Source Serif 4', Georgia, serif; font-weight: 520; font-size: clamp(34px, 4.4vw, 62px); line-height: 1.08; letter-spacing: -0.015em; max-width: 18ch;">Help advance the common good.</h2>
       <p style="margin: 0 0 32px; max-width: 56ch; font-size: 16px; line-height: 1.65; color: rgba(237,232,216,0.75);">Helix works in service of humanity and the common good. Join, support or partner with the institute.</p>
       <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 18px 40px;">
-        <a href="volunteer.html#support" style="font-size: 15.5px; font-weight: 700; color: #D9A23B; border-bottom: 2px solid #D9A23B; padding-bottom: 4px;" style-hover="color: #F6F3E8; border-color: #F6F3E8;">Support our work</a>
-        <a href="volunteer.html#community" style="font-size: 15.5px; font-weight: 700; color: #EDE8D8; border-bottom: 2px solid rgba(237,232,216,0.6); padding-bottom: 4px;" style-hover="color: #D9A23B; border-color: #D9A23B;">Join our community</a>
-        <a href="contact.html" style="font-size: 15.5px; font-weight: 700; color: #EDE8D8; border-bottom: 2px solid rgba(237,232,216,0.6); padding-bottom: 4px;" style-hover="color: #D9A23B; border-color: #D9A23B;">Contact Helix</a>
+        <a href="/volunteer/#support" style="font-size: 15.5px; font-weight: 700; color: #D9A23B; border-bottom: 2px solid #D9A23B; padding-bottom: 4px;" style-hover="color: #F6F3E8; border-color: #F6F3E8;">Support our work</a>
+        <a href="/volunteer/#community" style="font-size: 15.5px; font-weight: 700; color: #EDE8D8; border-bottom: 2px solid rgba(237,232,216,0.6); padding-bottom: 4px;" style-hover="color: #D9A23B; border-color: #D9A23B;">Join our community</a>
+        <a href="/contact/" style="font-size: 15.5px; font-weight: 700; color: #EDE8D8; border-bottom: 2px solid rgba(237,232,216,0.6); padding-bottom: 4px;" style-hover="color: #D9A23B; border-color: #D9A23B;">Contact Helix</a>
       </div>
     </div>
     <footer data-screen-label="Footer" style="position: relative; border-top: 1px solid rgba(237,232,216,0.25);">
       <div style="max-width: 1200px; margin: 0 auto; padding: clamp(44px, 5vw, 64px) clamp(20px, 4.5vw, 56px) 30px;">
         <div style="display: flex; flex-wrap: wrap; gap: 44px clamp(44px, 5vw, 84px);">
           <div style="flex: 1.3 1 300px; min-width: min(100%, 280px); display: flex; flex-direction: column; gap: 20px;">
-            <img src="assets/helix-h.svg?v=brand-2026-3" alt="Helix Anthropis" draggable="false" style="display: block; width: 68px; height: 104px; object-fit: contain; object-position: left center;">
+            <img src="/assets/helix-h.svg?v=brand-2026-3" alt="Helix Anthropis" draggable="false" style="display: block; width: 68px; height: 104px; object-fit: contain; object-position: left center;">
             <p style="margin: 0; font-size: 14.5px; line-height: 1.6; color: rgba(237,232,216,0.7); max-width: 38ch;">Advancing humanity through cooperation and solidarity.</p>
             <div style="margin-top: 4px;">
               <p style="margin: 0 0 10px; font-size: 11px; font-weight: 800; letter-spacing: 0.22em; color: rgba(237,232,216,0.55);">NEWSLETTER</p>
@@ -164,19 +164,19 @@
                 <input type="email" name="email" required aria-label="Email address" placeholder="Email address" style="flex: 1; min-width: 0; background: transparent; border: 1px solid rgba(237,232,216,0.4); border-right: none; color: #EDE8D8; padding: 13px 14px; font-family: inherit; font-size: 14px;">
                 <button type="submit" style="background: #D9A23B; color: #26241E; border: none; font-family: inherit; font-size: 14px; font-weight: 700; padding: 13px 18px; cursor: pointer;" style-hover="background: #C89230;">Subscribe</button>
               </form>
-              <p class="hx-form-privacy" data-for="Newsletter subscription">This opens a draft in your email app; nothing is sent unless you send it. <a href="privacy.html#email">Privacy details</a>.</p>
+              <p class="hx-form-privacy" data-for="Newsletter subscription">This opens a draft in your email app; nothing is sent unless you send it. <a href="/privacy/#email">Privacy details</a>.</p>
             </div>
           </div>
           <nav aria-label="Footer institute" style="flex: 0 1 150px; min-width: 130px;">
             <p style="margin: 0 0 14px; font-size: 11px; font-weight: 800; letter-spacing: 0.22em; color: rgba(237,232,216,0.55);">INSTITUTE</p>
             <div style="display: flex; flex-direction: column; gap: 11px; font-size: 14.5px;">
-              <a href="about.html" style-hover="color: #D9A23B;">About</a><a href="work.html" style-hover="color: #D9A23B;">Our work</a><a href="about.html#leadership" style-hover="color: #D9A23B;">Leadership</a><a href="news.html" style-hover="color: #D9A23B;">News &amp; events</a><a href="sdgs.html" style-hover="color: #D9A23B;">UN SDGs</a>
+              <a href="/about/" style-hover="color: #D9A23B;">About</a><a href="/work/" style-hover="color: #D9A23B;">Our work</a><a href="/about/#leadership" style-hover="color: #D9A23B;">Leadership</a><a href="/news/" style-hover="color: #D9A23B;">News &amp; events</a><a href="/sdgs/" style-hover="color: #D9A23B;">UN SDGs</a>
             </div>
           </nav>
           <nav aria-label="Footer get involved" style="flex: 0 1 150px; min-width: 130px;">
             <p style="margin: 0 0 14px; font-size: 11px; font-weight: 800; letter-spacing: 0.22em; color: rgba(237,232,216,0.55);">GET INVOLVED</p>
             <div style="display: flex; flex-direction: column; gap: 11px; font-size: 14.5px;">
-              <a href="volunteer.html" style-hover="color: #D9A23B;">Volunteer</a><a href="volunteer.html#community" style-hover="color: #D9A23B;">Join our community</a><a href="volunteer.html#support" style-hover="color: #D9A23B;">Support us</a><a href="shop.html" style-hover="color: #D9A23B;">Shop</a>
+              <a href="/volunteer/" style-hover="color: #D9A23B;">Volunteer</a><a href="/volunteer/#community" style-hover="color: #D9A23B;">Join our community</a><a href="/volunteer/#support" style-hover="color: #D9A23B;">Support us</a><a href="/shop/" style-hover="color: #D9A23B;">Shop</a>
             </div>
           </nav>
           <div style="flex: 0 1 260px; min-width: min(100%, 220px);">
@@ -192,7 +192,7 @@
         <div style="margin-top: clamp(40px, 5vw, 60px); padding-top: 20px; border-top: 1px solid rgba(237,232,216,0.22); display: flex; flex-wrap: wrap; gap: 10px 32px; justify-content: space-between; font-size: 13px; color: rgba(237,232,216,0.55);">
           <p style="margin: 0;">© Helix Anthropis Institute, 2026</p>
           <p style="margin: 0;">Design prototype — placeholder content where noted</p>
-          <p style="margin: 0; display: flex; gap: 22px; align-items: center; flex-wrap: wrap;"><a href="privacy.html" style-hover="color: #D9A23B;">Privacy</a><a href="legal.html" style-hover="color: #D9A23B;">Legal notice</a><button type="button" class="hx-privacy-open" style="appearance: none; border: 0; padding: 0; background: transparent; color: inherit; font: inherit; cursor: pointer;" style-hover="color: #D9A23B;">Privacy settings</button></p>
+          <p style="margin: 0; display: flex; gap: 22px; align-items: center; flex-wrap: wrap;"><a href="/privacy/" style-hover="color: #D9A23B;">Privacy</a><a href="/legal/" style-hover="color: #D9A23B;">Legal notice</a><button type="button" class="hx-privacy-open" style="appearance: none; border: 0; padding: 0; background: transparent; color: inherit; font: inherit; cursor: pointer;" style-hover="color: #D9A23B;">Privacy settings</button></p>
         </div>
       </div>
     </footer>
@@ -218,10 +218,10 @@ class Component extends DCLogic {
       openMenu: () => this.setState({ menuOpen: true }),
       closeMenu: () => this.setState({ menuOpen: false }),
       menuLinks: [
-        { label: 'About', href: 'home.html#about' },
-        { label: 'Focus areas', href: 'home.html#focus' },
-        { label: 'Projects', href: 'home.html#projects' },
-        { label: 'Publications', href: 'home.html#publications' },
+        { label: 'About', href: '/#about' },
+        { label: 'Focus areas', href: '/#focus' },
+        { label: 'Projects', href: '/#projects' },
+        { label: 'Publications', href: '/#publications' },
         { label: 'Socials', href: '#follow' },
         { label: 'Contact', href: 'mailto:helixanthropisinstitute@gmail.com' }
       ],
@@ -235,7 +235,7 @@ class Component extends DCLogic {
         { name: 'Instagram', handle: '@helixanthropis', cta: 'Follow ↗', href: '#', bg: '#C6502F', fg: '#F6F3E8' },
         { name: 'X', handle: '@helixanthropis', cta: 'Follow ↗', href: '#', bg: '#26241E', fg: '#F6F3E8' },
         { name: 'YouTube', handle: '@helixanthropis', cta: 'Subscribe ↗', href: '#', bg: '#7D5BA6', fg: '#F6F3E8' },
-        { name: 'Newsletter', handle: 'Monthly dispatch', cta: 'Subscribe ↗', href: 'home.html#support', bg: '#D9A23B', fg: '#26241E' }
+        { name: 'Newsletter', handle: 'Monthly dispatch', cta: 'Subscribe ↗', href: '/#support', bg: '#D9A23B', fg: '#26241E' }
       ],
       posts: platforms.map((p, i) => ({
         id: 'social-post-' + String(i + 1).padStart(2, '0'),

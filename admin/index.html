@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Content admin · Helix Anthropis Institute</title>
+<meta name="robots" content="noindex, nofollow">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob: https:; connect-src 'self' https://*.workers.dev http://127.0.0.1:* http://localhost:*; base-uri 'self'; form-action 'self'">
+<meta name="referrer" content="no-referrer">
+<link rel="icon" href="/assets/helix-h-ink.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/fonts.css">
+<link rel="stylesheet" href="/site.css">
+<script>try{if(localStorage.getItem('helix-theme')==='dark')document.documentElement.classList.add('hx-document-dark')}catch(e){}</script>
+<script src="/site.js"></script>
+<style>
+  body { background: var(--cream); }
+  .adm { display: grid; grid-template-columns: 250px minmax(0, 1fr); min-height: calc(100vh - var(--header-h)); }
+  @media (max-width: 860px) { .adm { grid-template-columns: 1fr; } }
+  .adm-side { border-right: 1px solid var(--line); padding: 28px 20px; background: var(--cream); }
+  .adm-side button.tab { display: flex; justify-content: space-between; width: 100%; text-align: left; background: transparent; border: 0; border-bottom: 1px solid var(--line-soft); padding: 12px 6px; color: var(--ink); font-size: 14.5px; font-weight: 650; cursor: pointer; }
+  .adm-side button.tab[aria-pressed="true"] { color: var(--green-hover); border-bottom-color: var(--green-hover); }
+  .adm-side button.tab .c { font-size: 11px; font-weight: 800; letter-spacing: 0.12em; color: var(--muted); }
+  .adm-main { padding: 28px var(--pad-x) 80px; background: var(--paper); }
+  .adm-list { border-top: 1px solid var(--line); margin-top: 20px; }
+  .adm-row { display: grid; grid-template-columns: 64px 1fr auto; gap: 12px 18px; align-items: center; padding: 12px 8px; border-bottom: 1px solid var(--line); }
+  .adm-row:hover { background: var(--cream); }
+  .adm-row .th { width: 64px; height: 48px; background: var(--hatch-bg); border: 1px solid var(--line); object-fit: cover; display: block; }
+  .adm-row .t { font-family: var(--serif); font-weight: 560; font-size: 18px; }
+  .adm-row .m { font-size: 12.5px; color: var(--muted); margin-top: 2px; }
+  .adm-row .acts { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+  .adm-row .acts button { background: transparent; border: 1px solid var(--line-strong); color: var(--ink); font-size: 12px; font-weight: 700; padding: 6px 10px; cursor: pointer; }
+  .adm-row .acts button:hover { background: var(--ink); color: var(--paper); }
+  .editor { position: fixed; inset: 0; z-index: 90; background: rgba(38,36,30,0.45); display: none; align-items: stretch; justify-content: flex-end; }
+  .editor.open { display: flex; }
+  .editor .panel { width: min(760px, 100%); background: var(--paper); color: var(--ink); border-left: 1px solid var(--line-strong); display: flex; flex-direction: column; }
+  .editor .panel .head { display: flex; justify-content: space-between; align-items: center; padding: 20px 24px; border-bottom: 1px solid var(--line); }
+  .editor .panel .fields { flex: 1; overflow: auto; padding: 20px 24px; }
+  .editor .panel .foot { padding: 16px 24px; border-top: 1px solid var(--line-strong); display: flex; gap: 12px; flex-wrap: wrap; }
+  .status { display: inline-flex; align-items: center; gap: 8px; font-size: 12.5px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; white-space: nowrap; }
+  .status .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--faint); }
+  .status.on .dot { background: var(--green-hover); }
+  .status.dirty .dot { background: var(--yellow); }
+  textarea.json { width: 100%; min-height: 320px; font-family: ui-monospace, Consolas, monospace; font-size: 12.5px; line-height: 1.5; border: 1px solid var(--line-strong); background: transparent; color: var(--ink); padding: 14px; }
+  .steps { display: grid; gap: 1px; background: var(--line); border: 1px solid var(--line); }
+  .steps div { background: var(--paper); padding: 14px 18px; font-size: 14px; color: var(--body); display: grid; grid-template-columns: 32px 1fr; gap: 10px; }
+  .steps b { font-family: var(--serif); font-style: italic; font-weight: 450; color: var(--muted); }
+  .img-field { display: grid; grid-template-columns: 120px 1fr; gap: 14px; align-items: start; }
+  .img-field .prev { width: 120px; aspect-ratio: 4 / 3; background: var(--hatch-bg) repeating-linear-gradient(105deg, var(--hatch) 0 1px, transparent 1px 8px); border: 1px solid var(--line); object-fit: cover; display: block; }
+  .img-field .row2 { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .gal { display: flex; flex-wrap: wrap; gap: 8px; }
+  .gal figure { margin: 0; position: relative; width: 96px; }
+  .gal img { width: 96px; height: 72px; object-fit: cover; border: 1px solid var(--line); display: block; }
+  .gal button { position: absolute; top: -6px; right: -6px; width: 22px; height: 22px; border-radius: 50%; border: 1px solid var(--line-strong); background: var(--paper); font-size: 12px; cursor: pointer; line-height: 1; }
+  .md-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 700px) { .md-wrap { grid-template-columns: 1fr; } }
+  .md-wrap textarea { min-height: 320px; font-family: ui-monospace, Consolas, monospace; font-size: 13px; line-height: 1.55; }
+  .md-prev { border: 1px solid var(--line); padding: 16px 18px; overflow: auto; max-height: 420px; background: var(--paper); }
+  .md-prev.article-body { font-size: 15.5px; }
+  .md-help { font-size: 12px; color: var(--faint); }
+  .login { position: fixed; inset: 0; z-index: 95; background: var(--green-deep); color: #F6F3E8; display: none; align-items: center; justify-content: center; padding: 24px; }
+  .login.open { display: flex; }
+  .login .box { width: min(420px, 100%); background: var(--paper); color: var(--ink); border: 1px solid var(--line-strong); padding: clamp(24px, 4vw, 40px); }
+  .login .box .field input { background: var(--paper); }
+  .top-status { display: flex; align-items: center; gap: 16px; margin-left: auto; flex-wrap: wrap; justify-content: flex-end; }
+  .btn.publish { background: var(--green); color: #F6F3E8; border-color: var(--green); }
+  .btn.publish:hover { background: var(--green-900); border-color: var(--green-900); }
+  .pill { font-size: 11px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; padding: 4px 8px; border: 1px solid var(--line); color: var(--muted); }
+  .settings-form { max-width: 720px; }
+  .settings-form h3 { margin: 26px 0 10px; font-family: var(--serif); font-weight: 560; font-size: 20px; }
+</style>
+</head>
+<body data-page="/admin/">
+<header class="hx-site-header is-solid is-opaque" style="position:sticky;">
+  <div class="hx-header-inner">
+    <a class="hx-brand-link" href="/" aria-label="Helix Anthropis home" style="display:flex;align-items:center;">
+      <span class="hx-header-logo">
+        <img class="hx-wordmark-inverse" src="/assets/helix-anthropis-wordmark-inverse.svg" alt="Helix Anthropis" draggable="false">
+        <img class="hx-wordmark-green" src="/assets/helix-anthropis-wordmark.svg" alt="" aria-hidden="true" draggable="false">
+      </span>
+    </a>
+    <span style="margin-left:14px;font-size:12px;font-weight:800;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);">Content admin</span>
+    <span class="top-status">
+      <span class="status" data-api-status><span class="dot"></span><span>Not connected</span></span>
+      <span class="status" data-preview-status><span class="dot"></span><span>Preview off</span></span>
+      <button class="btn sm outline" type="button" data-preview-toggle>Preview edits on site</button>
+      <button class="btn sm outline" type="button" data-logout hidden>Log out</button>
+      <button class="hx-theme-toggle" type="button" aria-label="Switch theme">
+        <svg class="hx-theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M20 15.4A8.4 8.4 0 0 1 8.6 4a8.5 8.5 0 1 0 11.4 11.4Z"></path></svg>
+        <svg class="hx-theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="12" cy="12" r="3.5"></circle><path d="M12 2v2.2M12 19.8V22M4.9 4.9l1.6 1.6M17.5 17.5l1.6 1.6M2 12h2.2M19.8 12H22M4.9 19.1l1.6-1.6M17.5 6.5l1.6-1.6"></path></svg>
+      </button>
+    </span>
+  </div>
+</header>
+
+<div class="adm">
+  <aside class="adm-side">
+    <p class="label">Collections</p>
+    <div data-tabs></div>
+    <p class="label" style="margin-top:34px;">How it works</p>
+    <div class="steps">
+      <div><b>i.</b><span>Log in, pick a collection, edit. Drafts stay in this browser until you publish.</span></div>
+      <div><b>ii.</b><span><em>Preview</em> shows your drafts on the live pages, in this browser only.</span></div>
+      <div><b>iii.</b><span><em>Publish</em> saves to the website. It appears for everyone within a minute or two.</span></div>
+    </div>
+    <p class="small" style="margin-top:18px;" data-api-hint></p>
+  </aside>
+  <main class="adm-main">
+    <div class="section-head" style="margin-bottom:8px;">
+      <div><p class="label accent" data-col-label>Collection</p><h1 class="t2" data-col-title>Content</h1></div>
+      <div class="btn-row">
+        <button class="btn sm" type="button" data-add>Add entry</button>
+        <button class="btn sm publish" type="button" data-publish>Publish</button>
+        <button class="btn sm outline" type="button" data-reset>Discard draft</button>
+      </div>
+    </div>
+    <p class="lede" data-col-desc></p>
+    <p class="small" data-col-file style="margin-top:8px;"></p>
+    <div data-list-wrap>
+      <div class="adm-list" data-list></div>
+    </div>
+    <form class="form settings-form" data-settings-form hidden onsubmit="return false;"></form>
+    <details style="margin-top:36px;">
+      <summary class="ul" style="cursor:pointer;list-style:none;">Advanced: raw JSON, download, copy</summary>
+      <div class="btn-row" style="margin:14px 0;"><button class="btn sm outline" type="button" data-download>Download JSON</button><button class="btn sm outline" type="button" data-copy>Copy JSON</button><button class="btn sm outline" type="button" data-raw-apply>Apply raw JSON</button></div>
+      <textarea class="json" data-raw spellcheck="false"></textarea>
+    </details>
+  </main>
+</div>
+
+<div class="editor" data-editor>
+  <div class="panel" role="dialog" aria-modal="true" aria-label="Edit entry">
+    <div class="head"><span class="t4" data-editor-title>Edit</span><button class="hx-close" type="button" style="color:inherit;border-color:currentColor;" data-editor-close aria-label="Close">✕</button></div>
+    <form class="fields form" data-editor-form onsubmit="return false;"></form>
+    <div class="foot"><button class="btn sm" type="button" data-editor-save>Save draft</button><button class="btn sm outline" type="button" data-editor-cancel>Cancel</button><span class="small" style="align-self:center;">Saving keeps it in this browser. Publish from the list to put it on the site.</span></div>
+  </div>
+</div>
+
+<div class="login" data-login>
+  <div class="box">
+    <img src="/assets/helix-anthropis-wordmark.svg" alt="Helix Anthropis" style="width:200px;height:30px;object-fit:contain;object-position:left;display:block;">
+    <h1 class="t3" style="margin-top:22px;">Content admin</h1>
+    <p class="small" style="margin-top:6px;">Staff only. Ask the board for an account.</p>
+    <form class="form" style="margin-top:22px;" data-login-form>
+      <div class="field"><label for="l-user">Username</label><input id="l-user" name="username" autocomplete="username" required></div>
+      <div class="field"><label for="l-pass">Password</label><input id="l-pass" name="password" type="password" autocomplete="current-password" required></div>
+      <p class="notice" data-login-error hidden style="border-color:var(--red);"></p>
+      <div class="btn-row"><button class="btn" type="submit">Log in</button><button class="btn outline" type="button" data-login-offline>Work offline</button></div>
+      <details style="margin-top:8px;"><summary class="small" style="cursor:pointer;">Connection settings</summary>
+        <div class="field" style="margin-top:10px;"><label for="l-api">API address</label><input id="l-api" placeholder="https://helix-content-api.<account>.workers.dev" data-api-input><span class="hint">Set once after the Worker is deployed. Leave empty to work offline with downloads.</span></div>
+      </details>
+    </form>
+  </div>
+</div>
+
+<script>
+(() => {
+  /* Set this to the deployed Worker URL. Until then, staff can enter it under Connection settings. */
+  const DEFAULT_API = 'https://helix-content-api.saimajope.workers.dev';
+  const $ = HX.$, esc = HX.esc;
+  const AREAS = ['Human Development', 'Knowledge & Education', 'Cooperation', 'Innovation', 'Sustainable Futures'];
+  const SCHEMAS = {
+    news: { title: 'News & blog', desc: 'Articles on the News page, each with its own page. Mark one as featured to pin it at the top.', label: (e) => e.title, meta: (e) => `${e.category || ''} · ${e.date || ''}${e.featured ? ' · featured' : ''}`, thumb: (e) => e.media && e.media.image, fields: [
+      ['title', 'Title', 'text'], ['category', 'Category', 'select', ['Announcements', 'Projects', 'Research', 'Community', 'Events']], ['date', 'Date', 'date'], ['author', 'Author (optional)', 'text'], ['featured', 'Featured at the top of the News page', 'checkbox'],
+      ['summary', 'Short description (cards and the top of the article)', 'textarea'], ['media.image', 'Cover image', 'image'], ['gallery', 'Photo gallery', 'gallery'], ['body', 'Article text', 'markdown'],
+      ['media.video', 'Cover video file instead of an image (optional)', 'text'], ['media.poster', 'Fallback colour if there is no image (hex)', 'text'], ['link', 'External link instead of an article page (optional)', 'text'], ['id', 'Web address name (auto)', 'text'] ] },
+    projects: { title: 'Projects', desc: 'Shown on Our Work and on each SDG page they are tagged with. Each project has its own page.', label: (e) => e.title, meta: (e) => `${e.area || ''} · ${e.status || ''} · ${e.year || ''}`, thumb: (e) => e.media && e.media.image, fields: [
+      ['title', 'Title', 'text'], ['area', 'Area of work', 'select', AREAS], ['status', 'Status', 'select', ['current', 'past']], ['year', 'Year', 'text'], ['location', 'Location', 'text'], ['partners', 'Partners (optional)', 'text'],
+      ['summary', 'Short description', 'textarea'], ['media.image', 'Cover image', 'image'], ['gallery', 'Photo gallery', 'gallery'], ['body', 'Project text', 'markdown'], ['sdgs', 'SDG numbers (comma separated, 1 to 17)', 'numlist'],
+      ['media.video', 'Cover video file instead of an image (optional)', 'text'], ['media.poster', 'Fallback colour (hex)', 'text'], ['link', 'External link instead of a project page (optional)', 'text'], ['id', 'Web address name (auto)', 'text'] ] },
+    events: { title: 'Events', desc: 'Upcoming events on the News page. Past events fold away automatically.', label: (e) => e.title, meta: (e) => `${e.date || ''} · ${e.location || ''}`, fields: [
+      ['title', 'Title', 'text'], ['date', 'Date', 'date'], ['time', 'Time', 'text'], ['location', 'Location', 'text'], ['kind', 'Kind', 'select', ['Assembly', 'Community', 'Workshop', 'Dialogue', 'Talk', 'Other']], ['summary', 'Description', 'textarea'], ['link', 'Details link (optional)', 'text'], ['id', 'ID (auto)', 'text'] ] },
+    publications: { title: 'Publications', desc: 'Listed on Our Work, newest first.', label: (e) => e.title, meta: (e) => `${e.type || ''} · ${e.date || ''}`, fields: [
+      ['title', 'Title', 'text'], ['type', 'Type', 'select', ['Working paper', 'Research note', 'Essay', 'Report', 'Guide']], ['area', 'Area', 'select', AREAS], ['authors', 'Authors', 'text'], ['date', 'Date', 'date'], ['summary', 'Summary', 'textarea'], ['link', 'PDF or link', 'file'], ['id', 'ID (auto)', 'text'] ] },
+    initiatives: { title: 'Initiatives & programmes', desc: 'Cards on Our Work.', label: (e) => e.title, meta: (e) => e.kind || '', fields: [ ['title', 'Title', 'text'], ['kind', 'Kind', 'select', ['Programme', 'Initiative', 'Publication series', 'Fellowship']], ['summary', 'Description', 'textarea'], ['link', 'Learn more link', 'text'], ['id', 'ID (auto)', 'text'] ] },
+    products: { title: 'Shop products', desc: 'Upload photos to replace the drawn illustrations. Prices in euro.', label: (e) => e.name, meta: (e) => `${e.category || ''} · €${e.price}`, thumb: (e) => e.images && e.images[0], fields: [
+      ['name', 'Name', 'text'], ['category', 'Category', 'select', ['Apparel', 'Print', 'Accessories']], ['price', 'Price in €', 'number'], ['images', 'Product photos', 'gallery'], ['description', 'Description', 'textarea'], ['sizes', 'Sizes or options (comma separated)', 'list'], ['details', 'Details (one per line)', 'lines'],
+      ['art', 'Drawn illustration (used when there are no photos)', 'select', ['tee', 'hoodie', 'cap', 'tote', 'poster', 'notebook', 'mug', 'pin']], ['colors', 'Colour options (hex, comma separated)', 'list'], ['colorNames', 'Colour names (same order)', 'list'], ['id', 'ID (auto)', 'text'] ] },
+    opportunities: { title: 'Volunteer opportunities', desc: 'Open roles on the Volunteer page. Delete all entries to show the empty-state message.', label: (e) => e.title, meta: (e) => `${e.team || ''} · ${e.commitment || ''}`, fields: [
+      ['title', 'Title', 'text'], ['team', 'Team', 'select', ['Events', 'Projects', 'Community', 'Communications', 'Research', 'Administration']], ['commitment', 'Time commitment', 'text'], ['location', 'Location', 'text'], ['summary', 'Description', 'textarea'], ['link', 'Apply link (mailto or URL)', 'text'], ['id', 'ID (auto)', 'text'] ] },
+    team: { title: 'Executives', desc: 'Leadership on the About page.', label: (e) => e.name, meta: (e) => e.role || '', thumb: (e) => e.photo, fields: [ ['name', 'Name', 'text'], ['role', 'Role', 'text'], ['bio', 'Short bio', 'textarea'], ['photo', 'Portrait', 'image'], ['id', 'ID (auto)', 'text'] ] },
+    settings: { title: 'Site settings', desc: 'Texts that appear across the site: mission, vision, story, contact details, socials and membership.', single: true, fields: [
+      ['institute.name', 'Institute name', 'text'], ['institute.tagline', 'Tagline', 'text'], ['institute.email', 'Contact email', 'text'], ['institute.address', 'Address', 'textarea'],
+      ['mission', 'Mission statement', 'textarea'], ['vision', 'Vision statement', 'textarea'], ['story', 'Our story (one sentence)', 'textarea'],
+      ['socials.instagram', 'Instagram URL', 'text'], ['socials.linkedin', 'LinkedIn URL', 'text'], ['socials.youtube', 'YouTube URL', 'text'], ['socials.discord', 'Discord URL', 'text'], ['socials.substack', 'Substack URL', 'text'],
+      ['membership.member.note', 'Member tier: what you get', 'textarea'], ['membership.member.price', 'Member tier: price (text)', 'text'], ['membership.eco.note', 'Eco Champion: what you get', 'textarea'], ['membership.eco.price', 'Eco Champion: price (text)', 'text'], ['membership.visionary.note', 'Visionary: what you get', 'textarea'], ['membership.visionary.price', 'Visionary: price (text)', 'text'] ] }
+  };
+
+  let current = 'news'; const data = {}, sha = {}, dirty = {};
+  const key = (c) => 'helix-content:' + c;
+  const apiBase = () => { try { return (localStorage.getItem('helix-api') || DEFAULT_API).replace(/\/+$/, ''); } catch (e) { return DEFAULT_API; } };
+  const token = () => { try { return sessionStorage.getItem('helix-admin-token') || ''; } catch (e) { return ''; } };
+  const IDLE_MS = 30 * 60 * 1000; let idleT;
+  const touch = () => { if (!me) return; clearTimeout(idleT); idleT = setTimeout(() => { sessionStorage.removeItem('helix-admin-token'); me = null; showLogin(); HX.toast('Logged out after 30 minutes without activity'); }, IDLE_MS); };
+  ['click', 'keydown', 'mousemove', 'touchstart'].forEach((ev) => document.addEventListener(ev, touch, { passive: true }));
+  let me = null; let offline = false;
+
+  async function api(path, opts = {}) {
+    const res = await fetch(apiBase() + path, { ...opts, headers: { ...(opts.headers || {}), Authorization: 'Bearer ' + token() } });
+    const j = await res.json().catch(() => ({}));
+    if (res.status === 401 && path !== '/login') { me = null; showLogin(); }
+    if (!res.ok) throw new Error(j.error || ('HTTP ' + res.status));
+    return j;
+  }
+  const connected = () => !!(apiBase() && me && !offline);
+
+  async function fetchPublished(c) {
+    if (connected()) { try { const j = await api('/content/' + c); sha[c] = j.sha; return j.data; } catch (e) { HX.toast('Could not load ' + c + ' from the site: ' + e.message); } }
+    try { const r = await fetch('/content/' + c + '.json', { cache: 'no-store' }); return r.ok ? await r.json() : (SCHEMAS[c].single ? {} : []); } catch (e) { return SCHEMAS[c].single ? {} : []; }
+  }
+  async function getData(c) {
+    if (data[c]) return data[c];
+    let local = null; try { local = JSON.parse(localStorage.getItem(key(c)) || 'null'); } catch (e) {}
+    const published = await fetchPublished(c);
+    data[c] = local || published; dirty[c] = !!local; return data[c];
+  }
+  function persist(c) { try { localStorage.setItem(key(c), JSON.stringify(data[c])); } catch (e) {} dirty[c] = true; render(); }
+  const get = (o, p) => p.split('.').reduce((a, k) => (a == null ? undefined : a[k]), o);
+  const set = (o, p, v) => { const ks = p.split('.'); let t = o; ks.slice(0, -1).forEach((k) => { if (typeof t[k] !== 'object' || t[k] === null) t[k] = {}; t = t[k]; }); const last = ks[ks.length - 1]; if (v === undefined || v === '' || (Array.isArray(v) && !v.length)) delete t[last]; else t[last] = v; };
+  const slugify = (s) => String(s || 'entry').toLowerCase().normalize('NFKD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 60);
+
+  /* --------------------------------------------------------------- render */
+  function renderTabs() {
+    $('[data-tabs]').innerHTML = Object.entries(SCHEMAS).map(([c, s]) => `<button type="button" class="tab" data-tab="${c}" aria-pressed="${c === current}"><span>${s.title}${dirty[c] ? ' •' : ''}</span><span class="c">${data[c] ? (s.single ? '' : data[c].length) : ''}</span></button>`).join('');
+  }
+  async function render() {
+    const s = SCHEMAS[current]; const list = await getData(current);
+    $('[data-col-title]').textContent = s.title; $('[data-col-desc]').textContent = s.desc;
+    $('[data-col-file]').innerHTML = `<code>content/${current}.json</code>${dirty[current] ? ' · <b>draft in this browser, not yet published</b>' : (connected() ? ' · published version' : ' · as published on the site')}`;
+    $('[data-add]').hidden = !!s.single;
+    $('[data-publish]').textContent = connected() ? 'Publish to the site' : 'Download JSON';
+    $('[data-list-wrap]').hidden = !!s.single; $('[data-settings-form]').hidden = !s.single;
+    if (s.single) {
+      $('[data-settings-form]').innerHTML = fieldsHTML(s, list) + `<div class="btn-row" style="margin-top:10px;"><button class="btn sm" type="button" data-settings-save>Save draft</button></div>`;
+    } else {
+      $('[data-list]').innerHTML = list.length ? list.map((e, i) => `
+        <div class="adm-row">${(s.thumb && s.thumb(e)) ? `<img class="th" src="${esc(s.thumb(e))}" alt="">` : '<span class="th hatch"></span>'}<div><div class="t">${esc(s.label(e) || '(untitled)')}</div><div class="m">${esc(s.meta(e))}</div></div>
+          <div class="acts"><button type="button" data-up="${i}" title="Move up">↑</button><button type="button" data-down="${i}" title="Move down">↓</button><button type="button" data-edit="${i}">Edit</button><button type="button" data-dup="${i}">Duplicate</button><button type="button" data-del="${i}">Delete</button></div></div>`).join('')
+        : '<p class="empty" style="margin-top:16px;">No entries. Add one.</p>';
+    }
+    $('[data-raw]').value = JSON.stringify(list, null, 2);
+    renderTabs(); statusUI();
+  }
+  function fieldsHTML(s, e) {
+    return s.fields.map(([p, label, type, opts]) => {
+      const v = get(e, p); const id = 'f-' + p.replace(/\W/g, '-');
+      if (type === 'textarea' || type === 'lines') return `<div class="field"><label for="${id}">${label}</label><textarea id="${id}" data-f="${p}" data-t="${type}" style="min-height:${type === 'lines' ? 90 : 110}px;">${esc(type === 'lines' ? (v || []).join('\n') : (v ?? ''))}</textarea></div>`;
+      if (type === 'markdown') return `<div class="field"><label for="${id}">${label}</label><div class="md-wrap"><textarea id="${id}" data-f="${p}" data-t="${type}" data-md>${esc(v ?? '')}</textarea><div class="md-prev article-body" data-md-prev>${HX.md(v || '')}</div></div><span class="md-help">Blank line between paragraphs. <b>## Heading</b>, <b>**bold**</b>, <b>*italic*</b>, <b>&gt; quote</b>, <b>- list</b>, <b>[text](https://…)</b>, <b>![caption](image path)</b>. Use "Insert image" to upload one.</span><div class="row2" style="margin-top:6px;"><button class="btn sm outline" type="button" data-md-img="${id}">Insert image</button></div></div>`;
+      if (type === 'select') return `<div class="field"><label for="${id}">${label}</label><select id="${id}" data-f="${p}" data-t="${type}">${opts.map((o) => `<option ${o === v ? 'selected' : ''}>${esc(o)}</option>`).join('')}</select></div>`;
+      if (type === 'checkbox') return `<div class="field"><label style="display:inline-flex;gap:8px;align-items:center;text-transform:none;letter-spacing:0;font-weight:600;"><input type="checkbox" data-f="${p}" data-t="${type}" ${v ? 'checked' : ''}> ${label}</label></div>`;
+      if (type === 'list' || type === 'numlist') return `<div class="field"><label for="${id}">${label}</label><input id="${id}" data-f="${p}" data-t="${type}" value="${esc((v || []).join(', '))}"></div>`;
+      if (type === 'image' || type === 'file') return `<div class="field"><label for="${id}">${label}</label><div class="img-field">${type === 'image' ? `<img class="prev" data-prev-for="${id}" src="${esc(v || '')}" alt="" onerror="this.removeAttribute('src')">` : '<span></span>'}<div><input id="${id}" data-f="${p}" data-t="text" value="${esc(v ?? '')}" placeholder="${type === 'image' ? 'uploads/… or https://…' : 'uploads/… or https://…'}"><div class="row2" style="margin-top:8px;"><button class="btn sm outline" type="button" data-upload-for="${id}" data-accept="${type === 'image' ? 'image/*' : 'image/*,application/pdf'}">${connected() ? 'Upload' : 'Upload (log in first)'}</button>${type === 'image' ? '<span class="hint">JPG, PNG or WebP, up to 8 MB. Landscape works best for covers.</span>' : '<span class="hint">PDF or image, up to 8 MB.</span>'}</div></div></div></div>`;
+      if (type === 'gallery') { const arr = Array.isArray(v) ? v : []; return `<div class="field"><label>${label}</label><div class="gal" data-gal="${p}">${arr.map((src, i) => `<figure><img src="${esc(src)}" alt=""><button type="button" data-gal-rm="${i}" aria-label="Remove">✕</button></figure>`).join('')}</div><div class="row2" style="margin-top:8px;"><button class="btn sm outline" type="button" data-gal-add="${p}">${connected() ? 'Add photos' : 'Add photos (log in first)'}</button><input type="text" data-gal-manual="${p}" placeholder="or paste a path and press Enter" style="flex:1;min-width:200px;border:1px solid var(--line-strong);background:transparent;color:var(--ink);padding:9px 12px;font:inherit;font-size:13px;"></div><input type="hidden" data-f="${p}" data-t="json" value="${esc(JSON.stringify(arr))}"></div>`; }
+      return `<div class="field"><label for="${id}">${label}</label><input id="${id}" type="${type === 'number' ? 'number' : type === 'date' ? 'date' : 'text'}" ${type === 'number' ? 'step="0.01"' : ''} data-f="${p}" data-t="${type}" value="${esc(v ?? '')}"></div>`;
+    }).join('');
+  }
+  function readFields(root, e) {
+    HX.$$('[data-f]', root).forEach((el) => {
+      const p = el.dataset.f, t = el.dataset.t; let v = el.value;
+      if (t === 'checkbox') v = el.checked; else if (t === 'number') v = v === '' ? undefined : +v;
+      else if (t === 'list') v = v.split(',').map((x) => x.trim()).filter(Boolean);
+      else if (t === 'numlist') v = v.split(',').map((x) => parseInt(x, 10)).filter((x) => x >= 1 && x <= 17);
+      else if (t === 'lines') v = v.split('\n').map((x) => x.trim()).filter(Boolean);
+      else if (t === 'json') { try { v = JSON.parse(v); } catch (err) { v = []; } }
+      set(e, p, v);
+    });
+    return e;
+  }
+
+  /* --------------------------------------------------------------- editor */
+  function openEditor(i) {
+    const s = SCHEMAS[current]; const e = i == null ? {} : data[current][i];
+    $('[data-editor-title]').textContent = i == null ? 'New entry' : 'Edit entry';
+    $('[data-editor-form]').innerHTML = fieldsHTML(s, e);
+    $('[data-editor]').classList.add('open'); $('[data-editor]').dataset.index = i == null ? '' : i;
+  }
+  function saveEditor() {
+    const idx = $('[data-editor]').dataset.index; const e = idx === '' ? {} : JSON.parse(JSON.stringify(data[current][+idx]));
+    readFields($('[data-editor-form]'), e);
+    if (!e.id) e.id = slugify(e.title || e.name) || ('entry-' + Date.now().toString(36));
+    if (idx === '') data[current].unshift(e); else data[current][+idx] = e;
+    $('[data-editor]').classList.remove('open'); persist(current); HX.toast('Draft saved in this browser');
+  }
+
+  /* ---------------------------------------------------------------- upload */
+  async function upload(file) {
+    if (!connected()) throw new Error('Log in to upload images.');
+    const fd = new FormData(); fd.append('file', file); fd.append('name', file.name);
+    HX.toast('Uploading ' + file.name + '…');
+    const j = await api('/upload', { method: 'POST', body: fd });
+    return j.path;
+  }
+  function pickFiles(accept, multiple, cb) {
+    const inp = document.createElement('input'); inp.type = 'file'; inp.accept = accept; inp.multiple = !!multiple;
+    inp.onchange = () => cb(Array.from(inp.files)); inp.click();
+  }
+
+  /* --------------------------------------------------------------- publish */
+  async function publish() {
+    const c = current;
+    if (!connected()) { download(); return; }
+    const b = $('[data-publish]'); b.disabled = true; b.textContent = 'Publishing…';
+    try {
+      const r = await api('/content/' + c, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ data: data[c], sha: sha[c] || null }) });
+      sha[c] = r.sha; localStorage.removeItem(key(c)); dirty[c] = false; render();
+      HX.toast('Published. The site updates within a minute or two.');
+    } catch (e) {
+      alert('Publish failed: ' + e.message);
+    } finally { b.disabled = false; render(); }
+  }
+  function download() {
+    const blob = new Blob([JSON.stringify(data[current], null, 2)], { type: 'application/json' });
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = current + '.json'; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+    HX.toast(`Downloaded ${current}.json. Replace content/${current}.json and push.`);
+  }
+
+  /* ------------------------------------------------------------- login UI */
+  function showLogin() { $('[data-login]').classList.add('open'); const inp = $('[data-api-input]'); inp.value = apiBase(); }
+  function hideLogin() { $('[data-login]').classList.remove('open'); }
+  function statusUI() {
+    const st = $('[data-api-status]'); const on = connected();
+    st.classList.toggle('on', on); st.querySelector('span:last-child').textContent = on ? `Connected · ${me.name}` : (apiBase() ? 'Offline' : 'No API set');
+    $('[data-logout]').hidden = !on;
+    $('[data-api-hint]').textContent = on ? 'Publishing commits straight to the website repository.' : 'Offline mode: edits stay in this browser and export as JSON files. Log in to publish and upload images.';
+    let pv = false; try { pv = localStorage.getItem('helix-content-preview') === 'on'; } catch (e) {}
+    const ps = $('[data-preview-status]'); ps.classList.toggle('on', pv); ps.querySelector('span:last-child').textContent = pv ? 'Preview on' : 'Preview off';
+    $('[data-preview-toggle]').textContent = pv ? 'Stop previewing on site' : 'Preview edits on site';
+  }
+  async function boot() {
+    if (apiBase() && token()) { try { me = (await api('/me')).user; touch(); } catch (e) { me = null; } }
+    if (!me && apiBase()) showLogin(); else if (!apiBase()) { offline = true; showLogin(); }
+    Object.keys(data).forEach((k) => delete data[k]);
+    await render();
+  }
+
+  /* --------------------------------------------------------------- events */
+  document.addEventListener('click', async (e) => {
+    const b = e.target.closest('button'); if (!b) return;
+    if (b.dataset.tab) { current = b.dataset.tab; render(); }
+    else if (b.hasAttribute('data-add')) openEditor(null);
+    else if (b.dataset.edit !== undefined) openEditor(+b.dataset.edit);
+    else if (b.dataset.del !== undefined) { if (confirm('Delete this entry from the draft?')) { data[current].splice(+b.dataset.del, 1); persist(current); } }
+    else if (b.dataset.dup !== undefined) { const c = JSON.parse(JSON.stringify(data[current][+b.dataset.dup])); c.id = c.id + '-copy'; data[current].splice(+b.dataset.dup + 1, 0, c); persist(current); }
+    else if (b.dataset.up !== undefined) { const i = +b.dataset.up; if (i > 0) { [data[current][i - 1], data[current][i]] = [data[current][i], data[current][i - 1]]; persist(current); } }
+    else if (b.dataset.down !== undefined) { const i = +b.dataset.down; if (i < data[current].length - 1) { [data[current][i + 1], data[current][i]] = [data[current][i], data[current][i + 1]]; persist(current); } }
+    else if (b.hasAttribute('data-editor-save')) saveEditor();
+    else if (b.hasAttribute('data-settings-save')) { readFields($('[data-settings-form]'), data.settings); persist('settings'); HX.toast('Settings draft saved'); }
+    else if (b.hasAttribute('data-editor-close') || b.hasAttribute('data-editor-cancel')) $('[data-editor]').classList.remove('open');
+    else if (b.hasAttribute('data-publish')) publish();
+    else if (b.hasAttribute('data-download')) download();
+    else if (b.hasAttribute('data-copy')) { navigator.clipboard.writeText(JSON.stringify(data[current], null, 2)).then(() => HX.toast('JSON copied')); }
+    else if (b.hasAttribute('data-reset')) { if (confirm('Discard the draft in this browser and reload the published version?')) { localStorage.removeItem(key(current)); delete data[current]; dirty[current] = false; render(); } }
+    else if (b.hasAttribute('data-raw-apply')) { try { const v = JSON.parse($('[data-raw]').value); data[current] = v; persist(current); HX.toast('Raw JSON applied'); } catch (err) { alert('Invalid JSON: ' + err.message); } }
+    else if (b.hasAttribute('data-preview-toggle')) { const on = localStorage.getItem('helix-content-preview') === 'on'; localStorage.setItem('helix-content-preview', on ? 'off' : 'on'); statusUI(); HX.toast(on ? 'Preview off' : 'Preview on: open any page in this browser'); }
+    else if (b.hasAttribute('data-logout')) { sessionStorage.removeItem('helix-admin-token'); me = null; offline = false; boot(); }
+    else if (b.hasAttribute('data-login-offline')) { offline = true; hideLogin(); Object.keys(data).forEach((k) => delete data[k]); render(); }
+    else if (b.dataset.uploadFor) {
+      pickFiles(b.dataset.accept || 'image/*', false, async ([f]) => { if (!f) return; try { const path = await upload(f); const inp = document.getElementById(b.dataset.uploadFor); inp.value = path; const prev = document.querySelector(`[data-prev-for="${b.dataset.uploadFor}"]`); if (prev) prev.src = path; HX.toast('Uploaded'); } catch (err) { alert(err.message); } });
+    }
+    else if (b.dataset.galAdd) {
+      const p = b.dataset.galAdd; pickFiles('image/*', true, async (files) => { const hid = document.querySelector(`[data-f="${p}"][data-t="json"]`); const arr = JSON.parse(hid.value || '[]'); for (const f of files) { try { arr.push(await upload(f)); } catch (err) { alert(err.message); break; } } hid.value = JSON.stringify(arr); renderGal(p, arr); });
+    }
+    else if (b.dataset.galRm !== undefined) {
+      const gal = b.closest('[data-gal]'); const p = gal.dataset.gal; const hid = document.querySelector(`[data-f="${p}"][data-t="json"]`); const arr = JSON.parse(hid.value || '[]'); arr.splice(+b.dataset.galRm, 1); hid.value = JSON.stringify(arr); renderGal(p, arr);
+    }
+    else if (b.dataset.mdImg) {
+      const ta = document.getElementById(b.dataset.mdImg);
+      pickFiles('image/*', false, async ([f]) => { if (!f) return; try { const path = await upload(f); const ins = `\n\n![${f.name.replace(/\.[a-z0-9]+$/i, '')}](${path})\n\n`; const pos = ta.selectionStart || ta.value.length; ta.value = ta.value.slice(0, pos) + ins + ta.value.slice(pos); ta.dispatchEvent(new Event('input')); } catch (err) { alert(err.message); } });
+    }
+  });
+  function renderGal(p, arr) { const gal = document.querySelector(`[data-gal="${p}"]`); gal.innerHTML = arr.map((src, i) => `<figure><img src="${esc(src)}" alt=""><button type="button" data-gal-rm="${i}" aria-label="Remove">✕</button></figure>`).join(''); }
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && e.target.matches('[data-gal-manual]')) { e.preventDefault(); const p = e.target.dataset.galManual; const v = e.target.value.trim(); if (!v) return; const hid = document.querySelector(`[data-f="${p}"][data-t="json"]`); const arr = JSON.parse(hid.value || '[]'); arr.push(v); hid.value = JSON.stringify(arr); renderGal(p, arr); e.target.value = ''; }
+  });
+  document.addEventListener('input', (e) => {
+    if (e.target.matches('[data-md]')) { const prev = e.target.closest('.md-wrap').querySelector('[data-md-prev]'); prev.innerHTML = HX.md(e.target.value); }
+    if (e.target.matches('input[data-t="text"]') && e.target.id) { const prev = document.querySelector(`[data-prev-for="${e.target.id}"]`); if (prev) prev.src = e.target.value; }
+  });
+  $('[data-editor]').addEventListener('click', (e) => { if (e.target === e.currentTarget) e.currentTarget.classList.remove('open'); });
+  $('[data-login-form]').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const apiInput = $('[data-api-input]').value.trim(); if (apiInput) localStorage.setItem('helix-api', apiInput);
+    if (!apiBase()) { $('[data-login-error]').hidden = false; $('[data-login-error]').textContent = 'Enter the API address under Connection settings, or work offline.'; return; }
+    const fd = new FormData(e.target);
+    try {
+      const r = await fetch(apiBase() + '/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ username: fd.get('username'), password: fd.get('password') }) });
+      const j = await r.json().catch(() => ({}));
+      if (!r.ok) throw new Error(j.error || 'Login failed');
+      sessionStorage.setItem('helix-admin-token', j.token); me = j.user; offline = false; hideLogin(); $('[data-login-error]').hidden = true; touch();
+      Object.keys(data).forEach((k) => delete data[k]); render(); HX.toast('Welcome, ' + me.name);
+    } catch (err) { $('[data-login-error]').hidden = false; $('[data-login-error]').textContent = err.message; }
+  });
+  boot();
+})();
+</script>
+</body>
+</html>
