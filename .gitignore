@@ -11,3 +11,4 @@ api/node_modules/
 api/.wrangler/
 tmp/
 api/USERS.secret.json
+mock-writes.jsonl

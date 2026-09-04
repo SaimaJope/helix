@@ -98,5 +98,13 @@ to choose a new password again. Removing an entry from `USERS` removes the login
 
 ## Local test
 
+Against a fake GitHub (nothing is committed, state resets on restart):
+
+    node mock-server.mjs 8787        # accounts topgun / seraphim, bootstrap password 1234
+    cd .. && python -m http.server 5500
+    # open http://127.0.0.1:5500/admin/ and set the API address to http://127.0.0.1:8787
+
+Against the real repository:
+
     echo 'USERS=[...]' > .dev.vars   # plus SESSION_SECRET and GITHUB_TOKEN
-    npx wrangler dev
+    node dev-server.mjs 8787         # or npx wrangler dev
