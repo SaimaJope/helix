@@ -1,1 +1,22 @@
-[]
+[
+  {
+    "name": "OWASP Juice Shop Holographic Sticker",
+    "category": "Print",
+    "price": 2,
+    "images": [
+      "https://preview.owasp-juice.shop/assets/public/images/products/holo_sticker-1x.avif"
+    ],
+    "description": "https://preview.owasp-juice.shop/#/",
+    "sizes": [
+      "option1",
+      "option2"
+    ],
+    "details": [
+      "https://preview.owasp-juice.shop/#/",
+      "https://preview.owasp-juice.shop/#/",
+      "https://preview.owasp-juice.shop/#/"
+    ],
+    "art": "tee",
+    "id": "owasp-juice-shop-holographic-sticker"
+  }
+]
