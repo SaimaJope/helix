@@ -1,1 +1,11 @@
-[]
+[
+  {
+    "title": "Casual Information Session",
+    "date": "2026-12-05",
+    "time": "14:00 - 19:00",
+    "location": "Forum Geesseknäppchen - LUXEMBOURG",
+    "kind": "Other",
+    "summary": "Are you a young person who'd like to learn more about the opportunities available around them? Then come to our Casual Information Session, co-organised with the Association des Jeunes pour les Objectives de Développement Durable (AJODD). \n\nWe will provide free drinks and snacks. The event itself is simple afternoon with good music and catalogues scattered around with information concerning events, trainings, workshops, and other resources that are useful to all kinds of active young person! \n\nThe event will take place at the Forum Geesseknäppchen in Hollerich, from 14:00 to 19:00. If you want to participate, we welcome you to attend!",
+    "id": "casual-information-session"
+  }
+]
